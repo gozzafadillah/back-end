@@ -1,0 +1,18 @@
+version: '3.9'
+services:
+  bayeue-mysql-server:
+    image: mariadb:10.7
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=db_bayeue
+    ports:
+      - "33006:3306"
+  bayeue:
+    build: .
+    depends_on:
+      - bayeue-mysql-server
+    container_name: bayeue-1.0
+    ports:
+      - "19000:8080"
+    env_file:
+      - "./config.env"
