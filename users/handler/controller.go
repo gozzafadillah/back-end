@@ -1,40 +1,41 @@
 package handler_users
 
 import (
-	"fmt"
 	"net/http"
 	domain_users "ppob/users/domain"
 	"ppob/users/handler/request"
-	request_users "ppob/users/handler/request"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
 type UsersHandler struct {
-	usecase domain_users.Service
+	usecase    domain_users.Service
+	validation *validator.Validate
 }
 
 func NewUsersHandler(uc domain_users.Service) UsersHandler {
 	return UsersHandler{
-		usecase: uc,
+		usecase:    uc,
+		validation: validator.New(),
 	}
 }
 
 func (uh *UsersHandler) Authorization(ctx echo.Context) error {
-	rec := request_users.RequestJSON{}
-
-	if err := ctx.Bind(&rec); err != nil {
+	req := request.RequestJSONLogin{}
+	ctx.Bind(&req)
+	if err := uh.validation.Struct(req); err != nil {
+		stringerr := []string{}
+		for _, errval := range err.(validator.ValidationErrors) {
+			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
+		}
+		return ctx.JSON(http.StatusBadRequest, stringerr)
+	}
+	res, err := uh.usecase.Login(req.Email, req.Password)
+	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "bad request",
 			"rescode": http.StatusBadRequest,
-		})
-	}
-	fmt.Println("bind : ", rec)
-	res, err := uh.usecase.Login(rec.Email, rec.Password)
-	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "unauthorized",
-			"rescode": http.StatusUnauthorized,
 		})
 	}
 
@@ -49,12 +50,13 @@ func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 
 func (uh *UsersHandler) Register(ctx echo.Context) error {
 	req := request.RequestJSON{}
-	if err := ctx.Bind(&req); err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
-
+	ctx.Bind(&req)
+	if err := uh.validation.Struct(req); err != nil {
+		stringerr := []string{}
+		for _, errval := range err.(validator.ValidationErrors) {
+			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
+		}
+		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
 	responseData, err := uh.usecase.Register(request.ToDomain(req))
 	if err != nil {

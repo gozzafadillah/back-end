@@ -3,10 +3,15 @@ package request
 import domain_users "ppob/users/domain"
 
 type RequestJSON struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Phone    string `json:"phone"`
+	Name     string `json:"name" validate:"required"`
+	Email    string `json:"email" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Phone    string `json:"phone" validate:"required"`
+}
+
+type RequestJSONLogin struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }
 
 func ToDomain(req RequestJSON) domain_users.Users {
@@ -16,5 +21,11 @@ func ToDomain(req RequestJSON) domain_users.Users {
 		Password: req.Password,
 		Phone:    req.Phone,
 		Status:   true,
+	}
+}
+func ToDomainLogin(req RequestJSONLogin) domain_users.Users {
+	return domain_users.Users{
+		Email:    req.Email,
+		Password: req.Password,
 	}
 }
