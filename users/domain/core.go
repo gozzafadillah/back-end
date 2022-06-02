@@ -1,5 +1,7 @@
 package domain_users
 
+import "time"
+
 type Users struct {
 	ID         int
 	Name       string
@@ -10,4 +12,6 @@ type Users struct {
 	Status     bool
 	Address_Id int
 	Role       string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
