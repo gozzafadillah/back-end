@@ -60,7 +60,7 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
-  
+
 	encrypt, err := encryption.HashPassword(req.Password)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -69,7 +69,7 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		})
 
 	}
-  
+
 	req.Password = encrypt
 	responseData, err := uh.usecase.Register(request.ToDomain(req))
 	if err != nil {
