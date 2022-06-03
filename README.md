@@ -16,3 +16,9 @@ BaseUrl = https://virtserver.swaggerhub.com/gozza/Payment-Point/1.0.0
     docker-compose up --build
 ```
 3. server langsung dirun dan database langsung dibuat dalam container
+
+## Cara Melakukan Unittest
+```
+go test ./... -v -coverpkg=./controller/...,./lib/...,./model/... -coverprofile=cover.out && go tool cover -html=cover.out
+
+```
