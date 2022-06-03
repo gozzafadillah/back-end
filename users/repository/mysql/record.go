@@ -16,8 +16,10 @@ type Users struct {
 	Password   string
 	Phone      string
 	Status     bool
-	Address_Id int
+	Account_id int
 	Role       string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 func toDomain(rec Users) domain_users.Users {
@@ -29,7 +31,7 @@ func toDomain(rec Users) domain_users.Users {
 		Password:   rec.Password,
 		Phone:      rec.Phone,
 		Status:     rec.Status,
-		Address_Id: rec.Address_Id,
+		Account_id: rec.Account_id,
 		Role:       rec.Role,
 		CreatedAt:  time.Time{},
 		UpdatedAt:  time.Time{},

@@ -2,6 +2,7 @@ package handler_users
 
 import (
 	"net/http"
+	"ppob/helper/encryption"
 	domain_users "ppob/users/domain"
 	"ppob/users/handler/request"
 
@@ -31,6 +32,7 @@ func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+
 	res, err := uh.usecase.Login(req.Email, req.Password)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -58,6 +60,17 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+  
+	encrypt, err := encryption.HashPassword(req.Password)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "internal server error",
+			"rescode": http.StatusInternalServerError,
+		})
+
+	}
+  
+	req.Password = encrypt
 	responseData, err := uh.usecase.Register(request.ToDomain(req))
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{

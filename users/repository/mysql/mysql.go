@@ -1,7 +1,8 @@
 package mysql_users
 
 import (
-	"fmt"
+	"errors"
+	"ppob/helper/encryption"
 	domain_users "ppob/users/domain"
 
 	"gorm.io/gorm"
@@ -9,6 +10,12 @@ import (
 
 type UsersRepo struct {
 	DB *gorm.DB
+}
+
+func NewUsersRepo(db *gorm.DB) domain_users.Repository {
+	return UsersRepo{
+		DB: db,
+	}
 }
 
 // GetById implements domain_users.Repository
@@ -24,20 +31,18 @@ func (ur UsersRepo) Store(domain domain_users.Users) (int, error) {
 	return domain.ID, err
 }
 
-func NewUsersRepo(db *gorm.DB) domain_users.Repository {
-	return UsersRepo{
-		DB: db,
-	}
-}
-
 // CheckEmailPassword implements domain_users.Repository
 func (ur UsersRepo) CheckEmailPassword(email string, password string) (domain_users.Users, error) {
 	var rec Users
-
-	err := ur.DB.Where("email = ? && password = ?", email, password).First(&rec).Error
+	err := ur.DB.Where("email = ?", email).First(&rec).Error
 	if err != nil {
+		return domain_users.Users{}, errors.New("data not found")
+	}
+
+	data := encryption.CheckPasswordHash(password, rec.Password)
+	if !data && !rec.Status {
 		return domain_users.Users{}, err
 	}
-	fmt.Println("get user : ", rec)
+
 	return toDomain(rec), nil
 }
