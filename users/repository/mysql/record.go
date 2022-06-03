@@ -33,5 +33,7 @@ func toDomain(rec Users) domain_users.Users {
 		Status:     rec.Status,
 		Account_id: rec.Account_id,
 		Role:       rec.Role,
+		CreatedAt:  time.Time{},
+		UpdatedAt:  time.Time{},
 	}
 }
