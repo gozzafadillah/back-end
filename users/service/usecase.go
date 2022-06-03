@@ -35,7 +35,7 @@ func (us UsersService) Register(domain domain_users.Users) (domain_users.Users, 
 func (us UsersService) Login(email string, password string) (string, error) {
 	data, err := us.Repository.CheckEmailPassword(email, password)
 	if err != nil {
-		return "", errors.New("failed to generate token, user not found")
+		return "", errors.New("data not found")
 	}
 	token, err := us.jwtauth.GenerateToken(data.ID, data.Status)
 	if err != nil {
