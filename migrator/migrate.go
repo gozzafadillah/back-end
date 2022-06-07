@@ -8,5 +8,5 @@ import (
 
 func AutoMigrate(DB *gorm.DB) {
 
-	DB.AutoMigrate(&mysql_users.Users{})
+	DB.AutoMigrate(&mysql_users.Users{}, &mysql_users.Account{})
 }

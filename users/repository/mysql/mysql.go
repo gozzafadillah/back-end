@@ -18,6 +18,13 @@ func NewUsersRepo(db *gorm.DB) domain_users.Repository {
 	}
 }
 
+// GetByPhone implements domain_users.Repository
+func (ur UsersRepo) GetByPhone(phone string) (domain_users.Users, error) {
+	var rec Users
+	err := ur.DB.Where("phone = ?", phone).First(&rec).Error
+	return toDomain(rec), err
+}
+
 // GetById implements domain_users.Repository
 func (ur UsersRepo) GetById(id int) (domain_users.Users, error) {
 	rec := Users{}
@@ -45,4 +52,10 @@ func (ur UsersRepo) CheckEmailPassword(email string, password string) (domain_us
 	}
 
 	return toDomain(rec), nil
+}
+
+// StoreAccount implements domain_users.Repository
+func (ur UsersRepo) StoreAccount(domain domain_users.Account) (domain_users.Account, error) {
+	err := ur.DB.Save(&domain).Error
+	return domain, err
 }

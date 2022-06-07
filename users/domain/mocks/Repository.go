@@ -57,6 +57,27 @@ func (_m *Repository) GetById(id int) (domain_users.Users, error) {
 	return r0, r1
 }
 
+// GetByPhone provides a mock function with given fields: phone
+func (_m *Repository) GetByPhone(phone string) (domain_users.Users, error) {
+	ret := _m.Called(phone)
+
+	var r0 domain_users.Users
+	if rf, ok := ret.Get(0).(func(string) domain_users.Users); ok {
+		r0 = rf(phone)
+	} else {
+		r0 = ret.Get(0).(domain_users.Users)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(phone)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: domain
 func (_m *Repository) Store(domain domain_users.Users) (int, error) {
 	ret := _m.Called(domain)
@@ -70,6 +91,27 @@ func (_m *Repository) Store(domain domain_users.Users) (int, error) {
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(domain_users.Users) error); ok {
+		r1 = rf(domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// StoreAccount provides a mock function with given fields: domain
+func (_m *Repository) StoreAccount(domain domain_users.Account) (domain_users.Account, error) {
+	ret := _m.Called(domain)
+
+	var r0 domain_users.Account
+	if rf, ok := ret.Get(0).(func(domain_users.Account) domain_users.Account); ok {
+		r0 = rf(domain)
+	} else {
+		r0 = ret.Get(0).(domain_users.Account)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(domain_users.Account) error); ok {
 		r1 = rf(domain)
 	} else {
 		r1 = ret.Error(1)
