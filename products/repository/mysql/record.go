@@ -13,8 +13,6 @@ type Products struct {
 	Code        string
 	Name        string
 	Slug        string
-	Description string
-	Price       int
 	Category_Id int
 	Status      bool
 	CreatedAt   time.Time
@@ -27,8 +25,6 @@ func ToDomain(rec Products) domain_products.Products {
 		Code:        rec.Code,
 		Name:        rec.Name,
 		Slug:        rec.Slug,
-		Description: rec.Description,
-		Price:       rec.Price,
 		Category_Id: rec.Category_Id,
 		Status:      rec.Status,
 		CreatedAt:   time.Time{},
@@ -37,9 +33,11 @@ func ToDomain(rec Products) domain_products.Products {
 }
 
 type Category_Product struct {
-	ID     int
-	Name   string
-	Status bool
+	ID        int
+	Name      string
+	Status    bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func ToDomainCategory(rec Category_Product) domain_products.Category_Product {
@@ -47,5 +45,26 @@ func ToDomainCategory(rec Category_Product) domain_products.Category_Product {
 		ID:     rec.ID,
 		Name:   rec.Name,
 		Status: rec.Status,
+	}
+}
+
+type Detail_Product struct {
+	gorm.Model
+	ID          int
+	Code        string
+	Price       int
+	Description string
+	Status      bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func ToDomainDetail(rec Detail_Product) domain_products.Detail_Product {
+	return domain_products.Detail_Product{
+		ID:          rec.ID,
+		Code:        rec.Code,
+		Price:       rec.Price,
+		Description: rec.Description,
+		Status:      rec.Status,
 	}
 }

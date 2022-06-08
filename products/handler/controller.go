@@ -48,7 +48,6 @@ func (ph *ProductsHandler) InsertProduct(ctx echo.Context) error {
 		Name:        req.Name,
 		Slug:        req.Slug,
 		Description: req.Description,
-		Price:       req.Price,
 		Category_Id: dataCategory.ID,
 	}
 
