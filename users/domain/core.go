@@ -28,6 +28,7 @@ type Account struct {
 
 type UserVerif struct {
 	ID     int
+	Phone  string
 	Code   string
 	Status bool
 }

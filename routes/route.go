@@ -18,7 +18,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// product public
 	e.POST("/login", cl.UserHandler.Authorization)
 	e.POST("/register", cl.UserHandler.Register)
+	e.GET("/admin/users", cl.UserHandler.GetUsers)
+	e.GET("/admin/user/:phone", cl.UserHandler.GetUserForAdmin)
 	authUser := e.Group("user")
 	authUser.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("customer", cl.UserHandler))
 	authUser.POST("/account", cl.UserHandler.InsertAccount)
+	authUser.GET("/profile", cl.UserHandler.GetUserForCustomer)
+	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
 }

@@ -36,20 +36,43 @@ func (_m *Repository) CheckEmailPassword(email string, password string) (domain_
 	return r0, r1
 }
 
-// GetById provides a mock function with given fields: id
-func (_m *Repository) GetById(id int) (domain_users.Users, error) {
-	ret := _m.Called(id)
+// CheckOTP provides a mock function with given fields: phone
+func (_m *Repository) CheckOTP(phone string) (bool, error) {
+	ret := _m.Called(phone)
 
-	var r0 domain_users.Users
-	if rf, ok := ret.Get(0).(func(int) domain_users.Users); ok {
-		r0 = rf(id)
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(string) bool); ok {
+		r0 = rf(phone)
 	} else {
-		r0 = ret.Get(0).(domain_users.Users)
+		r0 = ret.Get(0).(bool)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(phone)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetAllUser provides a mock function with given fields:
+func (_m *Repository) GetAllUser() ([]domain_users.Users, error) {
+	ret := _m.Called()
+
+	var r0 []domain_users.Users
+	if rf, ok := ret.Get(0).(func() []domain_users.Users); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain_users.Users)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -78,15 +101,36 @@ func (_m *Repository) GetByPhone(phone string) (domain_users.Users, error) {
 	return r0, r1
 }
 
+// GetUserAccount provides a mock function with given fields: phone
+func (_m *Repository) GetUserAccount(phone string) (domain_users.Account, error) {
+	ret := _m.Called(phone)
+
+	var r0 domain_users.Account
+	if rf, ok := ret.Get(0).(func(string) domain_users.Account); ok {
+		r0 = rf(phone)
+	} else {
+		r0 = ret.Get(0).(domain_users.Account)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(phone)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Store provides a mock function with given fields: domain
-func (_m *Repository) Store(domain domain_users.Users) (int, error) {
+func (_m *Repository) Store(domain domain_users.Users) (string, error) {
 	ret := _m.Called(domain)
 
-	var r0 int
-	if rf, ok := ret.Get(0).(func(domain_users.Users) int); ok {
+	var r0 string
+	if rf, ok := ret.Get(0).(func(domain_users.Users) string); ok {
 		r0 = rf(domain)
 	} else {
-		r0 = ret.Get(0).(int)
+		r0 = ret.Get(0).(string)
 	}
 
 	var r1 error
@@ -118,6 +162,41 @@ func (_m *Repository) StoreAccount(domain domain_users.Account) (domain_users.Ac
 	}
 
 	return r0, r1
+}
+
+// StoreVerif provides a mock function with given fields: domain
+func (_m *Repository) StoreVerif(domain domain_users.UserVerif) (string, error) {
+	ret := _m.Called(domain)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(domain_users.UserVerif) string); ok {
+		r0 = rf(domain)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(domain_users.UserVerif) error); ok {
+		r1 = rf(domain)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Update provides a mock function with given fields: phone, domain
+func (_m *Repository) Update(phone string, domain domain_users.Users) error {
+	ret := _m.Called(phone, domain)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, domain_users.Users) error); ok {
+		r0 = rf(phone, domain)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // NewRepository creates a new instance of Repository. It also registers the testing.TB interface on the mock and a cleanup function to assert the mocks expectations.

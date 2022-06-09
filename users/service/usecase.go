@@ -18,6 +18,15 @@ func NewUsersService(repo domain_users.Repository, jwt *middlewares.ConfigJwt) d
 	}
 }
 
+// GetUsers implements domain_users.Service
+func (us UsersService) GetUsers() ([]domain_users.Users, error) {
+	data, err := us.Repository.GetAllUser()
+	if err != nil {
+		return []domain_users.Users{}, err
+	}
+	return data, nil
+}
+
 // GetUserPhone implements domain_users.Service
 func (us UsersService) GetUserPhone(phone string) (domain_users.Users, error) {
 	data, err := us.Repository.GetByPhone(phone)
@@ -27,21 +36,27 @@ func (us UsersService) GetUserPhone(phone string) (domain_users.Users, error) {
 	return data, nil
 }
 
+// EditUser implements domain_users.Service
+func (us UsersService) EditUser(phone string, domain domain_users.Users) error {
+	err := us.Repository.Update(phone, domain)
+	if err != nil {
+		return errors.New("data not found")
+	}
+	return nil
+}
+
 // Register implements domain_users.Service
-func (us UsersService) Register(domain domain_users.Users) (string, error) {
-	id, err := us.Repository.Store(domain)
+func (us UsersService) Register(domain domain_users.Users) (domain_users.Users, error) {
+	phone, err := us.Repository.Store(domain)
 	if err != nil {
-		return "", errors.New("faild store data")
+		return domain_users.Users{}, errors.New("faild store data")
 	}
-	data, err := us.Repository.GetById(id)
+	data, err := us.Repository.GetByPhone(phone)
 	if err != nil {
-		return "", errors.New("data not found")
+		return domain_users.Users{}, errors.New("data not found")
 	}
-	token, err := us.jwtauth.GenerateToken(data.ID, data.Phone, data.Status)
-	if err != nil {
-		return "", errors.New("data failed generate token")
-	}
-	return token, nil
+
+	return data, nil
 }
 
 // Login implements domain_users.Service
@@ -65,4 +80,18 @@ func (us UsersService) InsertAccount(domain domain_users.Account) (domain_users.
 		return domain_users.Account{}, errors.New("failed insert data")
 	}
 	return data, nil
+}
+
+// GetUserAccount implements domain_users.Service
+func (us UsersService) GetUserAccount(phone string) (domain_users.Account, error) {
+	data, err := us.Repository.GetUserAccount(phone)
+	if err != nil {
+		return domain_users.Account{}, errors.New("account not found")
+	}
+	return data, nil
+}
+
+// Verif implements domain_users.Service
+func (UsersService) Verif(code string) (string, error) {
+	panic("unimplemented")
 }

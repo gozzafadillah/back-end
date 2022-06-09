@@ -13,9 +13,9 @@ type Users struct {
 	Name      string
 	DOB       time.Time
 	Slug      string
-	Email     string
+	Email     string `gorm:"unique"`
 	Password  string
-	Phone     string
+	Phone     string `gorm:"unique"`
 	Image     string
 	Status    bool
 	Role      string
@@ -26,12 +26,20 @@ type Users struct {
 type Account struct {
 	gorm.Model
 	ID    int
-	Phone string
+	Phone string `gorm:"unique"`
 	Saldo int
 	Pin   string
 }
 
-func toDomain(rec Users) domain_users.Users {
+type UserVerif struct {
+	gorm.Model
+	ID     int
+	Phone  string `gorm:"unique"`
+	Code   string
+	Status bool
+}
+
+func ToDomain(rec Users) domain_users.Users {
 	return domain_users.Users{
 		ID:        rec.ID,
 		Name:      rec.Name,
@@ -54,5 +62,14 @@ func ToDomainAccount(rec Account) domain_users.Account {
 		Phone: rec.Phone,
 		Saldo: rec.Saldo,
 		Pin:   rec.Pin,
+	}
+}
+
+func ToDomainVerif(rec UserVerif) domain_users.UserVerif {
+	return domain_users.UserVerif{
+		ID:     rec.ID,
+		Phone:  rec.Phone,
+		Code:   rec.Code,
+		Status: rec.Status,
 	}
 }

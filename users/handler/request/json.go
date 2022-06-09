@@ -11,6 +11,7 @@ type RequestJSONUser struct {
 	Password string    `json:"password" validate:"required"`
 	Phone    string    `json:"phone" validate:"required"`
 	DOB      time.Time `json:"dob"`
+	Image    string    `json:"img"`
 }
 
 type RequestJSONAccount struct {
@@ -32,7 +33,7 @@ func ToDomainUser(req RequestJSONUser) domain_users.Users {
 		Email:    req.Email,
 		Password: req.Password,
 		Phone:    req.Phone,
-		Image:    "image-example",
+		Image:    req.Image,
 		Status:   true,
 		Role:     "customer",
 	}
