@@ -13,11 +13,13 @@ type ControllerList struct {
 	UserHandler   handler_users.UsersHandler
 }
 
+const server = "masukan-server-disini"
+
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	// product public
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"server-front-end"},
+		AllowOrigins:     []string{server},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
 		AllowCredentials: true,
 		MaxAge:           2592000,
@@ -30,7 +32,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// product public
 	authUser := e.Group("user")
 	authUser.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"server-front-end"},
+		AllowOrigins:     []string{server},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
 		AllowCredentials: true,
 		MaxAge:           2592000,
