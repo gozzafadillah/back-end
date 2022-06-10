@@ -6,21 +6,13 @@ import (
 
 // Request Product
 type RequestJSON struct {
-	Name          string `json:"name"`
-	Slug          string `json:"slug"`
-	Image         string `json:"image"`
-	Description   string `json:"description"`
-	Price         int    `json:"price"`
-	Category_Name string `json:"category_name"`
-}
-
-type NewRequest struct {
 	Code        string
-	Name        string
-	Slug        string
-	Image       string
-	Description string
-	Category_Id int
+	Name        string `json:"name"`
+	Slug        string `json:"slug"`
+	Image       string `json:"image"`
+	Description string `json:"description"`
+	Price       int    `json:"price"`
+	Category_id int    `json:"category_id"`
 }
 
 // request Category Product
@@ -36,13 +28,13 @@ type DataDetail struct {
 	Status      bool
 }
 
-func ToDomain(req NewRequest) domain_products.Products {
+func ToDomain(req RequestJSON) domain_products.Products {
 	return domain_products.Products{
 		Code:        req.Code,
 		Name:        req.Name,
 		Slug:        req.Slug,
 		Image:       req.Image,
-		Category_Id: req.Category_Id,
+		Category_Id: req.Category_id,
 		Status:      true,
 	}
 }

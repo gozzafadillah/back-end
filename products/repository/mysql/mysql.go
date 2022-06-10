@@ -36,9 +36,9 @@ func (pr ProductsRepo) GetByID(id int) (domain_products.Products, error) {
 }
 
 // Store implements domain_products.Repository
-func (pr ProductsRepo) Store(domain domain_products.Products) (domain_products.Products, error) {
-	err := pr.DB.Save(domain).Error
-	return domain, err
+func (pr ProductsRepo) Store(domain domain_products.Products) error {
+	err := pr.DB.Save(&domain).Error
+	return err
 }
 
 // Update implements domain_products.Repository
@@ -77,9 +77,9 @@ func (pr ProductsRepo) GetCategories() ([]domain_products.Category_Product, erro
 }
 
 // StoreCategory implements domain_products.Repository
-func (pr ProductsRepo) StoreCategory(domain domain_products.Category_Product) (domain_products.Category_Product, error) {
+func (pr ProductsRepo) StoreCategory(domain domain_products.Category_Product) error {
 	err := pr.DB.Save(&domain).Error
-	return domain, err
+	return err
 }
 
 // GetCategoryByName implements domain_products.Repository
@@ -89,10 +89,17 @@ func (pr ProductsRepo) GetCategoryByName(name string) (domain_products.Category_
 	return ToDomainCategory(rec), err
 }
 
-// GetDetailsByID implements domain_products.Repository
-func (pr ProductsRepo) GetDetailsByID(id int) ([]domain_products.Detail_Product, error) {
-	var rec []Detail_Product
+// GetCategoryById implements domain_products.Repository
+func (pr ProductsRepo) GetCategoryById(id int) (domain_products.Category_Product, error) {
+	var rec Category_Product
 	err := pr.DB.Where("id = ?", id).First(&rec).Error
+	return ToDomainCategory(rec), err
+}
+
+// GetDetailsByCode implements domain_products.Repository
+func (pr ProductsRepo) GetDetailsByCode(code string) ([]domain_products.Detail_Product, error) {
+	var rec []Detail_Product
+	err := pr.DB.Where("code = ?", code).First(&rec).Error
 	var sliceRec []domain_products.Detail_Product
 	for _, value := range rec {
 		sliceRec = append(sliceRec, ToDomainDetail(value))
@@ -101,9 +108,9 @@ func (pr ProductsRepo) GetDetailsByID(id int) ([]domain_products.Detail_Product,
 }
 
 // StoreDetail implements domain_products.Repository
-func (pr ProductsRepo) StoreDetail(domain domain_products.Detail_Product) (domain_products.Detail_Product, error) {
+func (pr ProductsRepo) StoreDetail(domain domain_products.Detail_Product) error {
 	err := pr.DB.Save(&domain).Error
-	return domain, err
+	return err
 }
 
 // DeleteCategory implements domain_products.Repository
