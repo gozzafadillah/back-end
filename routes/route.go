@@ -13,7 +13,7 @@ type ControllerList struct {
 	UserHandler   handler_users.UsersHandler
 }
 
-const server = "masukan-server-disini"
+const server = "http://localhost:3000"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
