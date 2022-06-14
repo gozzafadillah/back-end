@@ -22,3 +22,18 @@ BaseUrl = https://virtserver.swaggerhub.com/gozza/Payment-Point/1.0.0
 go test ./... -v -coverpkg=./controller/...,./lib/...,./model/... -coverprofile=cover.out && go tool cover -html=cover.out
 
 ```
+
+## untuk users
+route yang sudah ada di branch ini
+<!-- get users profile from jwt -->
+1. GET http://3.0.50.89:19000/admin/profile
+<!-- Edit users profile (kemungkinan methodnya ke PUT) -->
+2. POST http://3.0.50.89:19000/admin/profile
+3. POST http://3.0.50.89:19000/register
+<!-- Make Pin -->
+4. POST http://3.0.50.89:19000/account
+5. POST http://3.0.50.89:19000/login
+
+<!-- untuk route yang tahap dev -->
+1. GET http://3.0.50.89:19000/admin/users
+1. GET http://3.0.50.89:19000/admin/users/{phone}
