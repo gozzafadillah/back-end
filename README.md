@@ -26,16 +26,16 @@ go test ./... -v -coverpkg=./controller/...,./lib/...,./model/... -coverprofile=
 ## untuk users
 route yang sudah ada di branch ini
 * get users profile from jwt (perlu autentikasi) 
-    1. GET http://3.0.50.89:19000/admin/profile
+    * GET http://3.0.50.89:19000/admin/profile
 
 * Edit users profile (kemungkinan methodnya ke PUT) (perlu autentikasi)
-    2. POST http://3.0.50.89:19000/admin/profile 
-    3. POST http://3.0.50.89:19000/register
+    * POST http://3.0.50.89:19000/admin/profile 
+    * POST http://3.0.50.89:19000/register
 
 * Make Pin
-    4. POST http://3.0.50.89:19000/account
-    5. POST http://3.0.50.89:19000/login
+    * POST http://3.0.50.89:19000/account
+    * POST http://3.0.50.89:19000/login
 
 * untuk route yang tahap dev
-    1. GET http://3.0.50.89:19000/admin/users
-    2. GET http://3.0.50.89:19000/admin/users/{phone}
+    * GET http://3.0.50.89:19000/admin/users
+    * GET http://3.0.50.89:19000/admin/users/{phone}
