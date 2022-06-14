@@ -77,8 +77,9 @@ func (ur UsersRepo) CheckEmailPassword(email string, password string) (domain_us
 	}
 
 	data := encryption.CheckPasswordHash(password, rec.Password)
-	if !data && !rec.Status {
-		return domain_users.Users{}, err
+	fmt.Println(data)
+	if !data || !rec.Status {
+		return domain_users.Users{}, errors.New("password miss match")
 	}
 
 	return ToDomain(rec), nil

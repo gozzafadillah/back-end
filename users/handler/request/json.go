@@ -6,23 +6,23 @@ import (
 )
 
 type RequestJSONUser struct {
-	Name     string    `json:"name" validate:"required"`
-	Email    string    `json:"email" validate:"required,email"`
-	Password string    `json:"password" validate:"required"`
-	Phone    string    `json:"phone" validate:"required"`
-	DOB      time.Time `json:"dob"`
-	Image    string    `json:"img"`
+	Name     string    `json:"name" form:"name" validate:"required"`
+	Email    string    `json:"email" form:"email" validate:"required,email"`
+	Password string    `json:"password" form:"password" validate:"required"`
+	Phone    string    `json:"phone" form:"phone" validate:"required"`
+	DOB      time.Time `json:"dob" form:"dob"`
+	Image    string    `json:"img" form:"img"`
 }
 
 type RequestJSONAccount struct {
 	Phone string
 	Saldo int
-	Pin   string `json:"pin"`
+	Pin   string `json:"pin" form:"pin"`
 }
 
 type RequestJSONLogin struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Email    string `json:"email" form:"email" validate:"required,email"`
+	Password string `json:"password" form:"password" validate:"required"`
 }
 
 func ToDomainUser(req RequestJSONUser) domain_users.Users {

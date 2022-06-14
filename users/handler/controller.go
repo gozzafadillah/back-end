@@ -38,7 +38,7 @@ func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 	res, err := uh.usecase.Login(req.Email, req.Password)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
+			"message": err.Error(),
 			"rescode": http.StatusBadRequest,
 		})
 	}
@@ -116,9 +116,9 @@ func (uh *UsersHandler) InsertAccount(ctx echo.Context) error {
 
 	res, err := uh.usecase.InsertAccount(request.ToDomainAccount(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
+		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "internal server error",
+			"rescode": http.StatusInternalServerError,
 		})
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
