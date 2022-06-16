@@ -17,11 +17,11 @@ func RoleValidation(role string, userHandler handler_users.UsersHandler) echo.Mi
 			userRole, status := userHandler.UserRole(claims.Phone)
 			fmt.Println("userRole : ", userRole)
 
-			if userRole == role && status == true {
+			if userRole == role && status {
 				return hf(c)
 			} else {
-				return c.JSON(http.StatusBadRequest, map[string]interface{}{
-					"message": "account not active, please contact admin",
+				return c.JSON(http.StatusUnauthorized, map[string]interface{}{
+					"message": "Unauthorized account, please contact customer service",
 				})
 			}
 		}
