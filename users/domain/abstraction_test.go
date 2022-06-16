@@ -26,8 +26,6 @@ func TestMain(m *testing.M) {
 	userDomainUser = domain_users.Users{
 		ID:        1,
 		Name:      "Muhammad Fadillah Abdul Aziz",
-		Slug:      "",
-		DOB:       time.Time{},
 		Email:     "aziz@gmail.com",
 		Password:  "12345",
 		Phone:     "0895631948686",
@@ -165,4 +163,12 @@ func TestGetUserAccount(t *testing.T) {
 		assert.Error(t, err)
 		assert.Equal(t, domain_users.Account{}, res)
 	})
+}
+
+func TestAddUserVerif(t *testing.T) {
+	panic("")
+}
+
+func TestVerif(t *testing.T) {
+	panic("")
 }
