@@ -11,7 +11,8 @@ type Service interface {
 	InsertAccount(domain Account) (Account, error)
 	GetUserAccount(phone string) (Account, error)
 	// Verif User
-	Verif(code string) (string, error)
+	AddUserVerif(code, email, name string) error
+	Verif(code string) error
 }
 
 type Repository interface {
@@ -20,11 +21,13 @@ type Repository interface {
 	CheckEmailPassword(email, password string) (Users, error)
 	Store(domain Users) (string, error)
 	GetByPhone(phone string) (Users, error)
+	ChangeStatusUsers(email string) error
 	Update(phone string, domain Users) error
 	// Account
 	StoreAccount(domain Account) (Account, error)
 	GetUserAccount(phone string) (Account, error)
 	// Users Verification
-	StoreVerif(domain UserVerif) (string, error)
-	CheckOTP(phone string) (bool, error)
+	StoreOtpUserVerif(code string, email string) error
+	Verif(code string) (UserVerif, error)
+	ChangeStatusVerif(email string) error
 }
