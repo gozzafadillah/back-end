@@ -11,8 +11,6 @@ type Users struct {
 	gorm.Model
 	ID        int
 	Name      string
-	DOB       time.Time
-	Slug      string
 	Email     string `gorm:"unique"`
 	Password  string
 	Phone     string `gorm:"unique"`
@@ -34,7 +32,7 @@ type Account struct {
 type UserVerif struct {
 	gorm.Model
 	ID     int
-	Phone  string `gorm:"unique"`
+	Email  string
 	Code   string
 	Status bool
 }
@@ -43,8 +41,6 @@ func ToDomain(rec Users) domain_users.Users {
 	return domain_users.Users{
 		ID:        rec.ID,
 		Name:      rec.Name,
-		Slug:      rec.Slug,
-		DOB:       rec.DOB,
 		Email:     rec.Email,
 		Password:  rec.Password,
 		Phone:     rec.Phone,
@@ -68,7 +64,7 @@ func ToDomainAccount(rec Account) domain_users.Account {
 func ToDomainVerif(rec UserVerif) domain_users.UserVerif {
 	return domain_users.UserVerif{
 		ID:     rec.ID,
-		Phone:  rec.Phone,
+		Email:  rec.Email,
 		Code:   rec.Code,
 		Status: rec.Status,
 	}

@@ -7,8 +7,6 @@ import (
 type Users struct {
 	ID        int
 	Name      string
-	Slug      string
-	DOB       time.Time
 	Email     string
 	Password  string
 	Phone     string
@@ -28,7 +26,7 @@ type Account struct {
 
 type UserVerif struct {
 	ID     int
-	Phone  string
+	Email  string
 	Code   string
 	Status bool
 }

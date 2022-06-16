@@ -37,6 +37,13 @@ func (ur UsersRepo) GetByPhone(phone string) (domain_users.Users, error) {
 	return ToDomain(rec), err
 }
 
+// GetByEmail implements domain_users.Repository
+func (ur UsersRepo) GetByEmail(email string) (domain_users.Users, error) {
+	var rec Users
+	err := ur.DB.Where("email = ?", email).First(&rec).Error
+	return ToDomain(rec), err
+}
+
 // // GetById implements domain_users.Repository
 // func (ur UsersRepo) GetById(id int) (domain_users.Users, error) {
 // 	rec := Users{}
@@ -57,7 +64,6 @@ func (ur UsersRepo) Update(phone string, domain domain_users.Users) error {
 		"Email":    domain.Email,
 		"Password": domain.Password,
 		"Phone":    domain.Phone,
-		"DOB":      domain.DOB,
 		"Image":    domain.Image,
 	}
 	fmt.Println("data update :", data)
@@ -73,13 +79,16 @@ func (ur UsersRepo) CheckEmailPassword(email string, password string) (domain_us
 	var rec Users
 	err := ur.DB.Where("email = ?", email).First(&rec).Error
 	if err != nil {
-		return domain_users.Users{}, errors.New("data not found")
+		return domain_users.Users{}, errors.New("email or password miss macth")
 	}
 
 	data := encryption.CheckPasswordHash(password, rec.Password)
 	fmt.Println(data)
-	if !data || !rec.Status {
-		return domain_users.Users{}, errors.New("password miss match")
+	if !data {
+		return domain_users.Users{}, errors.New("email or password miss macth")
+	}
+	if !rec.Status {
+		return domain_users.Users{}, errors.New("unauthorized account, please contact customer service")
 	}
 
 	return ToDomain(rec), nil
@@ -98,18 +107,33 @@ func (ur UsersRepo) GetUserAccount(phone string) (domain_users.Account, error) {
 	return ToDomainAccount(rec), err
 }
 
-// CheckOTP implements domain_users.Repository
-func (us UsersRepo) CheckOTP(phone string) (bool, error) {
-	var rec UserVerif
-	err := us.DB.Where("phone = ?", phone).First(&rec).Error
-	if err != nil {
-		return false, err
+// StoreOtpUserVerif implements domain_users.Repository
+func (ur UsersRepo) StoreOtpUserVerif(code string, email string) error {
+	rec := UserVerif{
+		Email: email,
+		Code:  code,
 	}
-	return true, err
+	err := ur.DB.Where("email = ?", email).Save(&rec).Error
+	return err
 }
 
-// StoreVerif implements domain_users.Repository
-func (us UsersRepo) StoreVerif(domain domain_users.UserVerif) (string, error) {
-	err := us.DB.Save(&domain).Error
-	return domain.Phone, err
+// Verif implements domain_users.Repository
+func (ur UsersRepo) Verif(code string) (domain_users.UserVerif, error) {
+	rec := UserVerif{}
+	err := ur.DB.Where("code = ?", code).First(&rec).Error
+	return ToDomainVerif(rec), err
+}
+
+// ChangeStatusUsers implements domain_users.Repository
+func (ur UsersRepo) ChangeStatusUsers(email string) error {
+	rec := Users{}
+	err := ur.DB.Model(&rec).Where("email = ?", email).Update("status", true).Error
+	return err
+}
+
+// ChangeStatus implements domain_users.Repository
+func (ur UsersRepo) ChangeStatusVerif(email string) error {
+	rec := UserVerif{}
+	err := ur.DB.Model(&rec).Where("email = ?", email).Update("status", true).Error
+	return err
 }

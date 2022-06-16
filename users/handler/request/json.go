@@ -2,16 +2,14 @@ package request
 
 import (
 	domain_users "ppob/users/domain"
-	"time"
 )
 
 type RequestJSONUser struct {
-	Name     string    `json:"name" form:"name" validate:"required"`
-	Email    string    `json:"email" form:"email" validate:"required,email"`
-	Password string    `json:"password" form:"password" validate:"required"`
-	Phone    string    `json:"phone" form:"phone" validate:"required"`
-	DOB      time.Time `json:"dob" form:"dob"`
-	Image    string    `json:"img" form:"img"`
+	Name     string `json:"name" form:"name" validate:"required"`
+	Email    string `json:"email" form:"email" validate:"required,email"`
+	Password string `json:"password" form:"password" validate:"required"`
+	Phone    string `json:"phone" form:"phone" validate:"required"`
+	Image    string `json:"img" form:"img"`
 }
 
 type RequestJSONAccount struct {
@@ -25,16 +23,23 @@ type RequestJSONLogin struct {
 	Password string `json:"password" form:"password" validate:"required"`
 }
 
+type RequestJSONVerif struct {
+	Code string `json:"code" validate:"required"`
+}
+
+type RequestJSONRefresh struct {
+	Email  string `json:"email" validate:"email"`
+	Status bool
+}
+
 func ToDomainUser(req RequestJSONUser) domain_users.Users {
 	return domain_users.Users{
 		Name:     req.Name,
-		Slug:     "example-slug",
-		DOB:      req.DOB,
 		Email:    req.Email,
 		Password: req.Password,
 		Phone:    req.Phone,
-		Image:    req.Image,
-		Status:   true,
+		Image:    "image-default.jpg",
+		Status:   false,
 		Role:     "customer",
 	}
 }
@@ -50,5 +55,19 @@ func ToDomainAccount(req RequestJSONAccount) domain_users.Account {
 		Phone: req.Phone,
 		Saldo: 0,
 		Pin:   req.Pin,
+	}
+}
+
+func ToDomainVerif(req RequestJSONVerif) domain_users.UserVerif {
+	return domain_users.UserVerif{
+		Code:   req.Code,
+		Status: false,
+	}
+}
+
+func ToDomainReVerif(req RequestJSONRefresh) domain_users.UserVerif {
+	return domain_users.UserVerif{
+		Email:  req.Email,
+		Status: req.Status,
 	}
 }

@@ -2,12 +2,10 @@ package response
 
 import (
 	domain_users "ppob/users/domain"
-	"time"
 )
 
 type ResponseJSONUsers struct {
 	Name   string
-	DOB    time.Time
 	Email  string
 	Phone  string
 	Image  string
@@ -21,7 +19,7 @@ type ResponseJSONAccount struct {
 }
 
 type ResponseJSONVerif struct {
-	Phone  string
+	Email  string
 	Code   string
 	Status bool
 }
@@ -29,7 +27,6 @@ type ResponseJSONVerif struct {
 func FromDomainUsers(domain domain_users.Users) ResponseJSONUsers {
 	return ResponseJSONUsers{
 		Name:   domain.Name,
-		DOB:    domain.DOB,
 		Email:  domain.Email,
 		Phone:  domain.Phone,
 		Image:  domain.Image,
@@ -45,7 +42,7 @@ func FromDomainAccount(domain domain_users.Account) ResponseJSONAccount {
 }
 func FromDomainVerif(domain domain_users.UserVerif) ResponseJSONVerif {
 	return ResponseJSONVerif{
-		Phone:  domain.Phone,
+		Email:  domain.Email,
 		Code:   domain.Code,
 		Status: domain.Status,
 	}

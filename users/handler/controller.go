@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"ppob/app/middlewares"
 	"ppob/helper/encryption"
+	err_conv "ppob/helper/err"
+	otp_generator "ppob/helper/otp"
 	domain_users "ppob/users/domain"
 	"ppob/users/handler/request"
 	"ppob/users/handler/response"
@@ -37,10 +39,7 @@ func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 
 	res, err := uh.usecase.Login(req.Email, req.Password)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -66,19 +65,19 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 
 	encrypt, err := encryption.HashPassword(req.Password)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "internal server error",
-			"rescode": http.StatusInternalServerError,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 
 	req.Password = encrypt
 	data, err := uh.usecase.Register(request.ToDomainUser(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
+	}
+
+	otpCode := otp_generator.OtpGenerator()
+	err = uh.usecase.AddUserVerif(otpCode, req.Email, req.Name)
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -104,10 +103,7 @@ func (uh *UsersHandler) InsertAccount(ctx echo.Context) error {
 	// Encryption
 	encrypt, err := encryption.HashPassword(req.Pin)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "internal server error",
-			"rescode": http.StatusInternalServerError,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	req.Pin = encrypt
 	// get data from jwt
@@ -116,10 +112,7 @@ func (uh *UsersHandler) InsertAccount(ctx echo.Context) error {
 
 	res, err := uh.usecase.InsertAccount(request.ToDomainAccount(req))
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "internal server error",
-			"rescode": http.StatusInternalServerError,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success",
@@ -133,10 +126,7 @@ func (uh *UsersHandler) GetUsers(ctx echo.Context) error {
 	sliceResponse := []interface{}{}
 	res, err := uh.usecase.GetUsers()
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "internal server error",
-			"rescode": http.StatusInternalServerError,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	for _, value := range res {
 		sliceResponse = append(sliceResponse, response.FromDomainUsers(value))
@@ -155,17 +145,11 @@ func (uh *UsersHandler) GetUserForAdmin(ctx echo.Context) error {
 
 	user, err := uh.usecase.GetUserPhone(phone)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	account, err := uh.usecase.GetUserAccount(phone)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get users",
@@ -184,17 +168,11 @@ func (uh *UsersHandler) GetUserForCustomer(ctx echo.Context) error {
 
 	user, err := uh.usecase.GetUserPhone(phone)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	account, err := uh.usecase.GetUserAccount(phone)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get customer",
@@ -219,20 +197,14 @@ func (uh *UsersHandler) UpdateProfile(ctx echo.Context) error {
 	}
 	encrypt, err := encryption.HashPassword(req.Password)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "internal server error",
-			"rescode": http.StatusInternalServerError,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 
 	req.Password = encrypt
 	user := middlewares.GetUser(ctx)
 	err = uh.usecase.EditUser(user.Phone, request.ToDomainUser(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update customer profile",
@@ -243,6 +215,26 @@ func (uh *UsersHandler) UpdateProfile(ctx echo.Context) error {
 // implementation Destroy user for Admin
 func (uh *UsersHandler) DestroyUserForAdmin(ctx echo.Context) error {
 	panic("")
+}
+
+func (uh *UsersHandler) VerifUser(ctx echo.Context) error {
+	req := request.RequestJSONVerif{}
+	ctx.Bind(&req)
+	if err := uh.validation.Struct(req); err != nil {
+		stringerr := []string{}
+		for _, errval := range err.(validator.ValidationErrors) {
+			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
+		}
+		return ctx.JSON(http.StatusBadRequest, stringerr)
+	}
+	err := uh.usecase.Verif(req.Code)
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success validate user",
+		"rescode": http.StatusOK,
+	})
 }
 
 func (uh *UsersHandler) UserRole(phone string) (string, bool) {
