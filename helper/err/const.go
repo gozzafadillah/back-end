@@ -5,4 +5,6 @@ const (
 	BadRequest        = "bad request"
 	MissMatchEmail    = "email or password miss macth"
 	UnauthorizedUser  = "unauthorized account, please contact customer service"
+	UpdateFailed      = "update failed"
+	DeleteFailed      = "delete failed"
 )

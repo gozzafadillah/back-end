@@ -3,6 +3,7 @@ package handler_products
 import (
 	"fmt"
 	"net/http"
+	err_conv "ppob/helper/err"
 	domain_products "ppob/products/domain"
 	"ppob/products/handler/request"
 	"ppob/products/handler/response"
@@ -39,10 +40,7 @@ func (ph *ProductsHandler) InsertProduct(ctx echo.Context) error {
 	// product section
 	err := ph.Service.InsertData(request.ToDomain(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -56,10 +54,7 @@ func (ph *ProductsHandler) GetAllProduct(ctx echo.Context) error {
 	var sliceProduct []response.ResponseJSONProduct
 	res, err := ph.Service.GetProducts()
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "internal server error",
-			"rescode": http.StatusInternalServerError,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	for _, value := range res {
 		sliceProduct = append(sliceProduct, response.FromDomainProduct(value))
@@ -77,10 +72,7 @@ func (ph *ProductsHandler) DestroyProduct(ctx echo.Context) error {
 
 	err := ph.Service.Destroy(id)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success delete product",
@@ -102,10 +94,7 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	err := ph.Service.Edit(id, request.ToDomain(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "bad request",
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update product",
@@ -118,17 +107,14 @@ func (ph *ProductsHandler) GetProduct(ctx echo.Context) error {
 	param := ctx.Param("id")
 	if param == "" {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "data required",
+			"message": "parameter required",
 			"rescode": http.StatusBadRequest,
 		})
 	}
 	id, _ := strconv.Atoi(param)
 	product, err := ph.Service.GetProduct(id)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	sliceDetail := ph.Service.GetDetails(product.Code)
 
@@ -137,15 +123,12 @@ func (ph *ProductsHandler) GetProduct(ctx echo.Context) error {
 		details = append(details, response.FromDomainDetail(value))
 	}
 	if len(details) == 0 {
-		details = []interface{}{"empty"}
+		details = []interface{}{"data empty"}
 	}
 
 	category, err := ph.Service.GetCategory(product.Category_Id)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get all product",
@@ -163,7 +146,7 @@ func (ph *ProductsHandler) GetProductByCategory(ctx echo.Context) error {
 	id, _ := strconv.Atoi(param)
 	if param == "" {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "please insert parameter",
+			"message": "parameter required",
 			"rescode": http.StatusBadRequest,
 		})
 	}
@@ -199,10 +182,7 @@ func (ph *ProductsHandler) InsertDetail(ctx echo.Context) error {
 
 	err := ph.Service.InsertDetail(codeParam, request.ToDomainDetail(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success add product",
@@ -215,14 +195,14 @@ func (ph *ProductsHandler) GetDetailsProduct(ctx echo.Context) error {
 	code := ctx.Param("code")
 	if code == "" {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "please insert parameter",
+			"message": "parameter required",
 			"rescode": http.StatusBadRequest,
 		})
 	}
 	res := ph.Service.GetDetails(code)
 	if len(res) == 0 {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "details product empty",
+			"message": "data empty",
 			"rescode": http.StatusBadRequest,
 		})
 	}
@@ -243,7 +223,7 @@ func (ph *ProductsHandler) EditDetail(ctx echo.Context) error {
 	fmt.Println("parameter", param)
 	if param == "" {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "data required",
+			"message": "parameter required",
 			"rescode": http.StatusBadRequest,
 		})
 	}
@@ -262,10 +242,7 @@ func (ph *ProductsHandler) EditDetail(ctx echo.Context) error {
 
 	err := ph.Service.EditDetail(id, request.ToDomainDetail(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success edit detail product",
@@ -277,10 +254,7 @@ func (ph *ProductsHandler) DestroyDetail(ctx echo.Context) error {
 	id, _ := strconv.Atoi(ctx.Param("getID"))
 	err := ph.Service.DestroyDetail(id)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success delete detail product",
@@ -300,10 +274,7 @@ func (ph *ProductsHandler) InsertCategory(ctx echo.Context) error {
 	}
 	err := ph.Service.InsertCategory(request.ToDomainCategory(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success add category",
@@ -315,10 +286,7 @@ func (ph *ProductsHandler) GetCategories(ctx echo.Context) error {
 	var sliceCat []response.ResponseJSONPCategory
 	res, err := ph.Service.GetCategories()
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	for _, value := range res {
 		sliceCat = append(sliceCat, response.FromDomainCategory(value))
@@ -343,10 +311,7 @@ func (ph *ProductsHandler) EditCategory(ctx echo.Context) error {
 	}
 	err := ph.Service.EditCategory(id, request.ToDomainCategory(req))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update category",
@@ -358,10 +323,7 @@ func (ph *ProductsHandler) DestroyCategory(ctx echo.Context) error {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	err := ph.Service.DestroyCategory(id)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success delete category",

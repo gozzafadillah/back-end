@@ -64,7 +64,7 @@ func (pr ProductsRepo) Update(id int, domain domain_products.Products) error {
 	update := pr.DB.Model(&domain).Where("id = ?", id).Updates(newRecord).RowsAffected
 	var err error
 	if update == 0 {
-		err = errors.New("data not found")
+		err = errors.New("update failed")
 	}
 	return err
 }
@@ -114,7 +114,7 @@ func (pr ProductsRepo) UpdateDetail(id int, domain domain_products.Detail_Produc
 	fmt.Println("data ", newRecord)
 	update := pr.DB.Model(&domain).Where("id = ?", id).Updates(newRecord).RowsAffected
 	if update == 0 {
-		return errors.New("updated failed")
+		return errors.New("update failed")
 	}
 	return nil
 }
@@ -166,7 +166,7 @@ func (pr ProductsRepo) UpdateCategory(id int, domain domain_products.Category_Pr
 	var err error
 	update := pr.DB.Model(&rec).Where("id = ?", id).Updates(newRecord).RowsAffected
 	if update == 0 {
-		err = errors.New("failed update")
+		err = errors.New("update failed")
 	}
 	return err
 }

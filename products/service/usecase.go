@@ -2,7 +2,6 @@ package service_products
 
 import (
 	"errors"
-	"fmt"
 	domain_products "ppob/products/domain"
 	"sort"
 
@@ -23,7 +22,7 @@ func NewProductsService(repo domain_products.Repository) domain_products.Service
 func (ps ProductService) GetProduct(id int) (domain_products.Products, error) {
 	data, err := ps.Repository.GetByID(id)
 	if err != nil {
-		return domain_products.Products{}, errors.New("get product failed")
+		return domain_products.Products{}, errors.New("bad request")
 	}
 	return data, nil
 }
@@ -38,7 +37,7 @@ func (ps ProductService) GetProductByCategory(id int) []domain_products.Products
 func (ps ProductService) GetProducts() ([]domain_products.Products, error) {
 	datas, err := ps.Repository.GetAll()
 	if err != nil {
-		return []domain_products.Products{}, errors.New("get products failed")
+		return []domain_products.Products{}, errors.New("internal server error")
 	}
 	return datas, nil
 }
@@ -58,7 +57,7 @@ func (ps ProductService) InsertData(domain domain_products.Products) error {
 func (ps ProductService) Destroy(id int) error {
 	data, err := ps.GetProduct(id)
 	if err != nil {
-		return errors.New("data not found")
+		return errors.New("bad request")
 	}
 
 	err = ps.Repository.Delete(data.ID)
@@ -78,7 +77,7 @@ func (ps ProductService) Destroy(id int) error {
 func (ps ProductService) Edit(id int, domain domain_products.Products) error {
 	data, err := ps.GetProduct(id)
 	if err != nil {
-		return errors.New("data not found")
+		return errors.New("bad request")
 	}
 	domain.Code = slug.GenerateSlug(domain.Name)
 	err = ps.Repository.Update(id, domain)
@@ -97,7 +96,7 @@ func (ps ProductService) InsertDetail(code string, domain domain_products.Detail
 
 	err := ps.Repository.StoreDetail(code, domain)
 	if err != nil {
-		return errors.New("insert data failed")
+		return errors.New("internal server error")
 	}
 	return nil
 }
@@ -108,9 +107,6 @@ func (ps ProductService) GetDetails(code string) []domain_products.Detail_Produc
 	sort.Slice(data, func(i, j int) bool {
 		return data[i].Price < data[j].Price
 	})
-	for _, v := range data {
-		fmt.Println(v)
-	}
 	if err != nil {
 		return []domain_products.Detail_Product{}
 	}
@@ -130,7 +126,7 @@ func (ps ProductService) EditDetail(id int, domain domain_products.Detail_Produc
 func (ps ProductService) DestroyDetail(id int) error {
 	err := ps.Repository.DeleteDetail(id)
 	if err != nil {
-		return errors.New("data failed destroy")
+		return errors.New("delete failed")
 	}
 	return nil
 }
@@ -139,7 +135,7 @@ func (ps ProductService) DestroyDetail(id int) error {
 func (ps ProductService) InsertCategory(domain domain_products.Category_Product) error {
 	err := ps.Repository.StoreCategory(domain)
 	if err != nil {
-		return errors.New("insert data failed")
+		return errors.New("internal server error")
 	}
 	return nil
 }
@@ -148,7 +144,7 @@ func (ps ProductService) InsertCategory(domain domain_products.Category_Product)
 func (ps ProductService) GetCategory(id int) (domain_products.Category_Product, error) {
 	data, err := ps.Repository.GetCategoryById(id)
 	if err != nil {
-		return domain_products.Category_Product{}, errors.New("data category not found")
+		return domain_products.Category_Product{}, errors.New("bad request")
 	}
 	return data, nil
 }
@@ -157,7 +153,7 @@ func (ps ProductService) GetCategory(id int) (domain_products.Category_Product, 
 func (ps ProductService) GetCategories() ([]domain_products.Category_Product, error) {
 	data, err := ps.Repository.GetCategories()
 	if err != nil {
-		return []domain_products.Category_Product{}, errors.New("data empty")
+		return []domain_products.Category_Product{}, errors.New("bad request")
 	}
 	return data, nil
 }
@@ -175,7 +171,7 @@ func (ps ProductService) EditCategory(id int, domain domain_products.Category_Pr
 func (ps ProductService) DestroyCategory(id int) error {
 	err := ps.Repository.DeleteCategory(id)
 	if err != nil {
-		return errors.New("data failed delete")
+		return errors.New("delete failed")
 	}
 	return nil
 }

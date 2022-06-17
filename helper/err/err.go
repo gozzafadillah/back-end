@@ -9,27 +9,29 @@ import (
 
 func Conversion(err error, ctx echo.Context) error {
 	var errNew error
-	if strings.Contains(err.Error(), BadRequest) {
+	if strings.Contains(err.Error(), BadRequest) ||
+		strings.Contains(err.Error(), UpdateFailed) ||
+		strings.Contains(err.Error(), DeleteFailed) {
 		errNew = ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": BadRequest,
+			"message": err.Error(),
 			"rescode": http.StatusBadRequest,
 		})
 	}
 	if strings.Contains(err.Error(), InternalServerErr) {
 		errNew = ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": InternalServerErr,
+			"message": err.Error(),
 			"rescode": http.StatusInternalServerError,
 		})
 	}
 	if strings.Contains(err.Error(), MissMatchEmail) {
 		errNew = ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": MissMatchEmail,
+			"message": err.Error(),
 			"rescode": http.StatusBadRequest,
 		})
 	}
 	if strings.Contains(err.Error(), UnauthorizedUser) {
 		errNew = ctx.JSON(http.StatusUnauthorized, map[string]interface{}{
-			"message": UnauthorizedUser,
+			"message": err.Error(),
 			"rescode": http.StatusUnauthorized,
 		})
 	}
