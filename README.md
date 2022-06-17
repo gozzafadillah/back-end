@@ -25,17 +25,36 @@ go test ./... -v -coverpkg=./controller/...,./lib/...,./model/... -coverprofile=
 
 ## untuk users
 route yang sudah ada di branch ini
-* get users profile from jwt (perlu autentikasi) 
-    * GET http://3.0.50.89:19000/admin/profile
-
-* Edit users profile (kemungkinan methodnya ke PUT) (perlu autentikasi)
-    * POST http://3.0.50.89:19000/admin/profile 
+* Tidak Perlu autentikasi users
     * POST http://3.0.50.89:19000/register
-
-* Make Pin
-    * POST http://3.0.50.89:19000/account
     * POST http://3.0.50.89:19000/login
-
-* untuk route yang tahap dev
     * GET http://3.0.50.89:19000/admin/users
     * GET http://3.0.50.89:19000/admin/users/{phone}
+    * POST http://3.0.50.89:19000/validation
+    
+* Tidak perlu autentikasi product
+    * GET http://3.0.50.89:19000/products
+    * GET http://3.0.50.89:19000/products/category/{category_id}
+    * GET http://3.0.50.89:19000/products/{id}
+    * GET http://3.0.50.89:19000/detail/{code}
+    * GET http://3.0.50.89:19000/category
+
+* Perlu autentikasi sebagai customer
+    * POST http://3.0.50.89:19000/users/pin
+    * GET http://3.0.50.89:19000/users/session
+    * POST http://3.0.50.89:19000/users/profile
+
+* Perlu autentikasi sebagai admin
+    * POST http://3.0.50.89:19000/admin/category
+    * PUT http://3.0.50.89:19000/admin/category/{id}
+    * DELETE http://3.0.50.89:19000/admin/category/{id}
+
+* Perlu autentikasi sebagai admin (manage product)
+    * POST http://3.0.50.89:19000/admin/products
+    * PUT http://3.0.50.89:19000/admin/products/{id}
+    * DELETE http://3.0.50.89:19000/admin/products/{id}
+
+* Perlu autentikasi sebagai admin (detail product)
+    * POST http://3.0.50.89:19000/admin/detail/{code}
+    * PUT http://3.0.50.89:19000/admin/detail/update/{code}
+    * DELETE http://3.0.50.89:19000/admin/detail/delete/{code}
