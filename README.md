@@ -22,6 +22,12 @@ BaseUrl = https://virtserver.swaggerhub.com/gozza/Payment-Point/1.0.0
 go test ./... -v -coverpkg=./controller/...,./lib/...,./model/... -coverprofile=cover.out && go tool cover -html=cover.out
 
 ```
+## cara import json postman
+1. login akun postman
+2. pergi ke workspace
+3. import file ke workspace (silahkan cari import data dan upload)
+
+file nya saya simpan di discord
 
 ## untuk users
 route yang sudah ada di branch ini
