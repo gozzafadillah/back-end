@@ -72,8 +72,11 @@ func (pr ProductsRepo) Update(id int, domain domain_products.Products) error {
 // Delete implements domain_products.Repository
 func (pr ProductsRepo) Delete(id int) error {
 	var rec Products
-	err := pr.DB.Unscoped().Delete(&rec, id).Error
-	return err
+	err := pr.DB.Unscoped().Delete(&rec, id).RowsAffected
+	if err == 0 {
+		return errors.New("delete failed")
+	}
+	return nil
 }
 
 // GetDetailsByCode implements domain_products.Repository
@@ -122,22 +125,31 @@ func (pr ProductsRepo) UpdateDetail(id int, domain domain_products.Detail_Produc
 // DeleteDetail implements domain_products.Repository
 func (pr ProductsRepo) DeleteDetail(id int) error {
 	var rec Detail_Product
-	err := pr.DB.Unscoped().Delete(&rec, id).Error
-	return err
+	err := pr.DB.Unscoped().Delete(&rec, id).RowsAffected
+	if err == 0 {
+		return errors.New("delete failed")
+	}
+	return nil
 }
 
 // DeleteCategory implements domain_products.Repository
 func (pr ProductsRepo) DeleteCategory(id int) error {
 	var rec Category_Product
-	err := pr.DB.Unscoped().Delete(&rec, id).Error
-	return err
+	err := pr.DB.Unscoped().Delete(&rec, id).RowsAffected
+	if err == 0 {
+		return errors.New("delete failed")
+	}
+	return nil
 }
 
 // DeleteDetails implements domain_products.Repository
 func (pr ProductsRepo) DeleteDetails(code string) error {
 	rec := Detail_Product{}
-	err := pr.DB.Unscoped().Where("code = ?", code).Delete(&rec).Error
-	return err
+	err := pr.DB.Unscoped().Where("code = ?", code).Delete(&rec).RowsAffected
+	if err == 0 {
+		return errors.New("delete failed")
+	}
+	return nil
 }
 
 // GetCategories implements domain_products.Repository

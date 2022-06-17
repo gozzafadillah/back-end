@@ -113,7 +113,7 @@ func (ur UsersRepo) StoreOtpUserVerif(code string, email string) error {
 		Email: email,
 		Code:  code,
 	}
-	err := ur.DB.Where("email = ?", email).Save(&rec).Error
+	err := ur.DB.Save(&rec).Error
 	return err
 }
 

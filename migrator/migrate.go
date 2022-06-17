@@ -9,7 +9,6 @@ import (
 
 func AutoMigrate(DB *gorm.DB) {
 
-
-	DB.AutoMigrate(&mysql_users.Users{}, &mysql_products.Products{}, &mysql_products.Category_Product{}, &mysql_products.Detail_Product{})
+	DB.AutoMigrate(&mysql_users.Users{}, &mysql_products.Products{}, &mysql_products.Category_Product{}, &mysql_products.Detail_Product{}, &mysql_users.Account{}, mysql_users.UserVerif{})
 
 }

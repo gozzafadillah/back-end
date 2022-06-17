@@ -34,8 +34,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.POST("/validation", cl.UserHandler.VerifUser)
 	// access public product
 	e.GET("/products", cl.ProductsHandler.GetAllProduct)
-	e.GET("/products/:category_id", cl.ProductsHandler.GetProductByCategory)
-	e.GET("/product/:id", cl.ProductsHandler.GetProduct)
+	e.GET("/products/category/:category_id", cl.ProductsHandler.GetProductByCategory)
+	e.GET("/products/:id", cl.ProductsHandler.GetProduct)
+	e.GET("/detail/:code", cl.ProductsHandler.GetDetailsProduct)
+	e.GET("/category", cl.ProductsHandler.GetCategories)
 
 	// access customer
 	authUser := e.Group("users")
@@ -48,11 +50,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authUser.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("customer", cl.UserHandler))
 	// make pin
 	authUser.POST("/pin", cl.UserHandler.InsertAccount)
-	authUser.GET("/profile", cl.UserHandler.GetUserSession)
+	authUser.GET("/session", cl.UserHandler.GetUserSession)
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
 
 	// manage product endpoint (admin)
-	authAdmin := e.Group("products")
+	authAdmin := e.Group("admin")
 	authAdmin.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("admin", cl.UserHandler))
 	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{server},
@@ -60,16 +62,16 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 		AllowCredentials: true,
 		MaxAge:           2592000,
 	}))
-	authAdmin.POST("/", cl.ProductsHandler.InsertProduct)
-	authAdmin.PUT("/:id", cl.ProductsHandler.EditProduct)
-	authAdmin.DELETE("/:id", cl.ProductsHandler.DestroyProduct)
+	authAdmin.POST("/products", cl.ProductsHandler.InsertProduct)
+	authAdmin.PUT("/products/:id", cl.ProductsHandler.EditProduct)
+	authAdmin.DELETE("/products/:id", cl.ProductsHandler.DestroyProduct)
 	// manage detail product (admin)
-	authAdmin.GET("/detail/:code", cl.ProductsHandler.GetDetailsProduct)
+
 	authAdmin.POST("/detail/:code", cl.ProductsHandler.InsertDetail)
-	authAdmin.PUT("/detail/:getID", cl.ProductsHandler.EditDetail)
-	authAdmin.DELETE("/detail/:getID", cl.ProductsHandler.DestroyDetail)
+	authAdmin.PUT("/detail/update/:getID", cl.ProductsHandler.EditDetail)
+	authAdmin.DELETE("/detail/delete/:getID", cl.ProductsHandler.DestroyDetail)
 	// manage category (admin)
-	e.GET("/category", cl.ProductsHandler.GetCategories)
+
 	authAdmin.POST("/category", cl.ProductsHandler.InsertCategory)
 	authAdmin.PUT("/category/:id", cl.ProductsHandler.EditCategory)
 	authAdmin.DELETE("/category/:id", cl.ProductsHandler.DestroyCategory)

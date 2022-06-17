@@ -105,6 +105,7 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 // implementation of get product by id
 func (ph *ProductsHandler) GetProduct(ctx echo.Context) error {
 	param := ctx.Param("id")
+	fmt.Println("param ", param)
 	if param == "" {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "parameter required",
