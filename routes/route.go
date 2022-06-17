@@ -42,6 +42,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authUser.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("customer", cl.UserHandler))
 	// buat pin
 	authUser.POST("/pin", cl.UserHandler.InsertAccount)
-	authUser.GET("/profile", cl.UserHandler.GetUserForCustomer)
+	authUser.GET("/profile", cl.UserHandler.GetUserSession)
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
 }

@@ -139,7 +139,7 @@ func (uh *UsersHandler) GetUsers(ctx echo.Context) error {
 	})
 }
 
-// Implementation get user by id for admin (web)
+// Implementation get user by phone for admin (web)
 func (uh *UsersHandler) GetUserForAdmin(ctx echo.Context) error {
 	phone := ctx.Param("phone")
 
@@ -161,8 +161,8 @@ func (uh *UsersHandler) GetUserForAdmin(ctx echo.Context) error {
 	})
 }
 
-// Implementation get user by id for admin (web)
-func (uh *UsersHandler) GetUserForCustomer(ctx echo.Context) error {
+// Implementation get user session
+func (uh *UsersHandler) GetUserSession(ctx echo.Context) error {
 	jwtClaims := middlewares.GetUser(ctx)
 	phone := jwtClaims.Phone
 
