@@ -3,14 +3,15 @@ package middlewares
 import (
 	"errors"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 type JwtCustomClaims struct {
-	ID     int  `json:"id"`
-	Status bool `json:"status"`
+	ID     int    `json:"id"`
+	Phone  string `json:"phone"`
+	Status bool   `json:"status"`
 	jwt.StandardClaims
 }
 
@@ -29,9 +30,10 @@ func (jwtConf *ConfigJwt) Init() middleware.JWTConfig {
 }
 
 // GenerateToken jwt ...
-func (jwtConf *ConfigJwt) GenerateToken(userID int, userStatus bool) (string, error) {
+func (jwtConf *ConfigJwt) GenerateToken(userID int, phone string, userStatus bool) (string, error) {
 	claims := JwtCustomClaims{
 		ID:     userID,
+		Phone:  phone,
 		Status: userStatus,
 	}
 
@@ -40,4 +42,11 @@ func (jwtConf *ConfigJwt) GenerateToken(userID int, userStatus bool) (string, er
 	token, err := t.SignedString([]byte(jwtConf.SecretJWT))
 
 	return token, err
+}
+
+// GetUser from jwt ...
+func GetUser(c echo.Context) *JwtCustomClaims {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtCustomClaims)
+	return claims
 }
