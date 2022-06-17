@@ -16,7 +16,14 @@ type ControllerList struct {
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
-	// public
+	// product public
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"server-front-end"},
+		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
+		AllowCredentials: true,
+		MaxAge:           2592000,
+	}))
+
 	e.POST("/login", cl.UserHandler.Authorization)
 	e.POST("/register", cl.UserHandler.Register)
 	// manage product endpoint
