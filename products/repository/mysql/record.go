@@ -25,7 +25,6 @@ func ToDomain(rec Products) domain_products.Products {
 		ID:          rec.ID,
 		Code:        rec.Code,
 		Name:        rec.Name,
-		Slug:        rec.Slug,
 		Category_Id: rec.Category_Id,
 		Status:      rec.Status,
 		CreatedAt:   time.Time{},

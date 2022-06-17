@@ -6,7 +6,6 @@ type Products struct {
 	ID          int
 	Code        string
 	Name        string
-	Slug        string
 	Image       string
 	Category_Id int
 	Status      bool

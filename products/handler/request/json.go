@@ -7,24 +7,21 @@ import (
 // Request Product
 type RequestJSON struct {
 	Code        string
-	Name        string `json:"name"`
-	Slug        string `json:"slug"`
+	Name        string `json:"name" validate:"required"`
 	Image       string `json:"image"`
-	Description string `json:"description"`
-	Price       int    `json:"price"`
-	Category_id int    `json:"category_id"`
+	Category_id int    `json:"category_id" validate:"required"`
 }
 
 // request Category Product
 type RequestJSONCategory struct {
-	Name string `json:"name"`
+	Name string `json:"name" validate:"required"`
 }
 
 // Data for Detail Product
 type DataDetail struct {
 	Code        string
-	Price       int
-	Description string
+	Description string `json:"description"`
+	Price       int    `json:"price" validate:"required"`
 	Status      bool
 }
 
@@ -32,7 +29,6 @@ func ToDomain(req RequestJSON) domain_products.Products {
 	return domain_products.Products{
 		Code:        req.Code,
 		Name:        req.Name,
-		Slug:        req.Slug,
 		Image:       req.Image,
 		Category_Id: req.Category_id,
 		Status:      true,
@@ -41,7 +37,8 @@ func ToDomain(req RequestJSON) domain_products.Products {
 
 func ToDomainCategory(req RequestJSONCategory) domain_products.Category_Product {
 	return domain_products.Category_Product{
-		Name: req.Name,
+		Name:   req.Name,
+		Status: true,
 	}
 }
 

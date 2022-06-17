@@ -5,7 +5,7 @@ import domain_products "ppob/products/domain"
 type ResponseJSONProduct struct {
 	ID          int
 	Name        string
-	Slug        string
+	Code        string
 	Category_Id int
 	Status      bool
 }
@@ -14,7 +14,7 @@ func FromDomainProduct(domain domain_products.Products) ResponseJSONProduct {
 	return ResponseJSONProduct{
 		ID:          domain.ID,
 		Name:        domain.Name,
-		Slug:        domain.Slug,
+		Code:        domain.Code,
 		Category_Id: domain.Category_Id,
 		Status:      domain.Status,
 	}
