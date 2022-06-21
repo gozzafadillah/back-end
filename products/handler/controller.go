@@ -36,9 +36,10 @@ func (ph *ProductsHandler) InsertProduct(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+	category_id, _ := strconv.Atoi(ctx.Param("category_id"))
 
 	// product section
-	err := ph.Service.InsertData(request.ToDomain(req))
+	err := ph.Service.InsertData(category_id, request.ToDomain(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
