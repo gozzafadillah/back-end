@@ -62,7 +62,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 		AllowCredentials: true,
 		MaxAge:           2592000,
 	}))
-	authAdmin.POST("/products", cl.ProductsHandler.InsertProduct)
+	authAdmin.POST("/products/:category_id", cl.ProductsHandler.InsertProduct)
 	authAdmin.PUT("/products/:id", cl.ProductsHandler.EditProduct)
 	authAdmin.DELETE("/products/:id", cl.ProductsHandler.DestroyProduct)
 	// manage detail product (admin)

@@ -43,8 +43,9 @@ func (ps ProductService) GetProducts() ([]domain_products.Products, error) {
 }
 
 // InsertData implements domain_products.Service
-func (ps ProductService) InsertData(domain domain_products.Products) error {
+func (ps ProductService) InsertData(category_id int, domain domain_products.Products) error {
 	domain.Code = slug.GenerateSlug(domain.Name)
+	domain.Category_Id = category_id
 	err := ps.Repository.Store(domain)
 	if err != nil {
 		return errors.New("internal server error")
