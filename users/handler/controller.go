@@ -3,6 +3,7 @@ package handler_users
 import (
 	"net/http"
 	"ppob/app/middlewares"
+	"ppob/helper/claudinary"
 	"ppob/helper/encryption"
 	err_conv "ppob/helper/err"
 	otp_generator "ppob/helper/otp"
@@ -63,18 +64,31 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
 
+	// upload image
+	req.File = claudinary.GetFile(ctx)
+	img, _ := claudinary.ImageUploadHelper(req.File, "users")
+
+	req.Image = img
+	if req.Image == "" {
+		req.Image = "https://res.cloudinary.com/dt91kxctr/image/upload/v1655825545/go-bayeue/users/download_o1yrxx.png"
+	}
+
+	// enkripsi password
 	encrypt, err := encryption.HashPassword(req.Password)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-
 	req.Password = encrypt
+
+	// store request data to usecase layer
 	data, err := uh.usecase.Register(request.ToDomainUser(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
 
+	// make otp
 	otpCode := otp_generator.OtpGenerator()
+
 	err = uh.usecase.AddUserVerif(otpCode, req.Email, req.Name)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
@@ -90,7 +104,7 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 }
 
 // implementation store/save pin data users
-func (uh *UsersHandler) InsertAccount(ctx echo.Context) error {
+func (uh *UsersHandler) MakePin(ctx echo.Context) error {
 	req := request.RequestJSONAccount{}
 	ctx.Bind(&req)
 	if err := uh.validation.Struct(req); err != nil {

@@ -16,17 +16,19 @@ type Products struct {
 type Category_Product struct {
 	ID        int
 	Name      string
+	Image     string
 	Status    bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 type Detail_Product struct {
-	ID          int
-	Code        string
-	Price       int
-	Description string
-	Status      bool
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID           int
+	Code         string
+	Place_Holder string
+	Price        int
+	Description  string
+	Status       bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }

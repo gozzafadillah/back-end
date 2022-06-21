@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"ppob/app/middlewares"
 	"ppob/helper/valid"
 	handler_products "ppob/products/handler"
 	handler_users "ppob/users/handler"
@@ -18,6 +19,9 @@ type ControllerList struct {
 const server = "http://localhost:3000"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
+
+	// log
+	middlewares.LogMiddleware(e)
 
 	// access public
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -49,7 +53,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	}))
 	authUser.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("customer", cl.UserHandler))
 	// make pin
-	authUser.POST("/pin", cl.UserHandler.InsertAccount)
+	authUser.POST("/pin", cl.UserHandler.MakePin)
 	authUser.GET("/session", cl.UserHandler.GetUserSession)
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
 

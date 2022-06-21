@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -36,6 +35,5 @@ func Mailjet(data []byte) {
 	body, _ := ioutil.ReadAll(res.Body)
 	var result = ResponseMailjet{}
 	json.Unmarshal(body, &result)
-	fmt.Println(result)
 	// fmt.Println(string(data))
 }

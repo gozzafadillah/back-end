@@ -72,11 +72,8 @@ func (pr ProductsRepo) Update(id int, domain domain_products.Products) error {
 // Delete implements domain_products.Repository
 func (pr ProductsRepo) Delete(id int) error {
 	var rec Products
-	err := pr.DB.Unscoped().Delete(&rec, id).RowsAffected
-	if err == 0 {
-		return errors.New("delete failed")
-	}
-	return nil
+	err := pr.DB.Unscoped().Delete(&rec, id).Error
+	return err
 }
 
 // GetDetailsByCode implements domain_products.Repository
