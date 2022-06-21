@@ -63,12 +63,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 		MaxAge:           2592000,
 	}))
 	authAdmin.POST("/products/:category_id", cl.ProductsHandler.InsertProduct)
-	authAdmin.PUT("/products/:id", cl.ProductsHandler.EditProduct)
+	authAdmin.PUT("/products/edit/:id", cl.ProductsHandler.EditProduct)
 	authAdmin.DELETE("/products/:id", cl.ProductsHandler.DestroyProduct)
 	// manage detail product (admin)
 
 	authAdmin.POST("/detail/:code", cl.ProductsHandler.InsertDetail)
-	authAdmin.PUT("/detail/update/:getID", cl.ProductsHandler.EditDetail)
+	authAdmin.PUT("/detail/edit/:getID", cl.ProductsHandler.EditDetail)
 	authAdmin.DELETE("/detail/delete/:getID", cl.ProductsHandler.DestroyDetail)
 	// manage category (admin)
 

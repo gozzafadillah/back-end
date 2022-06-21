@@ -40,7 +40,7 @@ route yang sudah ada di branch ini
     
 * Tidak perlu autentikasi product
     * GET http://3.0.50.89:19000/products/{category_product}
-    * GET http://3.0.50.89:19000/products/category/{category_id}
+    * GET http://3.0.50.89:19000/products/category
     * GET http://3.0.50.89:19000/products/{id}
     * GET http://3.0.50.89:19000/detail/{code}
     * GET http://3.0.50.89:19000/category
@@ -51,8 +51,8 @@ route yang sudah ada di branch ini
     * POST http://3.0.50.89:19000/users/profile
 
 * Perlu autentikasi sebagai admin
-    * POST http://3.0.50.89:19000/admin/category
-    * PUT http://3.0.50.89:19000/admin/category/{id}
+    * POST http://3.0.50.89:19000/admin/category/{category_id}
+    * PUT http://3.0.50.89:19000/admin/category/edit/{id}
     * DELETE http://3.0.50.89:19000/admin/category/{id}
 
 * Perlu autentikasi sebagai admin (manage product)
@@ -62,5 +62,5 @@ route yang sudah ada di branch ini
 
 * Perlu autentikasi sebagai admin (detail product)
     * POST http://3.0.50.89:19000/admin/detail/{code}
-    * PUT http://3.0.50.89:19000/admin/detail/update/{code}
+    * PUT http://3.0.50.89:19000/admin/detail/edit/{code}
     * DELETE http://3.0.50.89:19000/admin/detail/delete/{code}
