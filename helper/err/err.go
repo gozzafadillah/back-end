@@ -11,7 +11,8 @@ func Conversion(err error, ctx echo.Context) error {
 	var errNew error
 	if strings.Contains(err.Error(), BadRequest) ||
 		strings.Contains(err.Error(), UpdateFailed) ||
-		strings.Contains(err.Error(), DeleteFailed) {
+		strings.Contains(err.Error(), DeleteFailed) ||
+		strings.Contains(err.Error(), Err) {
 		errNew = ctx.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": err.Error(),
 			"rescode": http.StatusBadRequest,

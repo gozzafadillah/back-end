@@ -3,6 +3,7 @@ package handler_products
 import (
 	"fmt"
 	"net/http"
+	"ppob/helper/claudinary"
 	err_conv "ppob/helper/err"
 	domain_products "ppob/products/domain"
 	"ppob/products/handler/request"
@@ -36,6 +37,21 @@ func (ph *ProductsHandler) InsertProduct(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+
+	// upload image
+	if req.Image == "" {
+		req.File = claudinary.GetFile(ctx)
+		img, err := claudinary.ImageUploadHelper(req.File, "product")
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"message": err.Error(),
+				"rescode": http.StatusInternalServerError,
+			})
+		}
+		req.Image = img
+	}
+
+	// parameter category id
 	category_id, _ := strconv.Atoi(ctx.Param("category_id"))
 
 	// product section
@@ -70,7 +86,7 @@ func (ph *ProductsHandler) GetAllProduct(ctx echo.Context) error {
 // implementation of delete product and detail product
 func (ph *ProductsHandler) DestroyProduct(ctx echo.Context) error {
 	id, _ := strconv.Atoi(ctx.Param("id"))
-
+	fmt.Println("id ", id)
 	err := ph.Service.Destroy(id)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
@@ -92,6 +108,19 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+	// upload image
+	if req.Image == "" {
+		req.File = claudinary.GetFile(ctx)
+		img, err := claudinary.ImageUploadHelper(req.File, "product")
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"message": err.Error(),
+				"rescode": http.StatusInternalServerError,
+			})
+		}
+		req.Image = img
+	}
+
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	err := ph.Service.Edit(id, request.ToDomain(req))
 	if err != nil {
@@ -274,6 +303,19 @@ func (ph *ProductsHandler) InsertCategory(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+	// upload image
+	if req.Image == "" {
+		req.File = claudinary.GetFile(ctx)
+		img, err := claudinary.ImageUploadHelper(req.File, "product")
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"message": err.Error(),
+				"rescode": http.StatusInternalServerError,
+			})
+		}
+		req.Image = img
+	}
+
 	err := ph.Service.InsertCategory(request.ToDomainCategory(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
@@ -311,6 +353,19 @@ func (ph *ProductsHandler) EditCategory(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+	// upload image
+	if req.Image == "" {
+		req.File = claudinary.GetFile(ctx)
+		img, err := claudinary.ImageUploadHelper(req.File, "product")
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"message": err.Error(),
+				"rescode": http.StatusInternalServerError,
+			})
+		}
+		req.Image = img
+	}
+
 	err := ph.Service.EditCategory(id, request.ToDomainCategory(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)

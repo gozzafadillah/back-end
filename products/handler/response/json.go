@@ -7,6 +7,7 @@ type ResponseJSONProduct struct {
 	Name        string
 	Code        string
 	Category_Id int
+	Image       string
 	Status      bool
 }
 
@@ -16,6 +17,7 @@ func FromDomainProduct(domain domain_products.Products) ResponseJSONProduct {
 		Name:        domain.Name,
 		Code:        domain.Code,
 		Category_Id: domain.Category_Id,
+		Image:       domain.Image,
 		Status:      domain.Status,
 	}
 }

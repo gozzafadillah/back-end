@@ -68,7 +68,7 @@ func (ps ProductService) Destroy(id int) error {
 
 	err = ps.Repository.DeleteDetails(data.Code)
 	if err != nil {
-		return errors.New("delete failed")
+		return nil
 	}
 
 	return nil
@@ -81,6 +81,7 @@ func (ps ProductService) Edit(id int, domain domain_products.Products) error {
 		return errors.New("bad request")
 	}
 	domain.Code = slug.GenerateSlug(domain.Name)
+	domain.Category_Id = data.Category_Id
 	err = ps.Repository.Update(id, domain)
 	if err != nil {
 		return errors.New("update failed")

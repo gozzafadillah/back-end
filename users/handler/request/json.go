@@ -5,11 +5,12 @@ import (
 )
 
 type RequestJSONUser struct {
-	Name     string `json:"name" form:"name" validate:"required"`
-	Email    string `json:"email" form:"email" validate:"required,email"`
-	Password string `json:"password" form:"password" validate:"required"`
-	Phone    string `json:"phone" form:"phone" validate:"required"`
-	Image    string `json:"img" form:"img"`
+	Name     string      `json:"name" form:"name" validate:"required"`
+	Email    string      `json:"email" form:"email" validate:"required,email"`
+	Password string      `json:"password" form:"password" validate:"required"`
+	Phone    string      `json:"phone" form:"phone" validate:"required"`
+	Image    string      `json:"img" form:"img"`
+	File     interface{} `json:"file,omitempty"`
 }
 
 type RequestJSONAccount struct {
@@ -38,7 +39,7 @@ func ToDomainUser(req RequestJSONUser) domain_users.Users {
 		Email:    req.Email,
 		Password: req.Password,
 		Phone:    req.Phone,
-		Image:    "image-default.jpg",
+		Image:    req.Image,
 		Status:   false,
 		Role:     "customer",
 	}
