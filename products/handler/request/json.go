@@ -9,7 +9,7 @@ type RequestJSON struct {
 	Code        string
 	Name        string `json:"name" validate:"required"`
 	Image       string `json:"image"`
-	Category_id int    `json:"category_id" validate:"required"`
+	Category_id int
 }
 
 // request Category Product

@@ -39,7 +39,7 @@ route yang sudah ada di branch ini
     * POST http://3.0.50.89:19000/validation
     
 * Tidak perlu autentikasi product
-    * GET http://3.0.50.89:19000/products
+    * GET http://3.0.50.89:19000/products/{category_product}
     * GET http://3.0.50.89:19000/products/category/{category_id}
     * GET http://3.0.50.89:19000/products/{id}
     * GET http://3.0.50.89:19000/detail/{code}

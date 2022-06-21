@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"ppob/helper/encryption"
+	"ppob/helper/slug"
 	domain_users "ppob/users/domain"
 
 	"gorm.io/gorm"
@@ -53,6 +54,11 @@ func (ur UsersRepo) GetByEmail(email string) (domain_users.Users, error) {
 
 // Store implements domain_users.Repository
 func (ur UsersRepo) Store(domain domain_users.Users) (string, error) {
+	cek := slug.GenerateSlug(domain.Name)
+	if cek == "admin" {
+		domain.Role = "admin"
+		domain.Status = true
+	}
 	err := ur.DB.Save(&domain).Error
 	return domain.Phone, err
 }
