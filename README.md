@@ -16,3 +16,51 @@ BaseUrl = https://virtserver.swaggerhub.com/gozza/Payment-Point/1.0.0
     docker-compose up --build
 ```
 3. server langsung dirun dan database langsung dibuat dalam container
+
+## Cara Melakukan Unittest
+```
+go test ./... -v -coverpkg=./users/usecase/..,./product/usecase/.. -coverprofile=cover.out && go tool cover -html=cover.out
+
+```
+## cara import json postman
+1. login akun postman
+2. pergi ke workspace
+3. import file ke workspace (silahkan cari import data dan upload)
+
+file nya saya simpan di discord
+
+## untuk users
+route yang sudah ada di branch ini
+* Tidak Perlu autentikasi users
+    * POST http://3.0.50.89:19000/register
+    * POST http://3.0.50.89:19000/login
+    * GET http://3.0.50.89:19000/admin/users
+    * GET http://3.0.50.89:19000/admin/users/{phone}
+    * POST http://3.0.50.89:19000/validation
+    
+* Tidak perlu autentikasi product
+    * GET http://3.0.50.89:19000/products/{category_product}
+    * GET http://3.0.50.89:19000/products/category
+    * GET http://3.0.50.89:19000/products/{id}
+    * GET http://3.0.50.89:19000/detail/{code}
+    * GET http://3.0.50.89:19000/category
+
+* Perlu autentikasi sebagai customer
+    * POST http://3.0.50.89:19000/users/pin
+    * GET http://3.0.50.89:19000/users/session
+    * POST http://3.0.50.89:19000/users/profile
+
+* Perlu autentikasi sebagai admin
+    * POST http://3.0.50.89:19000/admin/category/{category_id}
+    * PUT http://3.0.50.89:19000/admin/category/edit/{id}
+    * DELETE http://3.0.50.89:19000/admin/category/delete/{id}
+
+* Perlu autentikasi sebagai admin (manage product)
+    * POST http://3.0.50.89:19000/admin/products
+    * PUT http://3.0.50.89:19000/admin/products/edit/{id}
+    * DELETE http://3.0.50.89:19000/admin/products/delete/{id}
+
+* Perlu autentikasi sebagai admin (detail product)
+    * POST http://3.0.50.89:19000/admin/detail/{code}
+    * PUT http://3.0.50.89:19000/admin/detail/edit/{code}
+    * DELETE http://3.0.50.89:19000/admin/detail/delete/{code}
