@@ -57,7 +57,7 @@ route yang sudah ada di branch ini
 
 * Perlu autentikasi sebagai admin (manage product)
     * POST http://3.0.50.89:19000/admin/products
-    * PUT http://3.0.50.89:19000/admin/products/{id}
+    * PUT http://3.0.50.89:19000/admin/products/edit/{id}
     * DELETE http://3.0.50.89:19000/admin/products/delete/{id}
 
 * Perlu autentikasi sebagai admin (detail product)
