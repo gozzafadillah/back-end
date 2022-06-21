@@ -19,7 +19,7 @@ BaseUrl = https://virtserver.swaggerhub.com/gozza/Payment-Point/1.0.0
 
 ## Cara Melakukan Unittest
 ```
-go test ./... -v -coverpkg=./controller/...,./lib/...,./model/... -coverprofile=cover.out && go tool cover -html=cover.out
+go test ./... -v -coverpkg=./users/usecase/..,./product/usecase/.. -coverprofile=cover.out && go tool cover -html=cover.out
 
 ```
 ## cara import json postman
@@ -53,12 +53,12 @@ route yang sudah ada di branch ini
 * Perlu autentikasi sebagai admin
     * POST http://3.0.50.89:19000/admin/category/{category_id}
     * PUT http://3.0.50.89:19000/admin/category/edit/{id}
-    * DELETE http://3.0.50.89:19000/admin/category/{id}
+    * DELETE http://3.0.50.89:19000/admin/category/delete/{id}
 
 * Perlu autentikasi sebagai admin (manage product)
     * POST http://3.0.50.89:19000/admin/products
     * PUT http://3.0.50.89:19000/admin/products/{id}
-    * DELETE http://3.0.50.89:19000/admin/products/{id}
+    * DELETE http://3.0.50.89:19000/admin/products/delete/{id}
 
 * Perlu autentikasi sebagai admin (detail product)
     * POST http://3.0.50.89:19000/admin/detail/{code}
