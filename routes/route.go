@@ -64,7 +64,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	}))
 	authAdmin.POST("/products/:category_id", cl.ProductsHandler.InsertProduct)
 	authAdmin.PUT("/products/edit/:id", cl.ProductsHandler.EditProduct)
-	authAdmin.DELETE("/products/:id", cl.ProductsHandler.DestroyProduct)
+	authAdmin.DELETE("/products/delete/:id", cl.ProductsHandler.DestroyProduct)
 	// manage detail product (admin)
 
 	authAdmin.POST("/detail/:code", cl.ProductsHandler.InsertDetail)
@@ -73,7 +73,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// manage category (admin)
 
 	authAdmin.POST("/category", cl.ProductsHandler.InsertCategory)
-	authAdmin.PUT("/category/:id", cl.ProductsHandler.EditCategory)
-	authAdmin.DELETE("/category/:id", cl.ProductsHandler.DestroyCategory)
+	authAdmin.PUT("/category/edit/:id", cl.ProductsHandler.EditCategory)
+	authAdmin.DELETE("/category/delete/:id", cl.ProductsHandler.DestroyCategory)
 
 }
