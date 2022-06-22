@@ -69,6 +69,7 @@ func (ph *ProductsHandler) InsertProduct(ctx echo.Context) error {
 // Implementation get all product data
 func (ph *ProductsHandler) GetAllProduct(ctx echo.Context) error {
 	var sliceProduct []response.ResponseJSONProduct
+	// get products
 	res, err := ph.Service.GetProducts()
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
@@ -86,8 +87,10 @@ func (ph *ProductsHandler) GetAllProduct(ctx echo.Context) error {
 // implementation of delete product and detail product
 func (ph *ProductsHandler) DestroyProduct(ctx echo.Context) error {
 	id, _ := strconv.Atoi(ctx.Param("id"))
-	fmt.Println("id ", id)
+
+	// get response from usecase destroy
 	err := ph.Service.Destroy(id)
+
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
@@ -120,12 +123,15 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 		}
 		req.Image = img
 	}
-
+	// get parameter id from endpoint
 	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	// edit product
 	err := ph.Service.Edit(id, request.ToDomain(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update product",
 		"rescode": http.StatusOK,
@@ -134,8 +140,9 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 
 // implementation of get product by id
 func (ph *ProductsHandler) GetProduct(ctx echo.Context) error {
+	// get parameter id
 	param := ctx.Param("id")
-	fmt.Println("param ", param)
+
 	if param == "" {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "parameter required",
@@ -143,12 +150,15 @@ func (ph *ProductsHandler) GetProduct(ctx echo.Context) error {
 		})
 	}
 	id, _ := strconv.Atoi(param)
+
+	// get product by id
 	product, err := ph.Service.GetProduct(id)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-	sliceDetail := ph.Service.GetDetails(product.Code)
 
+	// make temp slice data
+	sliceDetail := ph.Service.GetDetails(product.Code)
 	details := []interface{}{}
 	for _, value := range sliceDetail {
 		details = append(details, response.FromDomainDetail(value))
@@ -157,10 +167,12 @@ func (ph *ProductsHandler) GetProduct(ctx echo.Context) error {
 		details = []interface{}{"data empty"}
 	}
 
+	// get category product
 	category, err := ph.Service.GetCategory(product.Category_Id)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get all product",
 		"rescode": http.StatusOK,
