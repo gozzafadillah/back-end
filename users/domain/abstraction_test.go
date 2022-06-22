@@ -151,16 +151,14 @@ func TestInsertAccount(t *testing.T) {
 func TestGetUserAccount(t *testing.T) {
 	t.Run("get account user", func(t *testing.T) {
 		userRepo.On("GetUserAccount", mock.Anything).Return(userDomainAccount, nil).Once()
-		res, err := userService.GetUserAccount(userDomainAccount.Phone)
+		res := userService.GetUserAccount(userDomainAccount.Phone)
 
-		assert.NoError(t, err)
 		assert.Equal(t, userDomainAccount.Phone, res.Phone)
 	})
 	t.Run("failed get account user", func(t *testing.T) {
 		userRepo.On("GetUserAccount", mock.Anything).Return(domain_users.Account{}, errors.New("account not found")).Once()
-		res, err := userService.GetUserAccount(userDomainAccount.Phone)
+		res := userService.GetUserAccount(userDomainAccount.Phone)
 
-		assert.Error(t, err)
 		assert.Equal(t, domain_users.Account{}, res)
 	})
 }

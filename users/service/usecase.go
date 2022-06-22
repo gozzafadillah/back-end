@@ -85,12 +85,12 @@ func (us UsersService) InsertAccount(domain domain_users.Account) (domain_users.
 }
 
 // GetUserAccount implements domain_users.Service
-func (us UsersService) GetUserAccount(phone string) (domain_users.Account, error) {
+func (us UsersService) GetUserAccount(phone string) domain_users.Account {
 	data, err := us.Repository.GetUserAccount(phone)
 	if err != nil {
-		return domain_users.Account{}, errors.New("bad request")
+		return domain_users.Account{}
 	}
-	return data, nil
+	return data
 }
 
 // AddUserVerif implements domain_users.Service
