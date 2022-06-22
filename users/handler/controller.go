@@ -162,10 +162,8 @@ func (uh *UsersHandler) GetUserForAdmin(ctx echo.Context) error {
 		return err_conv.Conversion(err, ctx)
 	}
 	// get user account (get saldo)
-	account, err := uh.usecase.GetUserAccount(phone)
-	if err != nil {
-		return err_conv.Conversion(err, ctx)
-	}
+	account := uh.usecase.GetUserAccount(phone)
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get users",
 		"rescode": http.StatusOK,
@@ -186,10 +184,8 @@ func (uh *UsersHandler) GetUserSession(ctx echo.Context) error {
 		return err_conv.Conversion(err, ctx)
 	}
 	// get user account
-	account, err := uh.usecase.GetUserAccount(phone)
-	if err != nil {
-		return err_conv.Conversion(err, ctx)
-	}
+	account := uh.usecase.GetUserAccount(phone)
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get customer",
 		"rescode": http.StatusOK,
