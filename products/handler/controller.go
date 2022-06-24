@@ -60,9 +60,9 @@ func (ph *ProductsHandler) InsertProduct(ctx echo.Context) error {
 		return err_conv.Conversion(err, ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"message": "success add product",
-		"rescode": http.StatusOK,
+		"rescode": http.StatusCreated,
 	})
 }
 
@@ -227,9 +227,9 @@ func (ph *ProductsHandler) InsertDetail(ctx echo.Context) error {
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"message": "success add product",
-		"rescode": http.StatusOK,
+		"rescode": http.StatusCreated,
 	})
 }
 
@@ -332,9 +332,9 @@ func (ph *ProductsHandler) InsertCategory(ctx echo.Context) error {
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"message": "success add category",
-		"rescode": http.StatusOK,
+		"rescode": http.StatusCreated,
 	})
 }
 
