@@ -94,9 +94,9 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		return err_conv.Conversion(err, ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"message": "success register",
-		"rescode": http.StatusOK,
+		"rescode": http.StatusCreated,
 		"data": map[string]interface{}{
 			"token": data,
 		},
@@ -128,9 +128,9 @@ func (uh *UsersHandler) MakePin(ctx echo.Context) error {
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success",
-		"rescode": http.StatusOK,
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
+		"message": "success create account",
+		"rescode": http.StatusCreated,
 		"data":    res,
 	})
 }
