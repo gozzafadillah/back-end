@@ -95,7 +95,7 @@ func (ps ProductService) Edit(id int, domain domain_products.Products) error {
 
 // InsertDetail implements domain_products.Service
 func (ps ProductService) InsertDetail(code string, domain domain_products.Detail_Product) error {
-
+	domain.Code = slug.GenerateSlug(domain.Name)
 	err := ps.Repository.StoreDetail(code, domain)
 	if err != nil {
 		return errors.New("internal server error")
