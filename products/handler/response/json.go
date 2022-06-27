@@ -42,6 +42,7 @@ type ResponseJSONDetail struct {
 	ID           int
 	Product_Code string
 	Name         string
+	Code         string
 	Price        int
 	Description  string
 	Status       bool
@@ -51,7 +52,9 @@ func FromDomainDetail(res domain_products.Detail_Product) ResponseJSONDetail {
 	return ResponseJSONDetail{
 		ID:           res.ID,
 		Product_Code: res.Product_Code,
+		Name:         res.Name,
 		Price:        res.Price,
+		Code:         res.Code,
 		Description:  res.Description,
 		Status:       res.Status,
 	}

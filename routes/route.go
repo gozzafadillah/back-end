@@ -4,6 +4,7 @@ import (
 	"ppob/app/middlewares"
 	"ppob/helper/valid"
 	handler_products "ppob/products/handler"
+	handler_transaction "ppob/transaction/handler"
 	handler_users "ppob/users/handler"
 
 	"github.com/labstack/echo/v4"
@@ -11,9 +12,10 @@ import (
 )
 
 type ControllerList struct {
-	JWTMiddleware   middleware.JWTConfig
-	UserHandler     handler_users.UsersHandler
-	ProductsHandler handler_products.ProductsHandler
+	JWTMiddleware      middleware.JWTConfig
+	UserHandler        handler_users.UsersHandler
+	ProductsHandler    handler_products.ProductsHandler
+	TransactionHandler handler_transaction.TransactionHandler
 }
 
 const server = "http://localhost:3000"
@@ -56,6 +58,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authUser.POST("/pin", cl.UserHandler.MakePin)
 	authUser.GET("/session", cl.UserHandler.GetUserSession)
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
+	// transaction
+	authUser.POST("/checkout/:code", cl.TransactionHandler.Checkout)
 
 	// manage product endpoint (admin)
 	authAdmin := e.Group("admin")

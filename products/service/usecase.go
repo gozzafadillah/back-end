@@ -42,6 +42,15 @@ func (ps ProductService) GetProducts() ([]domain_products.Products, error) {
 	return datas, nil
 }
 
+// GetProductTransaction implements domain_products.Service
+func (ps ProductService) GetProductTransaction(code string) (domain_products.Products, error) {
+	data, err := ps.Repository.GetProductTransaction(code)
+	if err != nil {
+		return domain_products.Products{}, errors.New("bad request")
+	}
+	return data, nil
+}
+
 // InsertData implements domain_products.Service
 func (ps ProductService) InsertData(category_id int, domain domain_products.Products) error {
 	domain.Code = slug.GenerateSlug(domain.Name)
@@ -113,6 +122,15 @@ func (ps ProductService) GetDetails(code string) []domain_products.Detail_Produc
 		return []domain_products.Detail_Product{}
 	}
 	return data
+}
+
+// GetDetail implements domain_products.Service
+func (ps ProductService) GetDetail(code string) (domain_products.Detail_Product, error) {
+	data, err := ps.Repository.GetDetail(code)
+	if err != nil {
+		return domain_products.Detail_Product{}, errors.New("bad request")
+	}
+	return data, nil
 }
 
 // EditDetail implements domain_products.Service
