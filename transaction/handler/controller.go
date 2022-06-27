@@ -102,9 +102,16 @@ func (th *TransactionHandler) Transaction(ctx echo.Context) error {
 	req := request.Callback_Invoice{}
 	ctx.Bind(&req)
 
+	dataCallback, err := helper_xendit.GetCallback(req)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "failed get callback " + err.Error(),
+			"rescode": http.StatusBadRequest,
+		})
+	}
 	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"message": "success get callback",
 		"rescode": http.StatusCreated,
-		"result":  req,
+		"result":  dataCallback,
 	})
 }
