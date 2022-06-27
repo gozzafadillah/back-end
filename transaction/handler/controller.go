@@ -49,6 +49,9 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 
 	// get user
 	user, err := th.UserUsecase.GetUserPhone(claim.Phone)
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
 
 	// get Detail product
 	detailproduct, err := th.ProductUsecase.GetDetail(product_code)
