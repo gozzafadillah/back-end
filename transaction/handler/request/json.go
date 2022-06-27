@@ -51,7 +51,6 @@ type Callback_Invoice struct {
 	MerchantName           string    `json:"merchant_name"`
 	Amount                 int       `json:"amount"`
 	PaidAmount             int       `json:"paid_amount"`
-	BankCode               string    `json:"bank_code"`
 	PaidAt                 time.Time `json:"paid_at"`
 	PayerEmail             string    `json:"payer_email"`
 	Description            string    `json:"description"`
