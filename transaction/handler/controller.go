@@ -94,3 +94,14 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 		"xendit_invoice": invoice,
 	})
 }
+
+func (th *TransactionHandler) Transaction(ctx echo.Context) error {
+	req := request.Callback_Invoice{}
+	ctx.Bind(&req)
+
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
+		"message": "success get callback",
+		"rescode": http.StatusCreated,
+		"result":  req,
+	})
+}
