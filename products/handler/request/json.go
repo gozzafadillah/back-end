@@ -5,37 +5,33 @@ import (
 )
 
 // Request Product
-type RequestJSON struct {
-	Code         string
-	Name         string `json:"name" form:"name" validate:"required"`
-	Image        string `json:"img" form:"img"`
-	Place_Holder string `json:"placeholder" form:"placeholder"`
-	Category_id  int
+type RequestJSONProduct struct {
+	Product_Slug string
+	Name         string      `json:"name" form:"name" validate:"required"`
+	Image        string      `json:"img" form:"img"`
+	Category_id  int         `json:"category_id" form:"category_id"`
 	File         interface{} `json:"file,omitempty"`
 }
 
 // request Category Product
 type RequestJSONCategory struct {
-	Name  string      `json:"name" form:"name" validate:"required"`
-	Image string      `json:"img" form:"img"`
-	File  interface{} `json:"file,omitempty"`
+	Name string `json:"name" form:"name" validate:"required"`
+	Icon string `json:"icon" form:"icon" validate:"required"`
 }
 
 // Data for Detail Product
 type DataDetail struct {
-	Product_Code string
-	Name         string `json:"name" form:"name"`
-	Code         string
-	Description  string `json:"description" form:"description"`
-	Price        int    `json:"price" form:"price"`
+	Product_Slug string
+	Name         string `json:"name" form:"name" validate:"required"`
+	Detail_Slug  string
+	Price        int `json:"price" form:"price" validate:"required"`
 	Status       bool
 }
 
-func ToDomain(req RequestJSON) domain_products.Products {
+func ToDomain(req RequestJSONProduct) domain_products.Products {
 	return domain_products.Products{
-		Code:         req.Code,
+		Product_Slug: req.Product_Slug,
 		Name:         req.Name,
-		Place_Holder: req.Place_Holder,
 		Image:        req.Image,
 		Category_Id:  req.Category_id,
 		Status:       true,
@@ -45,18 +41,17 @@ func ToDomain(req RequestJSON) domain_products.Products {
 func ToDomainCategory(req RequestJSONCategory) domain_products.Category_Product {
 	return domain_products.Category_Product{
 		Name:   req.Name,
-		Image:  req.Image,
+		Icon:   req.Icon,
 		Status: true,
 	}
 }
 
 func ToDomainDetail(data DataDetail) domain_products.Detail_Product {
 	return domain_products.Detail_Product{
-		Product_Code: data.Product_Code,
+		Product_Slug: data.Product_Slug,
 		Name:         data.Name,
-		Code:         data.Code,
+		Detail_Slug:  data.Detail_Slug,
 		Price:        data.Price,
-		Description:  data.Description,
 		Status:       true,
 	}
 }
