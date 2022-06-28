@@ -5,6 +5,7 @@ type Service interface {
 	InsertData(category_id int, domain Products) error
 	GetProducts() ([]Products, error)
 	GetProduct(id int) (Products, error)
+	GetProductTransaction(code string) (Products, error)
 	GetProductByCategory(id int) []Products
 	Edit(id int, domain Products) error
 	Destroy(id int) error
@@ -12,6 +13,7 @@ type Service interface {
 	// Detail Product
 	InsertDetail(code string, domain Detail_Product) error
 	GetDetails(code string) []Detail_Product
+	GetDetail(code string) (Detail_Product, error)
 	EditDetail(id int, domain Detail_Product) error
 	DestroyDetail(id int) error
 
@@ -28,6 +30,7 @@ type Repository interface {
 	Store(domain Products) error
 	GetByID(id int) (Products, error)
 	GetByCategory(id int) []Products
+	GetProductTransaction(code string) (Products, error)
 	GetAll() ([]Products, error)
 	Update(id int, domain Products) error
 	Delete(id int) error
@@ -35,6 +38,7 @@ type Repository interface {
 	// Detail Product
 	StoreDetail(code string, domain Detail_Product) error
 	GetDetailsByCode(code string) ([]Detail_Product, error)
+	GetDetail(code string) (Detail_Product, error)
 	DeleteDetail(id int) error
 	DeleteDetails(code string) error
 	UpdateDetail(id int, domain Detail_Product) error

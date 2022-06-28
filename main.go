@@ -8,6 +8,9 @@ import (
 	mysql_products "ppob/products/repository/mysql"
 	service_products "ppob/products/service"
 	"ppob/routes"
+	handler_transaction "ppob/transaction/handler"
+	mysql_transaction "ppob/transaction/repository/mysql"
+	service_transaction "ppob/transaction/service"
 	handler_users "ppob/users/handler"
 	mysql_users "ppob/users/repository/mysql"
 	service_users "ppob/users/service"
@@ -34,12 +37,17 @@ func main() {
 	productRepo := mysql_products.NewProductsRepository(db)
 	productServ := service_products.NewProductsService(productRepo)
 	productsHandler := handler_products.NewProductsHandler(productServ)
+	// Transaction
+	transactionRepo := mysql_transaction.NewTransactionRepo(db)
+	transactionServ := service_transaction.NewTransactionService(transactionRepo)
+	transactionHandler := handler_transaction.NewTransactionHandler(transactionServ, productServ, userServ)
 
 	// Route
 	routeInit := routes.ControllerList{
-		JWTMiddleware:   configJWT.Init(),
-		UserHandler:     UserHandler,
-		ProductsHandler: productsHandler,
+		JWTMiddleware:      configJWT.Init(),
+		UserHandler:        UserHandler,
+		ProductsHandler:    productsHandler,
+		TransactionHandler: transactionHandler,
 	}
 
 	routeInit.RouteRegister(e)

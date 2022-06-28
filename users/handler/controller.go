@@ -17,20 +17,20 @@ import (
 
 type UsersHandler struct {
 	usecase    domain_users.Service
-	validation *validator.Validate
+	Validation *validator.Validate
 }
 
 func NewUsersHandler(uc domain_users.Service) UsersHandler {
 	return UsersHandler{
 		usecase:    uc,
-		validation: validator.New(),
+		Validation: validator.New(),
 	}
 }
 
 func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 	req := request.RequestJSONLogin{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
@@ -56,7 +56,7 @@ func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 func (uh *UsersHandler) Register(ctx echo.Context) error {
 	req := request.RequestJSONUser{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
@@ -107,7 +107,7 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 func (uh *UsersHandler) MakePin(ctx echo.Context) error {
 	req := request.RequestJSONAccount{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
@@ -200,7 +200,7 @@ func (uh *UsersHandler) GetUserSession(ctx echo.Context) error {
 func (uh *UsersHandler) UpdateProfile(ctx echo.Context) error {
 	req := request.RequestJSONUser{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
@@ -247,7 +247,7 @@ func (uh *UsersHandler) DestroyUserForAdmin(ctx echo.Context) error {
 func (uh *UsersHandler) VerifUser(ctx echo.Context) error {
 	req := request.RequestJSONVerif{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
