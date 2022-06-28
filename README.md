@@ -29,6 +29,9 @@ go test ./... -v -coverpkg=./users/usecase/..,./product/usecase/.. -coverprofile
 
 file nya saya simpan di discord
 
+# ERD Bayeue app
+!["erd-bayeue"](./assets/erd/bayeue%20ERD.png)
+
 ## untuk endpoint beserta postman
 route yang sudah ada di branch ini, kalian tinggal import ke postman!
 ["link-gdrive"](https://drive.google.com/file/d/1peEG-tbc1cEE7mKM4sxeUn02uiA-wW44/view?usp=sharing)
