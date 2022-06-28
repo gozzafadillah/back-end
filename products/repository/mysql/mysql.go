@@ -24,7 +24,7 @@ func (pr ProductsRepo) GetAll() ([]domain_products.Products, error) {
 	err := pr.DB.Find(&rec).Error
 	temp := []domain_products.Products{}
 	for _, value := range rec {
-		temp = append(temp, ToDomain(value))
+		temp = append(temp, ToDomainProduct(value))
 	}
 	return temp, err
 }
@@ -35,7 +35,7 @@ func (pr ProductsRepo) GetByCategory(id int) []domain_products.Products {
 	sliceProduct := []domain_products.Products{}
 	pr.DB.Where("category_id = ?", id).Find(&rec)
 	for _, value := range rec {
-		sliceProduct = append(sliceProduct, ToDomain(value))
+		sliceProduct = append(sliceProduct, ToDomainProduct(value))
 	}
 	return sliceProduct
 }
@@ -44,14 +44,14 @@ func (pr ProductsRepo) GetByCategory(id int) []domain_products.Products {
 func (pr ProductsRepo) GetByID(id int) (domain_products.Products, error) {
 	var rec Products
 	err := pr.DB.Where("id = ?", id).First(&rec).Error
-	return ToDomain(rec), err
+	return ToDomainProduct(rec), err
 }
 
 // GetProductTransaction implements domain_products.Repository
-func (pr ProductsRepo) GetProductTransaction(code string) (domain_products.Products, error) {
+func (pr ProductsRepo) GetProductTransaction(product_slug string) (domain_products.Products, error) {
 	rec := Products{}
-	err := pr.DB.Where("code = ?", code).First(&rec).Error
-	return ToDomain(rec), err
+	err := pr.DB.Where("product_slug = ?", product_slug).First(&rec).Error
+	return ToDomainProduct(rec), err
 }
 
 // Store implements domain_products.Repository
@@ -63,10 +63,10 @@ func (pr ProductsRepo) Store(domain domain_products.Products) error {
 // Update implements domain_products.Repository
 func (pr ProductsRepo) Update(id int, domain domain_products.Products) error {
 	newRecord := map[string]interface{}{
-		"Name":        domain.Name,
-		"Code":        domain.Code,
-		"Category_Id": domain.Category_Id,
-		"Image":       domain.Image,
+		"Name":         domain.Name,
+		"Product_Slug": domain.Product_Slug,
+		"Category_Id":  domain.Category_Id,
+		"Image":        domain.Image,
 	}
 	update := pr.DB.Model(&domain).Where("id = ?", id).Updates(newRecord).RowsAffected
 	var err error
@@ -84,9 +84,9 @@ func (pr ProductsRepo) Delete(id int) error {
 }
 
 // GetDetailsByCode implements domain_products.Repository
-func (pr ProductsRepo) GetDetailsByCode(code string) ([]domain_products.Detail_Product, error) {
+func (pr ProductsRepo) GetDetailsByCode(product_slug string) ([]domain_products.Detail_Product, error) {
 	var rec []Detail_Product
-	err := pr.DB.Where("product_code = ?", code).Find(&rec).Error
+	err := pr.DB.Where("product_slug = ?", product_slug).Find(&rec).Error
 	var sliceRec []domain_products.Detail_Product
 	for _, value := range rec {
 		sliceRec = append(sliceRec, ToDomainDetail(value))
@@ -95,31 +95,32 @@ func (pr ProductsRepo) GetDetailsByCode(code string) ([]domain_products.Detail_P
 }
 
 // StoreDetail implements domain_products.Repository
-func (pr ProductsRepo) StoreDetail(code string, domain domain_products.Detail_Product) error {
-	domain.Product_Code = code
+func (pr ProductsRepo) StoreDetail(product_slug string, domain domain_products.Detail_Product) error {
+	domain.Product_Slug = product_slug
 	err := pr.DB.Save(&domain).Error
 	return err
 }
 
 // GetDetail implements domain_products.Repository
-func (pr ProductsRepo) GetDetail(code string) (domain_products.Detail_Product, error) {
+func (pr ProductsRepo) GetDetail(detail_slug string) (domain_products.Detail_Product, error) {
 	rec := Detail_Product{}
-	err := pr.DB.Where("code = ?", code).First(&rec).Error
+	err := pr.DB.Where("detail_slug = ?", detail_slug).First(&rec).Error
 	return ToDomainDetail(rec), err
 }
 
 // UpdateDetails implements domain_products.Repository
 func (pr ProductsRepo) UpdateDetails(codeLama string, codeBaru string) error {
 	rec := Detail_Product{}
-	err := pr.DB.Model(&rec).Where("product_code = ?", codeLama).Update("code", codeBaru).Error
+	err := pr.DB.Model(&rec).Where("product_slug = ?", codeLama).Update("product_slug", codeBaru).Error
 	return err
 }
 
 // UpdateDetail implements domain_products.Repository
 func (pr ProductsRepo) UpdateDetail(id int, domain domain_products.Detail_Product) error {
 	newRecord := map[string]interface{}{
-		"Description": domain.Description,
+		"Name":        domain.Name,
 		"Price":       domain.Price,
+		"Detail_Slug": domain.Detail_Slug,
 	}
 	fmt.Println("data ", newRecord)
 	update := pr.DB.Model(&domain).Where("id = ?", id).Updates(newRecord).RowsAffected
