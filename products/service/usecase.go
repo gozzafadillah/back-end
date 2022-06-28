@@ -53,7 +53,7 @@ func (ps ProductService) GetProductTransaction(code string) (domain_products.Pro
 
 // InsertData implements domain_products.Service
 func (ps ProductService) InsertData(category_id int, domain domain_products.Products) error {
-	domain.Code = slug.GenerateSlug(domain.Name)
+	domain.Product_Slug = slug.GenerateSlug(domain.Name)
 	domain.Category_Id = category_id
 	err := ps.Repository.Store(domain)
 	if err != nil {
@@ -75,7 +75,7 @@ func (ps ProductService) Destroy(id int) error {
 		return errors.New("delete failed")
 	}
 
-	err = ps.Repository.DeleteDetails(data.Code)
+	err = ps.Repository.DeleteDetails(data.Product_Slug)
 	if err != nil {
 		return nil
 	}
@@ -89,22 +89,27 @@ func (ps ProductService) Edit(id int, domain domain_products.Products) error {
 	if err != nil {
 		return errors.New("bad request")
 	}
-	domain.Code = slug.GenerateSlug(domain.Name)
+
+	if domain.Image == "" {
+		domain.Image = data.Image
+	}
+
+	domain.Product_Slug = slug.GenerateSlug(domain.Name)
 	domain.Category_Id = data.Category_Id
 	err = ps.Repository.Update(id, domain)
 	if err != nil {
-		return errors.New("update failed")
+		return errors.New("update failed, product")
 	}
-	err = ps.Repository.UpdateDetails(data.Code, domain.Code)
+	err = ps.Repository.UpdateDetails(data.Product_Slug, domain.Product_Slug)
 	if err != nil {
-		return errors.New("update failed")
+		return errors.New("update failed, detail")
 	}
 	return nil
 }
 
 // InsertDetail implements domain_products.Service
 func (ps ProductService) InsertDetail(code string, domain domain_products.Detail_Product) error {
-	domain.Code = slug.GenerateSlug(domain.Name)
+	domain.Detail_Slug = slug.GenerateSlug(domain.Name)
 	err := ps.Repository.StoreDetail(code, domain)
 	if err != nil {
 		return errors.New("internal server error")
@@ -135,6 +140,7 @@ func (ps ProductService) GetDetail(code string) (domain_products.Detail_Product,
 
 // EditDetail implements domain_products.Service
 func (ps ProductService) EditDetail(id int, domain domain_products.Detail_Product) error {
+	domain.Detail_Slug = slug.GenerateSlug(domain.Name)
 	err := ps.Repository.UpdateDetail(id, domain)
 	if err != nil {
 		return err

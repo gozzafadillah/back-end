@@ -4,10 +4,9 @@ import "time"
 
 type Products struct {
 	ID           int
-	Code         string
+	Product_Slug string
 	Name         string
 	Image        string
-	Place_Holder string
 	Category_Id  int
 	Status       bool
 	CreatedAt    time.Time
@@ -17,7 +16,7 @@ type Products struct {
 type Category_Product struct {
 	ID        int
 	Name      string
-	Image     string
+	Icon      string
 	Status    bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -25,11 +24,10 @@ type Category_Product struct {
 
 type Detail_Product struct {
 	ID           int
-	Product_Code string
+	Product_Slug string
 	Name         string
-	Code         string
+	Detail_Slug  string
 	Price        int
-	Description  string
 	Status       bool
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

@@ -42,22 +42,25 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
 	// parameter
-	product_code := ctx.Param("code")
+	detail_slug := ctx.Param("detail_slug")
 
 	//  claim session from jwt
 	claim := middlewares.GetUser(ctx)
 
 	// get user
 	user, err := th.UserUsecase.GetUserPhone(claim.Phone)
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
 
 	// get Detail product
-	detailproduct, err := th.ProductUsecase.GetDetail(product_code)
+	detailproduct, err := th.ProductUsecase.GetDetail(detail_slug)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
 
 	// get product
-	product, err := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Code)
+	product, err := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Slug)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
@@ -72,7 +75,7 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 	req.Price = detailproduct.Price
 	req.Amount = req.Fee + req.Price
 	// make detail transaction / checkout
-	detail, err := th.TransactionUsecase.AddDetailTransaction(product_code, request.TodomainDetail(req))
+	detail, err := th.TransactionUsecase.AddDetailTransaction(detail_slug, request.TodomainDetail(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
