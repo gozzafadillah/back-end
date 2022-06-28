@@ -48,9 +48,9 @@ func (pr ProductsRepo) GetByID(id int) (domain_products.Products, error) {
 }
 
 // GetProductTransaction implements domain_products.Repository
-func (pr ProductsRepo) GetProductTransaction(code string) (domain_products.Products, error) {
+func (pr ProductsRepo) GetProductTransaction(product_slug string) (domain_products.Products, error) {
 	rec := Products{}
-	err := pr.DB.Where("code = ?", code).First(&rec).Error
+	err := pr.DB.Where("product_slug = ?", product_slug).First(&rec).Error
 	return ToDomainProduct(rec), err
 }
 
@@ -102,9 +102,9 @@ func (pr ProductsRepo) StoreDetail(product_slug string, domain domain_products.D
 }
 
 // GetDetail implements domain_products.Repository
-func (pr ProductsRepo) GetDetail(product_slug string) (domain_products.Detail_Product, error) {
+func (pr ProductsRepo) GetDetail(detail_slug string) (domain_products.Detail_Product, error) {
 	rec := Detail_Product{}
-	err := pr.DB.Where("product_slug = ?", product_slug).First(&rec).Error
+	err := pr.DB.Where("detail_slug = ?", detail_slug).First(&rec).Error
 	return ToDomainDetail(rec), err
 }
 
