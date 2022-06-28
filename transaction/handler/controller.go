@@ -98,7 +98,7 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 	})
 }
 
-func (th *TransactionHandler) Transaction(ctx echo.Context) error {
+func (th *TransactionHandler) Callback_Invoice(ctx echo.Context) error {
 	req := request.Callback_Invoice{}
 	ctx.Bind(&req)
 

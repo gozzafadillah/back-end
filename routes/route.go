@@ -44,6 +44,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.GET("/products/:id", cl.ProductsHandler.GetProduct)
 	e.GET("/detail/:product_slug", cl.ProductsHandler.GetDetailsProduct)
 	e.GET("/category", cl.ProductsHandler.GetCategories)
+	e.POST("/transaction/callback_invoice", cl.TransactionHandler.Callback_Invoice)
 
 	// access customer
 	authUser := e.Group("users")
