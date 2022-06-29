@@ -9,11 +9,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetCallback(domain domain_transaction.Callback_Invoice, ctx echo.Context) (interface{}, error) {
+func GetCallback(ctx echo.Context) (interface{}, error) {
 	fmt.Println("otp ", ctx.Request().Header.Get("x-callback-token"))
 
 	decoder := json.NewDecoder(ctx.Request().Body)
-	callbackData := domain
+	callbackData := domain_transaction.Callback_Invoice{}
 
 	err := decoder.Decode(&callbackData)
 	if err != nil {
@@ -29,3 +29,5 @@ func GetCallback(domain domain_transaction.Callback_Invoice, ctx echo.Context) (
 	ctx.Response().WriteHeader(200)
 	return callback, nil
 }
+
+// BjVVRO8eKgceve38jmqm6twtK9YLjtAfk7CbJLxfiToTilHX
