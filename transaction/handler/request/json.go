@@ -83,7 +83,6 @@ type Detail_Transaction struct {
 	Customer_Name       string `json:"customer_name" form:"customer_name" validate:"required"`
 	Price               int
 	Fee                 int
-	Amount              int
 }
 
 func TodomainDetail(req Detail_Transaction) domain_transaction.Detail_Transaction {
@@ -93,7 +92,6 @@ func TodomainDetail(req Detail_Transaction) domain_transaction.Detail_Transactio
 		ID_Customer:         req.ID_Customer,
 		Customer_Name:       req.Customer_Name,
 		Price:               req.Price,
-		Fee:                 req.Fee,
-		Amount:              req.Amount,
+		Fee:                 2000,
 	}
 }

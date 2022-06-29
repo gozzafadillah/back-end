@@ -34,7 +34,6 @@ type Detail_Transaction struct {
 	Customer_Name       string
 	Price               int
 	Fee                 int
-	Amount              int
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 }

@@ -5,6 +5,7 @@ import (
 	domain_transaction "ppob/transaction/domain"
 
 	"github.com/pborman/uuid"
+	"github.com/xendit/xendit-go"
 )
 
 type TransactionService struct {
@@ -28,4 +29,21 @@ func (ts TransactionService) AddDetailTransaction(productCode string, domain dom
 		return domain_transaction.Detail_Transaction{}, errors.New("internal server error")
 	}
 	return domain, nil
+}
+
+// AddTransaction implements domain_transaction.Service
+func (ts TransactionService) AddTransaction(data *xendit.Invoice, detail domain_transaction.Detail_Transaction) error {
+	transaction := domain_transaction.Transaction{
+		Transaction_Code: detail.Transaction_Code,
+		ID_Customer:      detail.ID_Customer,
+		Phone:            data.Customer.MobileNumber,
+		Amount:           int(data.Amount),
+		Payment_Id:       data.ID,
+		Status:           data.Status,
+	}
+	err := ts.Repository.StoreTransaction(transaction)
+	if err != nil {
+		return errors.New("transaction failed")
+	}
+	return nil
 }

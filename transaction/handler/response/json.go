@@ -12,7 +12,6 @@ type ResponseJSONDetailTransaction struct {
 	Customer_Name       string
 	Price               int
 	Fee                 int
-	Amount              int
 }
 
 func FromDomainCheckout(domain domain_transaction.Detail_Transaction) ResponseJSONDetailTransaction {
@@ -23,7 +22,6 @@ func FromDomainCheckout(domain domain_transaction.Detail_Transaction) ResponseJS
 		Customer_Name:       domain.Customer_Name,
 		Price:               domain.Price,
 		Fee:                 domain.Fee,
-		Amount:              domain.Amount,
 	}
 }
 
