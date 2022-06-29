@@ -50,17 +50,6 @@ type Callback_Invoice struct {
 	PaymentChannel string    `json:"payment_channel"`
 }
 
-func ToDomainCallback(req Callback_Invoice) domain_transaction.Callback_Invoice {
-	return domain_transaction.Callback_Invoice{
-		ID:             req.ID,
-		PaymentMethod:  req.PaymentMethod,
-		Status:         req.Status,
-		PaidAmount:     req.PaidAmount,
-		PaidAt:         req.PaidAt,
-		PaymentChannel: req.PaymentChannel,
-	}
-}
-
 type Detail_Transaction struct {
 	Product_Detail_code string
 	Transaction_Code    string

@@ -107,7 +107,7 @@ func (th *TransactionHandler) Callback_Invoice(ctx echo.Context) error {
 	req := request.Callback_Invoice{}
 	ctx.Bind(&req)
 
-	dataCallback, err := helper_xendit.GetCallback(ctx)
+	dataCallback, err := helper_xendit.GetCallback(ctx, req)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "failed get callback " + err.Error(),

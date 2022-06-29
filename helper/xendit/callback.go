@@ -5,11 +5,12 @@ import (
 	"errors"
 	"fmt"
 	domain_transaction "ppob/transaction/domain"
+	"ppob/transaction/handler/request"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetCallback(ctx echo.Context) (interface{}, error) {
+func GetCallback(ctx echo.Context, req request.Callback_Invoice) (interface{}, error) {
 	fmt.Println("otp ", ctx.Request().Header.Get("x-callback-token"))
 
 	decoder := json.NewDecoder(ctx.Request().Body)
