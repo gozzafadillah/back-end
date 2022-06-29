@@ -54,6 +54,8 @@ func Xendit_Invoice(DetailTransaction domain_transaction.Detail_Transaction, pro
 		Customer:                       invoiceCustomer,
 		Fees:                           []xendit.InvoiceFee{fee},
 		CustomerNotificationPreference: customerNotificationPreference,
+		// success redirect di mobile
+		// SuccessRedirectURL: ,
 	}
 
 	resp, err := invoice.Create(&data)

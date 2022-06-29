@@ -37,3 +37,12 @@ type Detail_Transaction struct {
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 }
+
+type Callback_Invoice struct {
+	ID             string
+	PaymentMethod  string
+	Status         string
+	PaidAmount     int
+	PaidAt         time.Time
+	PaymentChannel string
+}
