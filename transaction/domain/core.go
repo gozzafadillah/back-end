@@ -43,6 +43,6 @@ type Callback_Invoice struct {
 	PaymentMethod  string
 	Status         string
 	PaidAmount     int
-	PaidAt         time.Time
 	PaymentChannel string
+	PaidAt         time.Time
 }

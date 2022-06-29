@@ -46,8 +46,19 @@ type Callback_Invoice struct {
 	PaymentMethod  string    `json:"payment_method"`
 	Status         string    `json:"status"`
 	PaidAmount     int       `json:"paid_amount"`
-	PaidAt         time.Time `json:"paid_at"`
 	PaymentChannel string    `json:"payment_channel"`
+	PaidAt         time.Time `json:"paid_at"`
+}
+
+func ToDomainCallBack(req Callback_Invoice) domain_transaction.Callback_Invoice {
+	return domain_transaction.Callback_Invoice{
+		ID:             req.ID,
+		PaymentMethod:  req.PaymentMethod,
+		Status:         req.Status,
+		PaidAmount:     req.PaidAmount,
+		PaymentChannel: req.PaymentChannel,
+		PaidAt:         req.PaidAt,
+	}
 }
 
 type Detail_Transaction struct {

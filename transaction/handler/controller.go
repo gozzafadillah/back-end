@@ -1,8 +1,6 @@
 package handler_transaction
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"ppob/app/middlewares"
 	err_conv "ppob/helper/err"
@@ -106,31 +104,14 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 }
 
 func (th *TransactionHandler) Callback_Invoice(ctx echo.Context) error {
-	fmt.Println("otp ", ctx.Request().Header.Get("x-callback-token"))
+	data, err := helper_xendit.GetCallBack(ctx)
 
-	decoder := json.NewDecoder(ctx.Request().Body)
-	callbackData := domain_transaction.Callback_Invoice{}
-
-	err := decoder.Decode(&callbackData)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "failed get callback " + err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
-
-	defer ctx.Request().Body.Close()
-
-	callback, _ := json.Marshal(callbackData)
-	fmt.Println("callback ", string(callback))
-
-	ctx.Response().Header().Set("Content-Type", "application/json")
-
-	ctx.Response().WriteHeader(200)
-
 	return ctx.JSON(http.StatusCreated, map[string]interface{}{
-		"message": "success get callback",
-		"rescode": http.StatusOK,
-		"result":  string(callback),
+		"message": "success add detail transaction",
+		"rescode": http.StatusCreated,
+		"xendit":  data,
 	})
 }
