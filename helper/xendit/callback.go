@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetCallBack(ctx echo.Context) (request.Callback_Invoice, error) {
+func GetCallBack(ctx echo.Context) (request.Callback_Invoice, []byte, error) {
 	fmt.Println("otp ", ctx.Request().Header.Get("x-callback-token"))
 
 	decoder := json.NewDecoder(ctx.Request().Body)
@@ -17,8 +17,10 @@ func GetCallBack(ctx echo.Context) (request.Callback_Invoice, error) {
 
 	err := decoder.Decode(&callbackData)
 	if err != nil {
-		return request.Callback_Invoice{}, errors.New("internal server error")
+		return request.Callback_Invoice{}, []byte{}, errors.New("internal server error")
 	}
+
+	callback, _ := json.Marshal(callbackData)
 
 	defer ctx.Request().Body.Close()
 
@@ -26,5 +28,5 @@ func GetCallBack(ctx echo.Context) (request.Callback_Invoice, error) {
 
 	ctx.Response().WriteHeader(200)
 
-	return callbackData, nil
+	return callbackData, callback, nil
 }
