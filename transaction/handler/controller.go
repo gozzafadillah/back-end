@@ -131,6 +131,6 @@ func (th *TransactionHandler) Callback_Invoice(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"message": "success get callback",
 		"rescode": http.StatusOK,
-		"result":  callback,
+		"result":  string(callback),
 	})
 }
