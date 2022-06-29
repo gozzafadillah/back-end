@@ -3,14 +3,17 @@ package helper_xendit
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"ppob/transaction/handler/request"
 
 	"github.com/labstack/echo/v4"
 )
 
 func GetCallBack(ctx echo.Context) (request.Callback_Invoice, []byte, error) {
-	fmt.Println("otp ", ctx.Request().Header.Get("x-callback-token"))
+	tokenBayeueCallback := "BjVVRO8eKgceve38jmqm6twtK9YLjtAfk7CbJLxfiToTilHX"
+	xTokenCallback := ctx.Request().Header.Get("x-callback-token")
+	if xTokenCallback != tokenBayeueCallback {
+		return request.Callback_Invoice{}, []byte{}, errors.New("unauthorized")
+	}
 
 	decoder := json.NewDecoder(ctx.Request().Body)
 	callbackData := request.Callback_Invoice{}

@@ -107,10 +107,12 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 func (th *TransactionHandler) Callback_Invoice(ctx echo.Context) error {
 	data, dataByte, err := helper_xendit.GetCallBack(ctx)
 	fmt.Println(dataByte)
-	fmt.Println("data : ", data)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
+
+	err = th.TransactionUsecase.EditTransaction(request.ToDomainCallBack(data))
+
 	_, err = fmt.Fprintf(ctx.Response().Writer, "%s", "ok")
 	return err
 }

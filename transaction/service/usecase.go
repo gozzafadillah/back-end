@@ -47,3 +47,27 @@ func (ts TransactionService) AddTransaction(data *xendit.Invoice, detail domain_
 	}
 	return nil
 }
+
+// EditTransaction implements domain_transaction.Service
+func (ts TransactionService) EditTransaction(data domain_transaction.Callback_Invoice) error {
+	transaction, err := ts.Repository.GetTransactionByPaymentId(data.ID)
+	if err != nil {
+		return errors.New("transaction not found")
+	}
+	transaction.Status = data.Status
+	err = ts.Repository.UpdateTransaction(transaction)
+	if err != nil {
+		return errors.New("update failed")
+	}
+	pay := domain_transaction.Payment{
+		Payment_Id: data.ID,
+		Method:     data.PaymentMethod,
+		Channel:    data.PaymentChannel,
+		Paid_at:    data.PaidAt,
+	}
+	err = ts.Repository.StorePayment(pay)
+	if err != nil {
+		return errors.New("internal server error")
+	}
+	return nil
+}

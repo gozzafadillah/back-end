@@ -1,6 +1,7 @@
 package mysql_transaction
 
 import (
+	"errors"
 	domain_transaction "ppob/transaction/domain"
 
 	"gorm.io/gorm"
@@ -24,6 +25,29 @@ func (tr TransactionRepo) StoreDetailTransaction(productCode string, domain doma
 
 // StoreTransaction implements domain_transaction.Repository
 func (tr TransactionRepo) StoreTransaction(domain domain_transaction.Transaction) error {
+	err := tr.DB.Save(&domain).Error
+	return err
+}
+
+// GetTransactionByPaymentId implements domain_transaction.Repository
+func (tr TransactionRepo) GetTransactionByPaymentId(id string) (domain_transaction.Transaction, error) {
+	rec := Transaction{}
+	err := tr.DB.Where("payment_id", id).First(&rec).Error
+	return ToDomainTransaction(rec), err
+}
+
+// UpdateTransaction implements domain_transaction.Repository
+func (tr TransactionRepo) UpdateTransaction(domain domain_transaction.Transaction) error {
+	update := tr.DB.Model(&domain).Where("payment_id = ?", domain.Payment_Id).Updates(domain).RowsAffected
+	var err error
+	if update == 0 {
+		err = errors.New("update failed")
+	}
+	return err
+}
+
+// StorePayment implements domain_transaction.Repository
+func (tr TransactionRepo) StorePayment(domain domain_transaction.Payment) error {
 	err := tr.DB.Save(&domain).Error
 	return err
 }
