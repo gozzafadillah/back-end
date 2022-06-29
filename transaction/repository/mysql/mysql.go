@@ -21,3 +21,9 @@ func (tr TransactionRepo) StoreDetailTransaction(productCode string, domain doma
 	err := tr.DB.Save(&domain).Error
 	return err
 }
+
+// StoreTransaction implements domain_transaction.Repository
+func (tr TransactionRepo) StoreTransaction(domain domain_transaction.Transaction) error {
+	err := tr.DB.Save(&domain).Error
+	return err
+}

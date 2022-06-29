@@ -73,7 +73,6 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 
 	req.Fee = 2000
 	req.Price = detailproduct.Price
-	req.Amount = req.Fee + req.Price
 	// make detail transaction / checkout
 	detail, err := th.TransactionUsecase.AddDetailTransaction(detail_slug, request.TodomainDetail(req))
 	if err != nil {
@@ -82,6 +81,12 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 
 	// make invoice
 	invoice, err := helper_xendit.Xendit_Invoice(detail, detailproduct, user, category.Name)
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
+
+	// Transaction
+	err = th.TransactionUsecase.AddTransaction(invoice, detail)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}

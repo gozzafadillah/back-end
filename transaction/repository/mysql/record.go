@@ -66,7 +66,6 @@ type Detail_Transaction struct {
 	Customer_Name       string
 	Price               int
 	Fee                 int
-	Amount              int
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 }
@@ -80,7 +79,6 @@ func ToDomain(rec Detail_Transaction) domain_transaction.Detail_Transaction {
 		Customer_Name:       rec.Customer_Name,
 		Price:               rec.Price,
 		Fee:                 rec.Fee,
-		Amount:              rec.Amount,
 		CreatedAt:           rec.CreatedAt,
 		UpdatedAt:           rec.UpdatedAt,
 	}

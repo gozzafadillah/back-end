@@ -12,12 +12,8 @@ import (
 	"github.com/xendit/xendit-go/invoice"
 )
 
-func Xendit_Invoice(DetailTransaction domain_transaction.Detail_Transaction, product domain_products.Detail_Product, user domain_users.Users, cat string) (interface{}, error) {
+func Xendit_Invoice(DetailTransaction domain_transaction.Detail_Transaction, product domain_products.Detail_Product, user domain_users.Users, cat string) (*xendit.Invoice, error) {
 	xendit.Opt.SecretKey = "xnd_development_I0guK5bOcQB3AVQ8pYUXMtXltsVvfqsyPU2dz1RJvTDNVrsLVxqC8K0KJc3YhlZE"
-
-	fmt.Println("Detail ", DetailTransaction)
-	fmt.Println("product ", product)
-	fmt.Println("user ", user)
 
 	customer := xendit.Customer{
 		GivenNames:   user.Name,
@@ -53,7 +49,7 @@ func Xendit_Invoice(DetailTransaction domain_transaction.Detail_Transaction, pro
 		ExternalID:                     DetailTransaction.Transaction_Code,
 		Amount:                         item.Price + fee.Value,
 		PayerEmail:                     "admin@bayeue.com",
-		Description:                    "Paket Data XL",
+		Description:                    item.Name,
 		Items:                          []xendit.InvoiceItem{item},
 		Customer:                       invoiceCustomer,
 		Fees:                           []xendit.InvoiceFee{fee},
@@ -62,7 +58,7 @@ func Xendit_Invoice(DetailTransaction domain_transaction.Detail_Transaction, pro
 
 	resp, err := invoice.Create(&data)
 	if err != nil {
-		return xendit.Invoice{}, errors.New("internal server error, xendit")
+		return resp, errors.New("internal server error, xendit")
 	}
 	fmt.Println("response ", resp)
 	return resp, nil
