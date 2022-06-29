@@ -3,18 +3,14 @@ package helper_xendit
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	domain_transaction "ppob/transaction/domain"
 
 	"github.com/labstack/echo/v4"
 )
 
 func GetCallback(domain domain_transaction.Callback_Invoice, ctx echo.Context) (interface{}, error) {
-	callback_otp := "BjVVRO8eKgceve38jmqm6twtK9YLjtAfk7CbJLxfiToTilHX"
-	if ctx.Request().Header.Get("x-callback-token") == callback_otp {
-		ctx.JSON(401, map[string]interface{}{
-			"message": "unauthorized",
-		})
-	}
+	fmt.Println("otp ", ctx.Request().Header.Get("x-callback-token"))
 
 	decoder := json.NewDecoder(ctx.Request().Body)
 	callbackData := domain
