@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"ppob/helper/slug"
 	domain_transaction "ppob/transaction/domain"
 
 	"github.com/pborman/uuid"
@@ -16,6 +18,13 @@ func NewTransactionService(repository domain_transaction.Repository) domain_tran
 	return TransactionService{
 		Repository: repository,
 	}
+}
+
+// GetTransactionsByPhone implements domain_transaction.Service
+func (ts TransactionService) GetTransactionsByPhone(phone string) []domain_transaction.Transaction {
+	TransactionSlice := ts.Repository.GetTransactionByPhone(phone)
+	fmt.Println("transaction : ", TransactionSlice)
+	return TransactionSlice
 }
 
 // AddDetailTransaction implements domain_transaction.Service
@@ -34,12 +43,14 @@ func (ts TransactionService) AddDetailTransaction(productCode string, domain dom
 // AddTransaction implements domain_transaction.Service
 func (ts TransactionService) AddTransaction(data *xendit.Invoice, detail domain_transaction.Detail_Transaction) error {
 	transaction := domain_transaction.Transaction{
-		Transaction_Code: detail.Transaction_Code,
-		ID_Customer:      detail.ID_Customer,
-		Phone:            data.Customer.MobileNumber,
-		Amount:           int(data.Amount),
-		Payment_Id:       data.ID,
-		Status:           data.Status,
+		Transaction_Code:    detail.Transaction_Code,
+		ID_Customer:         detail.ID_Customer,
+		Phone:               data.Customer.MobileNumber,
+		Amount:              int(data.Amount),
+		Category_Slug:       slug.GenerateSlug(data.Items[0].Category),
+		Detail_Product_Slug: slug.GenerateSlug(data.Items[0].Name),
+		Payment_Id:          data.ID,
+		Status:              data.Status,
 	}
 	err := ts.Repository.StoreTransaction(transaction)
 	if err != nil {
@@ -70,4 +81,10 @@ func (ts TransactionService) EditTransaction(data domain_transaction.Callback_In
 		return errors.New("internal server error")
 	}
 	return nil
+}
+
+// GetPayment implements domain_transaction.Service
+func (ts TransactionService) GetPayment(id string) domain_transaction.Payment {
+	data := ts.Repository.GetPayment(id)
+	return data
 }

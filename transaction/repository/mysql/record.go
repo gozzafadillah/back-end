@@ -9,28 +9,32 @@ import (
 
 type Transaction struct {
 	gorm.Model
-	ID               int
-	Transaction_Code string
-	ID_Customer      string
-	Phone            string
-	Amount           int
-	Payment_Id       string
-	Status           string
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	ID                  int
+	Transaction_Code    string
+	ID_Customer         string
+	Phone               string
+	Amount              int
+	Category_Slug       string
+	Detail_Product_Slug string
+	Payment_Id          string
+	Status              string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
 }
 
 func ToDomainTransaction(rec Transaction) domain_transaction.Transaction {
 	return domain_transaction.Transaction{
-		ID:               rec.ID,
-		Transaction_Code: rec.Transaction_Code,
-		ID_Customer:      rec.ID_Customer,
-		Phone:            rec.Phone,
-		Amount:           rec.Amount,
-		Payment_Id:       rec.Payment_Id,
-		Status:           rec.Status,
-		CreatedAt:        rec.CreatedAt,
-		UpdatedAt:        rec.UpdatedAt,
+		ID:                  rec.ID,
+		Transaction_Code:    rec.Transaction_Code,
+		ID_Customer:         rec.ID_Customer,
+		Phone:               rec.Phone,
+		Category_Slug:       rec.Category_Slug,
+		Detail_Product_Slug: rec.Detail_Product_Slug,
+		Amount:              rec.Amount,
+		Payment_Id:          rec.Payment_Id,
+		Status:              rec.Status,
+		CreatedAt:           rec.CreatedAt,
+		UpdatedAt:           rec.UpdatedAt,
 	}
 }
 

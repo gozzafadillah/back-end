@@ -4,9 +4,11 @@ import (
 	"net/http"
 	"ppob/app/middlewares"
 	"ppob/helper/claudinary"
+
 	"ppob/helper/encryption"
 	err_conv "ppob/helper/err"
 	otp_generator "ppob/helper/otp"
+	regexPhone "ppob/helper/phone"
 	domain_users "ppob/users/domain"
 	"ppob/users/handler/request"
 	"ppob/users/handler/response"
@@ -63,6 +65,18 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+
+	// check phone
+	statusPhone := regexPhone.CheckPhone(req.Phone)
+	if !statusPhone {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "phone not valid",
+			"rescode": http.StatusOK,
+		})
+	}
+
+	// change phone to international code
+	req.Phone = regexPhone.GenerateNewPhone(req.Phone)
 
 	// upload image
 	req.File = claudinary.GetFile(ctx)
@@ -207,6 +221,18 @@ func (uh *UsersHandler) UpdateProfile(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+
+	// check phone
+	statusPhone := regexPhone.CheckPhone(req.Phone)
+	if !statusPhone {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "phone not valid",
+			"rescode": http.StatusOK,
+		})
+	}
+
+	// change phone to international code
+	req.Phone = regexPhone.GenerateNewPhone(req.Phone)
 
 	// upload image
 	req.File = claudinary.GetFile(ctx)

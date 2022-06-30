@@ -6,22 +6,26 @@ import (
 )
 
 type Transaction struct {
-	Transaction_Code string
-	ID_Customer      string
-	Phone            string
-	Amount           int
-	Payment_Id       string
-	Status           string
+	Transaction_Code    string
+	ID_Customer         string
+	Phone               string
+	Category_Slug       string
+	Detail_Product_Slug string
+	Amount              int
+	Payment_Id          string
+	Status              string
 }
 
 func TodomainTransaction(req Transaction) domain_transaction.Transaction {
 	return domain_transaction.Transaction{
-		Transaction_Code: req.Transaction_Code,
-		ID_Customer:      req.ID_Customer,
-		Phone:            req.Phone,
-		Amount:           req.Amount,
-		Payment_Id:       req.Payment_Id,
-		Status:           req.Status,
+		Transaction_Code:    req.Transaction_Code,
+		ID_Customer:         req.ID_Customer,
+		Phone:               req.Phone,
+		Category_Slug:       req.Category_Slug,
+		Detail_Product_Slug: req.Detail_Product_Slug,
+		Amount:              req.Amount,
+		Payment_Id:          req.Payment_Id,
+		Status:              req.Status,
 	}
 }
 

@@ -61,6 +61,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
 	// transaction
 	authUser.POST("/checkout/:detail_slug", cl.TransactionHandler.Checkout)
+	authUser.GET("/history", cl.TransactionHandler.GetHistoryTransaction)
 
 	// manage product endpoint (admin)
 	authAdmin := e.Group("admin")

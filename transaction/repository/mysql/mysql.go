@@ -2,6 +2,7 @@ package mysql_transaction
 
 import (
 	"errors"
+	"fmt"
 	domain_transaction "ppob/transaction/domain"
 
 	"gorm.io/gorm"
@@ -29,6 +30,17 @@ func (tr TransactionRepo) StoreTransaction(domain domain_transaction.Transaction
 	return err
 }
 
+// GetTransactionByPhone implements domain_transaction.Repository
+func (tr TransactionRepo) GetTransactionByPhone(phone string) (transaction []domain_transaction.Transaction) {
+	rec := []Transaction{}
+	tr.DB.Where("phone = ?", phone).Find(&rec)
+	fmt.Println("transaction ", rec, tr.DB.Where("phone = ?", phone).Find(&rec).Error)
+	for _, value := range rec {
+		transaction = append(transaction, ToDomainTransaction(value))
+	}
+	return transaction
+}
+
 // GetTransactionByPaymentId implements domain_transaction.Repository
 func (tr TransactionRepo) GetTransactionByPaymentId(id string) (domain_transaction.Transaction, error) {
 	rec := Transaction{}
@@ -50,4 +62,11 @@ func (tr TransactionRepo) UpdateTransaction(domain domain_transaction.Transactio
 func (tr TransactionRepo) StorePayment(domain domain_transaction.Payment) error {
 	err := tr.DB.Save(&domain).Error
 	return err
+}
+
+// GetPayment implements domain_transaction.Repository
+func (tr TransactionRepo) GetPayment(id string) domain_transaction.Payment {
+	rec := Payment{}
+	tr.DB.Where("payment_id = ?", id).First(&rec)
+	return ToDomainPayment(rec)
 }

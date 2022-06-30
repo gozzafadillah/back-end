@@ -13,21 +13,6 @@ type RequestJSONProduct struct {
 	File         interface{} `json:"file,omitempty"`
 }
 
-// request Category Product
-type RequestJSONCategory struct {
-	Name string `json:"name" form:"name" validate:"required"`
-	Icon string `json:"icon" form:"icon" validate:"required"`
-}
-
-// Data for Detail Product
-type DataDetail struct {
-	Product_Slug string
-	Name         string `json:"name" form:"name" validate:"required"`
-	Detail_Slug  string
-	Price        int `json:"price" form:"price" validate:"required"`
-	Status       bool
-}
-
 func ToDomain(req RequestJSONProduct) domain_products.Products {
 	return domain_products.Products{
 		Product_Slug: req.Product_Slug,
@@ -38,12 +23,29 @@ func ToDomain(req RequestJSONProduct) domain_products.Products {
 	}
 }
 
+// request Category Product
+type RequestJSONCategory struct {
+	Name          string `json:"name" form:"name" validate:"required"`
+	Category_Slug string
+	Icon          string `json:"icon" form:"icon" validate:"required"`
+}
+
 func ToDomainCategory(req RequestJSONCategory) domain_products.Category_Product {
 	return domain_products.Category_Product{
-		Name:   req.Name,
-		Icon:   req.Icon,
-		Status: true,
+		Name:          req.Name,
+		Category_Slug: req.Category_Slug,
+		Icon:          req.Icon,
+		Status:        true,
 	}
+}
+
+// Data for Detail Product
+type DataDetail struct {
+	Product_Slug string
+	Name         string `json:"name" form:"name" validate:"required"`
+	Detail_Slug  string
+	Price        int `json:"price" form:"price" validate:"required"`
+	Status       bool
 }
 
 func ToDomainDetail(data DataDetail) domain_products.Detail_Product {

@@ -5,15 +5,17 @@ import (
 )
 
 type Transaction struct {
-	ID               int
-	Transaction_Code string
-	ID_Customer      string
-	Phone            string
-	Amount           int
-	Payment_Id       string
-	Status           string
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	ID                  int
+	Transaction_Code    string
+	ID_Customer         string
+	Phone               string
+	Amount              int
+	Category_Slug       string
+	Detail_Product_Slug string
+	Payment_Id          string
+	Status              string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
 }
 
 type Payment struct {

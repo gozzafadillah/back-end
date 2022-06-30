@@ -34,20 +34,22 @@ func ToDomainProduct(rec Products) domain_products.Products {
 
 type Category_Product struct {
 	gorm.Model
-	ID        int
-	Name      string
-	Icon      string
-	Status    bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            int
+	Name          string
+	Category_Slug string
+	Icon          string
+	Status        bool
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func ToDomainCategory(rec Category_Product) domain_products.Category_Product {
 	return domain_products.Category_Product{
-		ID:     rec.ID,
-		Name:   rec.Name,
-		Icon:   rec.Icon,
-		Status: rec.Status,
+		ID:            rec.ID,
+		Name:          rec.Name,
+		Category_Slug: rec.Category_Slug,
+		Icon:          rec.Icon,
+		Status:        rec.Status,
 	}
 }
 

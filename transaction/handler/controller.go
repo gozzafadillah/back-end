@@ -112,7 +112,54 @@ func (th *TransactionHandler) Callback_Invoice(ctx echo.Context) error {
 	}
 
 	err = th.TransactionUsecase.EditTransaction(request.ToDomainCallBack(data))
-
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
 	_, err = fmt.Fprintf(ctx.Response().Writer, "%s", "ok")
 	return err
+}
+
+func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
+	dataMap := map[int]interface{}{}
+	// get jwt
+	claim := middlewares.GetUser(ctx)
+	fmt.Println("phone :", claim.Phone)
+	// get transactions by phone
+	transactions := th.TransactionUsecase.GetTransactionsByPhone(claim.Phone)
+
+	for i := 0; i < len(transactions); i++ {
+		// get Detail product
+		detailproduct, err := th.ProductUsecase.GetDetail(transactions[i].Detail_Product_Slug)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+		// get product
+		product, err := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Slug)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+
+		// get Category product
+		category, err := th.ProductUsecase.GetCategory(product.Category_Id)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+
+		payment := th.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
+		dataMap[i] = map[string]interface{}{
+			"transaction":    transactions[i],
+			"payment":        payment,
+			"category":       category,
+			"product":        product,
+			"detail_product": detailproduct,
+		}
+	}
+
+	fmt.Println(len(transactions))
+
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"rescode": http.StatusOK,
+		"result":  dataMap,
+	})
 }
