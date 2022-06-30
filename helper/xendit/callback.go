@@ -3,29 +3,34 @@ package helper_xendit
 import (
 	"encoding/json"
 	"errors"
-	"net/http"
+	"os"
+	"ppob/transaction/handler/request"
+
+	"github.com/labstack/echo/v4"
 )
 
-func GetCallback(domain interface{}) (interface{}, error) {
-	callback_otp := "BjVVRO8eKgceve38jmqm6twtK9YLjtAfk7CbJLxfiToTilHX"
-	var req *http.Request
-	var responseWriter http.ResponseWriter
+func GetCallBack(ctx echo.Context) (request.Callback_Invoice, []byte, error) {
+	tokenBayeueCallback := os.Getenv("OTP_Xendit_Callback")
+	xTokenCallback := ctx.Request().Header.Get("x-callback-token")
+	if xTokenCallback != tokenBayeueCallback {
+		return request.Callback_Invoice{}, []byte{}, errors.New("unauthorized")
+	}
 
-	decoder := json.NewDecoder(req.Body)
-	callbackData := domain
+	decoder := json.NewDecoder(ctx.Request().Body)
+	callbackData := request.Callback_Invoice{}
 
 	err := decoder.Decode(&callbackData)
 	if err != nil {
-		return "empty", errors.New("internal status error")
+		return request.Callback_Invoice{}, []byte{}, errors.New("internal server error")
 	}
-
-	defer req.Body.Close()
 
 	callback, _ := json.Marshal(callbackData)
 
-	responseWriter.Header().Set("Content-Type", "application/json")
-	responseWriter.Header().Set("x-callback-token", callback_otp)
+	defer ctx.Request().Body.Close()
 
-	responseWriter.WriteHeader(200)
-	return callback, nil
+	ctx.Response().Header().Set("Content-Type", "application/json")
+
+	ctx.Response().WriteHeader(200)
+
+	return callbackData, callback, nil
 }

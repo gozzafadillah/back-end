@@ -6,22 +6,26 @@ import (
 )
 
 type Transaction struct {
-	Transaction_Code string
-	ID_Customer      string
-	Phone            string
-	Amount           int
-	Payment_Id       string
-	Status           string
+	Transaction_Code    string
+	ID_Customer         string
+	Phone               string
+	Category_Slug       string
+	Detail_Product_Slug string
+	Amount              int
+	Payment_Id          string
+	Status              string
 }
 
 func TodomainTransaction(req Transaction) domain_transaction.Transaction {
 	return domain_transaction.Transaction{
-		Transaction_Code: req.Transaction_Code,
-		ID_Customer:      req.ID_Customer,
-		Phone:            req.Phone,
-		Amount:           req.Amount,
-		Payment_Id:       req.Payment_Id,
-		Status:           req.Status,
+		Transaction_Code:    req.Transaction_Code,
+		ID_Customer:         req.ID_Customer,
+		Phone:               req.Phone,
+		Category_Slug:       req.Category_Slug,
+		Detail_Product_Slug: req.Detail_Product_Slug,
+		Amount:              req.Amount,
+		Payment_Id:          req.Payment_Id,
+		Status:              req.Status,
 	}
 }
 
@@ -42,37 +46,22 @@ func TodomainPayment(req Payment) domain_transaction.Payment {
 }
 
 type Callback_Invoice struct {
-	ID                     string    `json:"id"`
-	ExternalID             string    `json:"external_id"`
-	UserID                 string    `json:"user_id"`
-	IsHigh                 bool      `json:"is_high"`
-	PaymentMethod          string    `json:"payment_method"`
-	Status                 string    `json:"status"`
-	MerchantName           string    `json:"merchant_name"`
-	Amount                 int       `json:"amount"`
-	PaidAmount             int       `json:"paid_amount"`
-	PaidAt                 time.Time `json:"paid_at"`
-	PayerEmail             string    `json:"payer_email"`
-	Description            string    `json:"description"`
-	AdjustedReceivedAmount int       `json:"adjusted_received_amount"`
-	FeesPaidAmount         int       `json:"fees_paid_amount"`
-	Updated                time.Time `json:"updated"`
-	Created                time.Time `json:"created"`
-	Currency               string    `json:"currency"`
-	PaymentChannel         string    `json:"payment_channel"`
-	PaymentDestination     string    `json:"payment_destination"`
-	ID_Customer            string
-	Phone                  string
+	ID             string    `json:"id"`
+	PaymentMethod  string    `json:"payment_method"`
+	Status         string    `json:"status"`
+	PaidAmount     int       `json:"paid_amount"`
+	PaymentChannel string    `json:"payment_channel"`
+	PaidAt         time.Time `json:"paid_at"`
 }
 
-func TodomainTransactionFromCallback(req Callback_Invoice) domain_transaction.Transaction {
-	return domain_transaction.Transaction{
-		Transaction_Code: req.ExternalID,
-		ID_Customer:      req.ID_Customer,
-		Phone:            req.Phone,
-		Amount:           req.Amount,
-		Payment_Id:       req.ID,
-		Status:           req.Status,
+func ToDomainCallBack(req Callback_Invoice) domain_transaction.Callback_Invoice {
+	return domain_transaction.Callback_Invoice{
+		ID:             req.ID,
+		PaymentMethod:  req.PaymentMethod,
+		Status:         req.Status,
+		PaidAmount:     req.PaidAmount,
+		PaymentChannel: req.PaymentChannel,
+		PaidAt:         req.PaidAt,
 	}
 }
 

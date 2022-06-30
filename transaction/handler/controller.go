@@ -1,6 +1,7 @@
 package handler_transaction
 
 import (
+	"fmt"
 	"net/http"
 	"ppob/app/middlewares"
 	err_conv "ppob/helper/err"
@@ -104,19 +105,61 @@ func (th *TransactionHandler) Checkout(ctx echo.Context) error {
 }
 
 func (th *TransactionHandler) Callback_Invoice(ctx echo.Context) error {
-	req := request.Callback_Invoice{}
-	ctx.Bind(&req)
-
-	dataCallback, err := helper_xendit.GetCallback(req)
+	data, dataByte, err := helper_xendit.GetCallBack(ctx)
+	fmt.Println(dataByte)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "failed get callback " + err.Error(),
-			"rescode": http.StatusBadRequest,
-		})
+		return err_conv.Conversion(err, ctx)
 	}
-	return ctx.JSON(http.StatusCreated, map[string]interface{}{
-		"message": "success get callback",
-		"rescode": http.StatusCreated,
-		"result":  dataCallback,
+
+	err = th.TransactionUsecase.EditTransaction(request.ToDomainCallBack(data))
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
+	_, err = fmt.Fprintf(ctx.Response().Writer, "%s", "ok")
+	return err
+}
+
+func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
+	dataMap := map[int]interface{}{}
+	// get jwt
+	claim := middlewares.GetUser(ctx)
+	fmt.Println("phone :", claim.Phone)
+	// get transactions by phone
+	transactions := th.TransactionUsecase.GetTransactionsByPhone(claim.Phone)
+
+	for i := 0; i < len(transactions); i++ {
+		// get Detail product
+		detailproduct, err := th.ProductUsecase.GetDetail(transactions[i].Detail_Product_Slug)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+		// get product
+		product, err := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Slug)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+
+		// get Category product
+		category, err := th.ProductUsecase.GetCategory(product.Category_Id)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+
+		payment := th.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
+		dataMap[i] = map[string]interface{}{
+			"transaction":    transactions[i],
+			"payment":        payment,
+			"category":       category,
+			"product":        product,
+			"detail_product": detailproduct,
+		}
+	}
+
+	fmt.Println(len(transactions))
+
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"rescode": http.StatusOK,
+		"result":  dataMap,
 	})
 }

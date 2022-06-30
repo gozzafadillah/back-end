@@ -159,6 +159,7 @@ func (ps ProductService) DestroyDetail(id int) error {
 
 // InsertCategory implements domain_products.Service
 func (ps ProductService) InsertCategory(domain domain_products.Category_Product) error {
+	domain.Category_Slug = slug.GenerateSlug(domain.Name)
 	err := ps.Repository.StoreCategory(domain)
 	if err != nil {
 		return errors.New("internal server error")
