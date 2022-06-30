@@ -3,6 +3,7 @@ package helper_xendit
 import (
 	"errors"
 	"fmt"
+	"os"
 
 	domain_products "ppob/products/domain"
 	domain_transaction "ppob/transaction/domain"
@@ -13,7 +14,7 @@ import (
 )
 
 func Xendit_Invoice(DetailTransaction domain_transaction.Detail_Transaction, product domain_products.Detail_Product, user domain_users.Users, cat string) (*xendit.Invoice, error) {
-	xendit.Opt.SecretKey = "xnd_development_I0guK5bOcQB3AVQ8pYUXMtXltsVvfqsyPU2dz1RJvTDNVrsLVxqC8K0KJc3YhlZE"
+	xendit.Opt.SecretKey = os.Getenv("Xendit_API_Dev")
 
 	customer := xendit.Customer{
 		GivenNames:   user.Name,
