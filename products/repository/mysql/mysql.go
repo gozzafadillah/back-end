@@ -56,7 +56,7 @@ func (pr ProductsRepo) GetProductTransaction(product_slug string) (domain_produc
 
 // Store implements domain_products.Repository
 func (pr ProductsRepo) Store(domain domain_products.Products) error {
-	err := pr.DB.Save(&domain).Error
+	err := pr.DB.Create(&domain).Error
 	return err
 }
 
@@ -97,7 +97,7 @@ func (pr ProductsRepo) GetDetailsByCode(product_slug string) ([]domain_products.
 // StoreDetail implements domain_products.Repository
 func (pr ProductsRepo) StoreDetail(product_slug string, domain domain_products.Detail_Product) error {
 	domain.Product_Slug = product_slug
-	err := pr.DB.Save(&domain).Error
+	err := pr.DB.Create(&domain).Error
 	return err
 }
 
@@ -173,7 +173,7 @@ func (pr ProductsRepo) GetCategories() ([]domain_products.Category_Product, erro
 
 // StoreCategory implements domain_products.Repository
 func (pr ProductsRepo) StoreCategory(domain domain_products.Category_Product) error {
-	err := pr.DB.Save(&domain).Error
+	err := pr.DB.Create(&domain).Error
 	return err
 }
 
