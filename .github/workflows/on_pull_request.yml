@@ -38,14 +38,15 @@ jobs:
           DBNAME: db_bayeue
         run: |
           go mod tidy
-          go test ./user/domain/abstraction_test.go -coverpkg=./user/service/...
-          go test ./product/domain/abstraction_test.go -coverpkg=./product/service/... 
+          go test ./users/domain/abstraction_test.go -coverpkg=./user/service/...
+          go test ./products/domain/abstraction_test.go -coverpkg=./product/service/... 
           go test ./transaction/domain/abstraction_test.go -coverpkg=./transaction/service/... 
 
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
           
             #Now we have got the access of EC2 and we will start the deploy .
+            
             cd /home/ubuntu/bayeue/path/backend &&
             git checkout master &&
             git fetch --all &&
