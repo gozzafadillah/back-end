@@ -265,11 +265,6 @@ func (uh *UsersHandler) UpdateProfile(ctx echo.Context) error {
 	})
 }
 
-// implementation Destroy user for Admin
-func (uh *UsersHandler) DestroyUserForAdmin(ctx echo.Context) error {
-	panic("")
-}
-
 func (uh *UsersHandler) VerifUser(ctx echo.Context) error {
 	req := request.RequestJSONVerif{}
 	ctx.Bind(&req)

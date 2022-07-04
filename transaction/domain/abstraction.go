@@ -17,7 +17,7 @@ type Service interface {
 
 type Repository interface {
 	// detail transaction / checkout
-	StoreDetailTransaction(productCode string, domain Detail_Transaction) error
+	StoreDetailTransaction(domain Detail_Transaction) error
 	// transaction
 	StoreTransaction(domain Transaction) error
 	GetTransactionByPhone(phone string) (transaction []Transaction)

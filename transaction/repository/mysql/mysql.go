@@ -19,14 +19,14 @@ func NewTransactionRepo(db *gorm.DB) domain_transaction.Repository {
 }
 
 // StoreDetailTransaction implements domain_transaction.Repository
-func (tr TransactionRepo) StoreDetailTransaction(productCode string, domain domain_transaction.Detail_Transaction) error {
-	err := tr.DB.Save(&domain).Error
+func (tr TransactionRepo) StoreDetailTransaction(domain domain_transaction.Detail_Transaction) error {
+	err := tr.DB.Create(&domain).Error
 	return err
 }
 
 // StoreTransaction implements domain_transaction.Repository
 func (tr TransactionRepo) StoreTransaction(domain domain_transaction.Transaction) error {
-	err := tr.DB.Save(&domain).Error
+	err := tr.DB.Create(&domain).Error
 	return err
 }
 
@@ -60,7 +60,7 @@ func (tr TransactionRepo) UpdateTransaction(domain domain_transaction.Transactio
 
 // StorePayment implements domain_transaction.Repository
 func (tr TransactionRepo) StorePayment(domain domain_transaction.Payment) error {
-	err := tr.DB.Save(&domain).Error
+	err := tr.DB.Create(&domain).Error
 	return err
 }
 
