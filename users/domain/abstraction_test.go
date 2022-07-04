@@ -163,10 +163,47 @@ func TestGetUserAccount(t *testing.T) {
 	})
 }
 
-// func TestAddUserVerif(t *testing.T) {
-// 	panic("")
-// }
+func TestAddUserVerif(t *testing.T) {
+	t.Run("success add verif", func(t *testing.T) {
+		userRepo.On("StoreOtpUserVerif", mock.Anything, mock.Anything).Return(nil).Once()
 
-// func TestVerif(t *testing.T) {
-// 	panic("")
-// }
+		err := userService.AddUserVerif("ABCDEFG", userDomainUser.Email, userDomainUser.Name)
+
+		assert.NoError(t, err)
+		assert.Equal(t, nil, err)
+	})
+	t.Run("failed add verif", func(t *testing.T) {
+		userRepo.On("StoreOtpUserVerif", mock.Anything, mock.Anything).Return(errors.New("error verif")).Once()
+
+		err := userService.AddUserVerif("ABCDEFG", userDomainUser.Email, userDomainUser.Name)
+
+		assert.Error(t, err)
+		assert.Equal(t, err, err)
+	})
+}
+
+func TestVerif(t *testing.T) {
+	t.Run("success verif token", func(t *testing.T) {
+		userRepo.On("Verif", mock.Anything).Return(domain_users.UserVerif{Code: "ABCDEFG"}, nil).Once()
+		userRepo.On("ChangeStatusVerif", mock.Anything).Return(nil).Once()
+		userRepo.On("ChangeStatusUsers", mock.Anything).Return(nil).Once()
+
+		err := userService.Verif("ABCDEFG")
+
+		assert.NoError(t, err)
+		assert.Equal(t, nil, err)
+	})
+	t.Run("success verif token", func(t *testing.T) {
+		userRepo.On("Verif", mock.Anything).Return(domain_users.UserVerif{Code: "ABCDEFG"}, errors.New("failed verif data")).Once()
+		userRepo.On("ChangeStatusVerif", mock.Anything).Return(nil).Once()
+		userRepo.On("ChangeStatusUsers", mock.Anything).Return(nil).Once()
+
+		err := userService.Verif("ABCDEFG")
+
+		assert.Error(t, err)
+		assert.Equal(t, err, err)
+	})
+}
+
+// $ go test ./users/domain/abstraction_test.go -coverpkg=./users/service/...
+// ok      command-line-arguments  1.170s  coverage: 92.3% of statements in ./users/service/...

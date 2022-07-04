@@ -1,8 +1,7 @@
-package service
+package service_transaction
 
 import (
 	"errors"
-	"fmt"
 	"ppob/helper/slug"
 	domain_transaction "ppob/transaction/domain"
 
@@ -23,7 +22,6 @@ func NewTransactionService(repository domain_transaction.Repository) domain_tran
 // GetTransactionsByPhone implements domain_transaction.Service
 func (ts TransactionService) GetTransactionsByPhone(phone string) []domain_transaction.Transaction {
 	TransactionSlice := ts.Repository.GetTransactionByPhone(phone)
-	fmt.Println("transaction : ", TransactionSlice)
 	return TransactionSlice
 }
 
@@ -33,7 +31,7 @@ func (ts TransactionService) AddDetailTransaction(productCode string, domain dom
 	domain.Transaction_Code = "transaction-" + code
 	domain.Product_Detail_code = productCode
 
-	err := ts.Repository.StoreDetailTransaction(productCode, domain)
+	err := ts.Repository.StoreDetailTransaction(domain)
 	if err != nil {
 		return domain_transaction.Detail_Transaction{}, errors.New("internal server error")
 	}

@@ -19,7 +19,7 @@ func NewTransactionRepo(db *gorm.DB) domain_transaction.Repository {
 }
 
 // StoreDetailTransaction implements domain_transaction.Repository
-func (tr TransactionRepo) StoreDetailTransaction(productCode string, domain domain_transaction.Detail_Transaction) error {
+func (tr TransactionRepo) StoreDetailTransaction(domain domain_transaction.Detail_Transaction) error {
 	err := tr.DB.Create(&domain).Error
 	return err
 }
