@@ -39,8 +39,6 @@ jobs:
           go test ./products/domain/abstraction_test.go -coverpkg=./products/service/... 
           go test ./transaction/domain/abstraction_test.go -coverpkg=./transaction/service/... 
 
-      - name: Build the docker_compose
-        run: docker-compose up -d --build
   deploy:
       needs: testing
       runs-on: ubuntu-latest
