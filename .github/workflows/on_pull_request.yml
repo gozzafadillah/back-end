@@ -26,8 +26,11 @@ jobs:
         go: [ "1.17" ]
     steps:
       - uses: actions/checkout@v2
-      - name: running test
+      - name: Deploy in EC2
         env:
+          PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
+          HOSTNAME : ${{ secrets.HOST_NAME  }}
+          USER_NAME : ${{ secrets.USER_NAME  }}
           DBHOST: bayeue-mysql-server
           DBUSER: root
           DBPASS: root
@@ -38,3 +41,14 @@ jobs:
           go test ./user/domain/abstraction_test.go -coverpkg=./user/service/...
           go test ./product/domain/abstraction_test.go -coverpkg=./product/service/... 
           go test ./transaction/domain/abstraction_test.go -coverpkg=./transaction/service/... 
+
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          
+            #Now we have got the access of EC2 and we will start the deploy .
+            cd /home/ubuntu/bayeue/path/backend &&
+            git checkout master &&
+            git fetch --all &&
+            git reset --hard origin/master &&
+            git pull origin master &&
+            docker-compose -f docker-compose.yaml up -d --build
