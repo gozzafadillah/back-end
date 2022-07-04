@@ -41,22 +41,8 @@ jobs:
 
       - name: Build the docker_compose
         run: docker-compose up -d --build
-  build: 
-      runs-on: ubuntu-latest
-    
-      steps:
-        - uses: actions/checkout@v2
-
-        - name: Build the docker_compose
-          env:
-            DBHOST: bayeue-mysql-server
-            DBUSER: root
-            DBPASS: root
-            DBPORT: 3306
-            DBNAME: db_bayeue
-          run: docker-compose up -d --build
   deploy:
-      needs: build
+      needs: testing
       runs-on: ubuntu-latest
 
       steps:
