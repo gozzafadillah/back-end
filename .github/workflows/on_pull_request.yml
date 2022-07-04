@@ -27,12 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: unit test
-        env:
-          DBHOST: bayeue-mysql-server
-          DBUSER: root
-          DBPASS: root
-          DBPORT: 3306
-          DBNAME: db_bayeue
         run: |
           go mod tidy
           go test ./users/domain/abstraction_test.go -coverpkg=./users/service/...
@@ -41,7 +35,14 @@ jobs:
 
       - name: Build the docker_compose
         run: docker-compose up -d --build
-
+  build: 
+      runs-on: ubuntu-latest
+    
+      steps:
+        - uses: actions/checkout@v2
+        
+        - name: Build the docker_compose
+          run: docker-compose up -d --build
   deploy:
       needs: build
       runs-on: ubuntu-latest
