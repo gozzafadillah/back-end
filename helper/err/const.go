@@ -7,4 +7,5 @@ const (
 	UnauthorizedUser  = "unauthorized account, please contact customer service"
 	UpdateFailed      = "update failed"
 	DeleteFailed      = "delete failed"
+	Err               = "error"
 )

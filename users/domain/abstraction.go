@@ -9,7 +9,7 @@ type Service interface {
 	EditUser(phone string, domain Users) error
 	// Account
 	InsertAccount(domain Account) (Account, error)
-	GetUserAccount(phone string) (Account, error)
+	GetUserAccount(phone string) Account
 	// Verif User
 	AddUserVerif(code, email, name string) error
 	Verif(code string) error

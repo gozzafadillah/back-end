@@ -1,8 +1,10 @@
 package routes
 
 import (
+	"ppob/app/middlewares"
 	"ppob/helper/valid"
 	handler_products "ppob/products/handler"
+	handler_transaction "ppob/transaction/handler"
 	handler_users "ppob/users/handler"
 
 	"github.com/labstack/echo/v4"
@@ -10,14 +12,18 @@ import (
 )
 
 type ControllerList struct {
-	JWTMiddleware   middleware.JWTConfig
-	UserHandler     handler_users.UsersHandler
-	ProductsHandler handler_products.ProductsHandler
+	JWTMiddleware      middleware.JWTConfig
+	UserHandler        handler_users.UsersHandler
+	ProductsHandler    handler_products.ProductsHandler
+	TransactionHandler handler_transaction.TransactionHandler
 }
 
 const server = "http://localhost:3000"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
+
+	// log
+	middlewares.LogMiddleware(e)
 
 	// access public
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -36,8 +42,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.GET("/products", cl.ProductsHandler.GetAllProduct)
 	e.GET("/products/category/:category_id", cl.ProductsHandler.GetProductByCategory)
 	e.GET("/products/:id", cl.ProductsHandler.GetProduct)
-	e.GET("/detail/:code", cl.ProductsHandler.GetDetailsProduct)
+	e.GET("/detail/:product_slug", cl.ProductsHandler.GetDetailsProduct)
 	e.GET("/category", cl.ProductsHandler.GetCategories)
+	e.POST("/transaction/callback_invoice", cl.TransactionHandler.Callback_Invoice)
 
 	// access customer
 	authUser := e.Group("users")
@@ -49,9 +56,12 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	}))
 	authUser.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("customer", cl.UserHandler))
 	// make pin
-	authUser.POST("/pin", cl.UserHandler.InsertAccount)
+	authUser.POST("/pin", cl.UserHandler.MakePin)
 	authUser.GET("/session", cl.UserHandler.GetUserSession)
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
+	// transaction
+	authUser.POST("/checkout/:detail_slug", cl.TransactionHandler.Checkout)
+	authUser.GET("/history", cl.TransactionHandler.GetHistoryTransaction)
 
 	// manage product endpoint (admin)
 	authAdmin := e.Group("admin")
@@ -67,7 +77,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin.DELETE("/products/delete/:id", cl.ProductsHandler.DestroyProduct)
 	// manage detail product (admin)
 
-	authAdmin.POST("/detail/:code", cl.ProductsHandler.InsertDetail)
+	authAdmin.POST("/detail/:product_slug", cl.ProductsHandler.InsertDetail)
 	authAdmin.PUT("/detail/edit/:getID", cl.ProductsHandler.EditDetail)
 	authAdmin.DELETE("/detail/delete/:getID", cl.ProductsHandler.DestroyDetail)
 	// manage category (admin)

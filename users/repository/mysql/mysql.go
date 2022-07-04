@@ -59,7 +59,7 @@ func (ur UsersRepo) Store(domain domain_users.Users) (string, error) {
 		domain.Role = "admin"
 		domain.Status = true
 	}
-	err := ur.DB.Save(&domain).Error
+	err := ur.DB.Create(&domain).Error
 	return domain.Phone, err
 }
 
@@ -119,7 +119,7 @@ func (ur UsersRepo) StoreOtpUserVerif(code string, email string) error {
 		Email: email,
 		Code:  code,
 	}
-	err := ur.DB.Save(&rec).Error
+	err := ur.DB.Create(&rec).Error
 	return err
 }
 

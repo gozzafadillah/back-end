@@ -9,62 +9,71 @@ import (
 
 type Products struct {
 	gorm.Model
-	ID          int
-	Code        string
-	Name        string
-	Image       string
-	Slug        string
-	Category_Id int
-	Status      bool
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID           int
+	Product_Slug string
+	Name         string
+	Image        string
+	Category_Id  int
+	Status       bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
-func ToDomain(rec Products) domain_products.Products {
+func ToDomainProduct(rec Products) domain_products.Products {
 	return domain_products.Products{
-		ID:          rec.ID,
-		Code:        rec.Code,
-		Name:        rec.Name,
-		Category_Id: rec.Category_Id,
-		Status:      rec.Status,
-		CreatedAt:   time.Time{},
-		UpdatedAt:   time.Time{},
+		ID:           rec.ID,
+		Product_Slug: rec.Product_Slug,
+		Name:         rec.Name,
+		Image:        rec.Image,
+		Category_Id:  rec.Category_Id,
+		Status:       rec.Status,
+		CreatedAt:    time.Time{},
+		UpdatedAt:    time.Time{},
 	}
 }
 
 type Category_Product struct {
-	ID        int
-	Name      string
-	Status    bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	gorm.Model
+	ID            int
+	Name          string
+	Category_Slug string
+	Icon          string
+	Status        bool
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func ToDomainCategory(rec Category_Product) domain_products.Category_Product {
 	return domain_products.Category_Product{
-		ID:     rec.ID,
-		Name:   rec.Name,
-		Status: rec.Status,
+		ID:            rec.ID,
+		Name:          rec.Name,
+		Category_Slug: rec.Category_Slug,
+		Icon:          rec.Icon,
+		Status:        rec.Status,
 	}
 }
 
 type Detail_Product struct {
 	gorm.Model
-	ID          int
-	Code        string
-	Price       int
-	Description string
-	Status      bool
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID           int
+	Product_Slug string
+	Name         string
+	Detail_Slug  string
+	Price        int
+	Status       bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func ToDomainDetail(rec Detail_Product) domain_products.Detail_Product {
 	return domain_products.Detail_Product{
-		ID:          rec.ID,
-		Code:        rec.Code,
-		Price:       rec.Price,
-		Description: rec.Description,
-		Status:      rec.Status,
+		ID:           rec.ID,
+		Product_Slug: rec.Product_Slug,
+		Name:         rec.Name,
+		Detail_Slug:  rec.Detail_Slug,
+		Price:        rec.Price,
+		Status:       rec.Status,
+		CreatedAt:    time.Time{},
+		UpdatedAt:    time.Time{},
 	}
 }

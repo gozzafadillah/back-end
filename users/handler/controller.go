@@ -3,9 +3,12 @@ package handler_users
 import (
 	"net/http"
 	"ppob/app/middlewares"
+	"ppob/helper/claudinary"
+
 	"ppob/helper/encryption"
 	err_conv "ppob/helper/err"
 	otp_generator "ppob/helper/otp"
+	regexPhone "ppob/helper/phone"
 	domain_users "ppob/users/domain"
 	"ppob/users/handler/request"
 	"ppob/users/handler/response"
@@ -16,20 +19,20 @@ import (
 
 type UsersHandler struct {
 	usecase    domain_users.Service
-	validation *validator.Validate
+	Validation *validator.Validate
 }
 
 func NewUsersHandler(uc domain_users.Service) UsersHandler {
 	return UsersHandler{
 		usecase:    uc,
-		validation: validator.New(),
+		Validation: validator.New(),
 	}
 }
 
 func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 	req := request.RequestJSONLogin{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
@@ -55,7 +58,7 @@ func (uh *UsersHandler) Authorization(ctx echo.Context) error {
 func (uh *UsersHandler) Register(ctx echo.Context) error {
 	req := request.RequestJSONUser{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
@@ -63,26 +66,51 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
 
+	// check phone
+	statusPhone := regexPhone.CheckPhone(req.Phone)
+	if !statusPhone {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "phone not valid",
+			"rescode": http.StatusOK,
+		})
+	}
+
+	// change phone to international code
+	req.Phone = regexPhone.GenerateNewPhone(req.Phone)
+
+	// upload image
+	req.File = claudinary.GetFile(ctx)
+	img, _ := claudinary.ImageUploadHelper(req.File, "users")
+
+	req.Image = img
+	if req.Image == "" {
+		req.Image = "https://res.cloudinary.com/dt91kxctr/image/upload/v1655825545/go-bayeue/users/download_o1yrxx.png"
+	}
+
+	// enkripsi password
 	encrypt, err := encryption.HashPassword(req.Password)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-
 	req.Password = encrypt
+
+	// store request data to usecase layer
 	data, err := uh.usecase.Register(request.ToDomainUser(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
 
+	// make otp
 	otpCode := otp_generator.OtpGenerator()
+
 	err = uh.usecase.AddUserVerif(otpCode, req.Email, req.Name)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"message": "success register",
-		"rescode": http.StatusOK,
+		"rescode": http.StatusCreated,
 		"data": map[string]interface{}{
 			"token": data,
 		},
@@ -90,10 +118,10 @@ func (uh *UsersHandler) Register(ctx echo.Context) error {
 }
 
 // implementation store/save pin data users
-func (uh *UsersHandler) InsertAccount(ctx echo.Context) error {
+func (uh *UsersHandler) MakePin(ctx echo.Context) error {
 	req := request.RequestJSONAccount{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
@@ -109,14 +137,14 @@ func (uh *UsersHandler) InsertAccount(ctx echo.Context) error {
 	// get data from jwt
 	dataUser := middlewares.GetUser(ctx)
 	req.Phone = dataUser.Phone
-
+	// input from request to usecase layer
 	res, err := uh.usecase.InsertAccount(request.ToDomainAccount(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-	return ctx.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success",
-		"rescode": http.StatusOK,
+	return ctx.JSON(http.StatusCreated, map[string]interface{}{
+		"message": "success create account",
+		"rescode": http.StatusCreated,
 		"data":    res,
 	})
 }
@@ -142,15 +170,14 @@ func (uh *UsersHandler) GetUsers(ctx echo.Context) error {
 // Implementation get user by phone for admin (web)
 func (uh *UsersHandler) GetUserForAdmin(ctx echo.Context) error {
 	phone := ctx.Param("phone")
-
+	// get user by phone
 	user, err := uh.usecase.GetUserPhone(phone)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-	account, err := uh.usecase.GetUserAccount(phone)
-	if err != nil {
-		return err_conv.Conversion(err, ctx)
-	}
+	// get user account (get saldo)
+	account := uh.usecase.GetUserAccount(phone)
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get users",
 		"rescode": http.StatusOK,
@@ -165,15 +192,14 @@ func (uh *UsersHandler) GetUserForAdmin(ctx echo.Context) error {
 func (uh *UsersHandler) GetUserSession(ctx echo.Context) error {
 	jwtClaims := middlewares.GetUser(ctx)
 	phone := jwtClaims.Phone
-
+	// get user phone
 	user, err := uh.usecase.GetUserPhone(phone)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-	account, err := uh.usecase.GetUserAccount(phone)
-	if err != nil {
-		return err_conv.Conversion(err, ctx)
-	}
+	// get user account
+	account := uh.usecase.GetUserAccount(phone)
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get customer",
 		"rescode": http.StatusOK,
@@ -188,45 +214,69 @@ func (uh *UsersHandler) GetUserSession(ctx echo.Context) error {
 func (uh *UsersHandler) UpdateProfile(ctx echo.Context) error {
 	req := request.RequestJSONUser{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+
+	// check phone
+	statusPhone := regexPhone.CheckPhone(req.Phone)
+	if !statusPhone {
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "phone not valid",
+			"rescode": http.StatusOK,
+		})
+	}
+
+	// change phone to international code
+	req.Phone = regexPhone.GenerateNewPhone(req.Phone)
+
+	// upload image
+	req.File = claudinary.GetFile(ctx)
+	img, _ := claudinary.ImageUploadHelper(req.File, "users")
+
+	req.Image = img
+	if req.Image == "" {
+		req.Image = "https://res.cloudinary.com/dt91kxctr/image/upload/v1655825545/go-bayeue/users/download_o1yrxx.png"
+	}
+
+	// enkripsi password
 	encrypt, err := encryption.HashPassword(req.Password)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
-
 	req.Password = encrypt
+
+	// get data from jwt token
 	user := middlewares.GetUser(ctx)
+
+	// input from request to layer usecase
 	err = uh.usecase.EditUser(user.Phone, request.ToDomainUser(req))
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update customer profile",
 		"rescode": http.StatusOK,
 	})
 }
 
-// implementation Destroy user for Admin
-func (uh *UsersHandler) DestroyUserForAdmin(ctx echo.Context) error {
-	panic("")
-}
-
 func (uh *UsersHandler) VerifUser(ctx echo.Context) error {
 	req := request.RequestJSONVerif{}
 	ctx.Bind(&req)
-	if err := uh.validation.Struct(req); err != nil {
+	if err := uh.Validation.Struct(req); err != nil {
 		stringerr := []string{}
 		for _, errval := range err.(validator.ValidationErrors) {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+
+	// get response verification otp
 	err := uh.usecase.Verif(req.Code)
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
@@ -237,6 +287,7 @@ func (uh *UsersHandler) VerifUser(ctx echo.Context) error {
 	})
 }
 
+// implementation for filter user role by jwt
 func (uh *UsersHandler) UserRole(phone string) (string, bool) {
 	var role string
 	var status bool

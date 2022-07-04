@@ -151,24 +151,59 @@ func TestInsertAccount(t *testing.T) {
 func TestGetUserAccount(t *testing.T) {
 	t.Run("get account user", func(t *testing.T) {
 		userRepo.On("GetUserAccount", mock.Anything).Return(userDomainAccount, nil).Once()
-		res, err := userService.GetUserAccount(userDomainAccount.Phone)
+		res := userService.GetUserAccount(userDomainAccount.Phone)
 
-		assert.NoError(t, err)
 		assert.Equal(t, userDomainAccount.Phone, res.Phone)
 	})
 	t.Run("failed get account user", func(t *testing.T) {
 		userRepo.On("GetUserAccount", mock.Anything).Return(domain_users.Account{}, errors.New("account not found")).Once()
-		res, err := userService.GetUserAccount(userDomainAccount.Phone)
+		res := userService.GetUserAccount(userDomainAccount.Phone)
 
-		assert.Error(t, err)
 		assert.Equal(t, domain_users.Account{}, res)
 	})
 }
 
 func TestAddUserVerif(t *testing.T) {
-	panic("")
+	t.Run("success add verif", func(t *testing.T) {
+		userRepo.On("StoreOtpUserVerif", mock.Anything, mock.Anything).Return(nil).Once()
+
+		err := userService.AddUserVerif("ABCDEFG", userDomainUser.Email, userDomainUser.Name)
+
+		assert.NoError(t, err)
+		assert.Equal(t, nil, err)
+	})
+	t.Run("failed add verif", func(t *testing.T) {
+		userRepo.On("StoreOtpUserVerif", mock.Anything, mock.Anything).Return(errors.New("error verif")).Once()
+
+		err := userService.AddUserVerif("ABCDEFG", userDomainUser.Email, userDomainUser.Name)
+
+		assert.Error(t, err)
+		assert.Equal(t, err, err)
+	})
 }
 
 func TestVerif(t *testing.T) {
-	panic("")
+	t.Run("success verif token", func(t *testing.T) {
+		userRepo.On("Verif", mock.Anything).Return(domain_users.UserVerif{Code: "ABCDEFG"}, nil).Once()
+		userRepo.On("ChangeStatusVerif", mock.Anything).Return(nil).Once()
+		userRepo.On("ChangeStatusUsers", mock.Anything).Return(nil).Once()
+
+		err := userService.Verif("ABCDEFG")
+
+		assert.NoError(t, err)
+		assert.Equal(t, nil, err)
+	})
+	t.Run("success verif token", func(t *testing.T) {
+		userRepo.On("Verif", mock.Anything).Return(domain_users.UserVerif{Code: "ABCDEFG"}, errors.New("failed verif data")).Once()
+		userRepo.On("ChangeStatusVerif", mock.Anything).Return(nil).Once()
+		userRepo.On("ChangeStatusUsers", mock.Anything).Return(nil).Once()
+
+		err := userService.Verif("ABCDEFG")
+
+		assert.Error(t, err)
+		assert.Equal(t, err, err)
+	})
 }
+
+// $ go test ./users/domain/abstraction_test.go -coverpkg=./users/service/...
+// ok      command-line-arguments  1.170s  coverage: 92.3% of statements in ./users/service/...
