@@ -173,7 +173,7 @@ func (th *TransactionHandler) FavoriteUser(ctx echo.Context) error {
 	}
 	fmt.Println("cat", categories)
 	for i, _ := range categories {
-		fmt.Println("cat =====> ", categories[i].Category_Slug)
+		// fmt.Println("cat =====> ", categories[i].Category_Slug)
 		transaction := th.TransactionUsecase.GetFavoritesByPhone(categories[i].Category_Slug, claims.Phone)
 
 		detailproduct, err := th.ProductUsecase.GetDetail(transaction.Detail_Product_Slug)
