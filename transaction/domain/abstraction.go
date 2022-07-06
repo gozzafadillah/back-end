@@ -8,6 +8,7 @@ type Service interface {
 
 	// transaction
 	GetTransactionsByPhone(phone string) []Transaction
+	GetFavoritesByPhone(cat, phone string) Transaction
 	AddTransaction(data *xendit.Invoice, detail Detail_Transaction) error
 	EditTransaction(data Callback_Invoice) error
 
@@ -20,8 +21,10 @@ type Repository interface {
 	StoreDetailTransaction(domain Detail_Transaction) error
 	// transaction
 	StoreTransaction(domain Transaction) error
+	GetFavorite(cat, phone string) []Transaction
+	Count(cat, phone, id_customer, detail_product string) (string, int)
 	GetTransactionByPhone(phone string) (transaction []Transaction)
-	GetTransactionByPaymentId(id string) (Transaction, error)
+	GetTransactionByPaymentId(payment_id string) (Transaction, error)
 	UpdateTransaction(domain Transaction) error
 	// payment
 	StorePayment(domain Payment) error

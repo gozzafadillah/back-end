@@ -13,6 +13,32 @@ type TransactionService struct {
 	Repository domain_transaction.Repository
 }
 
+// GetFavoritesByPhone implements domain_transaction.Service
+func (ts TransactionService) GetFavoritesByPhone(cat, phone string) domain_transaction.Transaction {
+	transactions := ts.Repository.GetFavorite(cat, phone)
+	// fmt.Println("transactions ", transactions)
+	var a, b int
+	var paymenta, paymentb string
+	if len(transactions) == 1 {
+		data, _ := ts.Repository.GetTransactionByPaymentId(transactions[0].Payment_Id)
+		return data
+	}
+	for i, _ := range transactions {
+		paymenta, a = ts.Repository.Count(transactions[i].Category_Slug, transactions[i].Phone, transactions[i].ID_Customer, transactions[i].Detail_Product_Slug)
+		// fmt.Println("payment A :", paymenta)
+		if a > b {
+			b = a
+			paymentb = paymenta
+			// fmt.Println("payment A :", paymentb)
+		}
+	}
+	data, _ := ts.Repository.GetTransactionByPaymentId(paymentb)
+
+	// fmt.Println("data :", data)
+
+	return data
+}
+
 func NewTransactionService(repository domain_transaction.Repository) domain_transaction.Service {
 	return TransactionService{
 		Repository: repository,

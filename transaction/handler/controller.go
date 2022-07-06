@@ -163,3 +163,47 @@ func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
 		"result":  dataMap,
 	})
 }
+
+func (th *TransactionHandler) FavoriteUser(ctx echo.Context) error {
+	claims := middlewares.GetUser(ctx)
+	data := map[string]interface{}{}
+	categories, err := th.ProductUsecase.GetCategories()
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
+	fmt.Println("cat", categories)
+	for i, _ := range categories {
+		// fmt.Println("cat =====> ", categories[i].Category_Slug)
+		transaction := th.TransactionUsecase.GetFavoritesByPhone(categories[i].Category_Slug, claims.Phone)
+
+		detailproduct, err := th.ProductUsecase.GetDetail(transaction.Detail_Product_Slug)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+		// get product
+		product, err := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Slug)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+
+		// get Category product
+		category, err := th.ProductUsecase.GetCategory(product.Category_Id)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+		data[categories[i].Category_Slug] = map[string]interface{}{
+			"transaction":    transaction,
+			"product":        product,
+			"detail_product": detailproduct,
+			"category":       category,
+		}
+	}
+
+	return ctx.JSON(200, map[string]interface{}{
+		"message": "success",
+		"rescode": 200,
+		"result":  data,
+	})
+}
+
+// get transaction session -> transaction by category -> if
