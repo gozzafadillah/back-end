@@ -147,11 +147,12 @@ func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
 
 		payment := th.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
 		dataMap[i] = map[string]interface{}{
-			"transaction":    transactions[i],
-			"payment":        payment,
-			"category":       category,
-			"product":        product,
-			"detail_product": detailproduct,
+			"transaction":    transactions[i].Transaction_Code,
+			"category":       category.Name,
+			"category_image": category.Icon,
+			"amount":         transactions[i].Amount,
+			"payment_paid":   payment.Paid_at,
+			"status":         transactions[i].Status,
 		}
 	}
 
@@ -163,3 +164,43 @@ func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
 		"result":  dataMap,
 	})
 }
+
+func (th *TransactionHandler) FavoriteUser(ctx echo.Context) error {
+	claims := middlewares.GetUser(ctx)
+	data := map[string]interface{}{}
+	categories, err := th.ProductUsecase.GetCategories()
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
+	fmt.Println("cat", categories)
+	for i, _ := range categories {
+		// fmt.Println("cat =====> ", categories[i].Category_Slug)
+		transaction := th.TransactionUsecase.GetFavoritesByPhone(categories[i].Category_Slug, claims.Phone)
+
+		// detail transaction
+		detailTransaction, _ := th.TransactionUsecase.GetDetailTransaction(transaction.Transaction_Code)
+
+		// detail product
+		detailproduct, _ := th.ProductUsecase.GetDetail(transaction.Detail_Product_Slug)
+
+		// get product
+		product, _ := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Slug)
+
+		// get Category product
+
+		data[categories[i].Category_Slug] = map[string]interface{}{
+			"customer_name": detailTransaction.Customer_Name,
+			"payment_id":    transaction.Payment_Id,
+			"id_customer":   transaction.ID_Customer,
+			"product_image": product.Image,
+		}
+	}
+
+	return ctx.JSON(200, map[string]interface{}{
+		"message": "success",
+		"rescode": 200,
+		"result":  data,
+	})
+}
+
+// get transaction session -> transaction by category -> if

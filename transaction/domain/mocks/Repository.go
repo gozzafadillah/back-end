@@ -15,6 +15,64 @@ type Repository struct {
 	mock.Mock
 }
 
+// Count provides a mock function with given fields: cat, phone, id_customer, detail_product
+func (_m *Repository) Count(cat string, phone string, id_customer string, detail_product string) (string, int) {
+	ret := _m.Called(cat, phone, id_customer, detail_product)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string, string, string, string) string); ok {
+		r0 = rf(cat, phone, id_customer, detail_product)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 int
+	if rf, ok := ret.Get(1).(func(string, string, string, string) int); ok {
+		r1 = rf(cat, phone, id_customer, detail_product)
+	} else {
+		r1 = ret.Get(1).(int)
+	}
+
+	return r0, r1
+}
+
+// GetDetailTransaction provides a mock function with given fields: transaction_id
+func (_m *Repository) GetDetailTransaction(transaction_id string) (domain_transaction.Detail_Transaction, error) {
+	ret := _m.Called(transaction_id)
+
+	var r0 domain_transaction.Detail_Transaction
+	if rf, ok := ret.Get(0).(func(string) domain_transaction.Detail_Transaction); ok {
+		r0 = rf(transaction_id)
+	} else {
+		r0 = ret.Get(0).(domain_transaction.Detail_Transaction)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(transaction_id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetFavorite provides a mock function with given fields: cat, phone
+func (_m *Repository) GetFavorite(cat string, phone string) []domain_transaction.Transaction {
+	ret := _m.Called(cat, phone)
+
+	var r0 []domain_transaction.Transaction
+	if rf, ok := ret.Get(0).(func(string, string) []domain_transaction.Transaction); ok {
+		r0 = rf(cat, phone)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain_transaction.Transaction)
+		}
+	}
+
+	return r0
+}
+
 // GetPayment provides a mock function with given fields: id
 func (_m *Repository) GetPayment(id string) domain_transaction.Payment {
 	ret := _m.Called(id)
@@ -29,20 +87,20 @@ func (_m *Repository) GetPayment(id string) domain_transaction.Payment {
 	return r0
 }
 
-// GetTransactionByPaymentId provides a mock function with given fields: id
-func (_m *Repository) GetTransactionByPaymentId(id string) (domain_transaction.Transaction, error) {
-	ret := _m.Called(id)
+// GetTransactionByPaymentId provides a mock function with given fields: payment_id
+func (_m *Repository) GetTransactionByPaymentId(payment_id string) (domain_transaction.Transaction, error) {
+	ret := _m.Called(payment_id)
 
 	var r0 domain_transaction.Transaction
 	if rf, ok := ret.Get(0).(func(string) domain_transaction.Transaction); ok {
-		r0 = rf(id)
+		r0 = rf(payment_id)
 	} else {
 		r0 = ret.Get(0).(domain_transaction.Transaction)
 	}
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(id)
+		r1 = rf(payment_id)
 	} else {
 		r1 = ret.Error(1)
 	}

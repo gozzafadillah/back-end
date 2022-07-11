@@ -350,6 +350,20 @@ func (ph *ProductsHandler) InsertCategory(ctx echo.Context) error {
 	})
 }
 
+// implementation get category by id
+func (ph *ProductsHandler) GetCategoryByID(ctx echo.Context) error {
+	id, _ := strconv.Atoi(ctx.Param("id"))
+	data, err := ph.Service.GetCategory(id)
+	if err != nil {
+		return err_conv.Conversion(err, ctx)
+	}
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get category",
+		"rescode": http.StatusOK,
+		"result":  response.FromDomainCategory(data),
+	})
+}
+
 // implementation get categories
 func (ph *ProductsHandler) GetCategories(ctx echo.Context) error {
 	// variable slice response category
