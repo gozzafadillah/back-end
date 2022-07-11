@@ -54,10 +54,12 @@ jobs:
           run: |
             echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
             ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            cd /home/ubuntu/backend &&
-            git checkout main &&
-            git fetch --all &&
-            git reset --hard origin/main &&
-            git pull origin main &&
-            docker-compose -f docker-compose.yaml up -d --build
-            `
+            
+              #Now we have got the access of EC2 and we will start the deploy .
+              cd /home/ubuntu/back-end &&
+              git checkout main &&
+              git fetch --all &&
+              git reset --hard origin/main &&
+              git pull origin main &&
+              docker-compose -f docker-compose.yaml up -d --build
+            '
