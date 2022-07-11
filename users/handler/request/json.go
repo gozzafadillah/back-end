@@ -5,10 +5,10 @@ import (
 )
 
 type RequestJSONUser struct {
-	Name     string      `json:"name" form:"name"`
-	Email    string      `json:"email" form:"email"`
-	Password string      `json:"password" form:"password"`
-	Phone    string      `json:"phone" form:"phone"`
+	Name     string      `json:"name" form:"name" validate:"required"`
+	Email    string      `json:"email" form:"email" validate:"required,email"`
+	Password string      `json:"password" form:"password" validate:"required"`
+	Phone    string      `json:"phone" form:"phone" validate:"required,max=13"`
 	Image    string      `json:"img" form:"img"`
 	File     interface{} `json:"file,omitempty"`
 }
