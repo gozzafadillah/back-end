@@ -12,6 +12,13 @@ type TransactionRepo struct {
 	DB *gorm.DB
 }
 
+// GetDetailTransaction implements domain_transaction.Repository
+func (tr TransactionRepo) GetDetailTransaction(transaction_code string) (domain_transaction.Detail_Transaction, error) {
+	rec := Detail_Transaction{}
+	err := tr.DB.Where("transaction_code = ?", transaction_code).First(&rec).Error
+	return ToDomain(rec), err
+}
+
 // Count implements domain_transaction.Repository
 func (tr TransactionRepo) Count(cat string, phone string, id_customer string, detail_product string) (string, int) {
 	var rec Transaction

@@ -176,26 +176,22 @@ func (th *TransactionHandler) FavoriteUser(ctx echo.Context) error {
 		// fmt.Println("cat =====> ", categories[i].Category_Slug)
 		transaction := th.TransactionUsecase.GetFavoritesByPhone(categories[i].Category_Slug, claims.Phone)
 
-		detailproduct, err := th.ProductUsecase.GetDetail(transaction.Detail_Product_Slug)
-		if err != nil {
-			return err_conv.Conversion(err, ctx)
-		}
+		// detail transaction
+		detailTransaction, _ := th.TransactionUsecase.GetDetailTransaction(transaction.Transaction_Code)
+
+		// detail product
+		detailproduct, _ := th.ProductUsecase.GetDetail(transaction.Detail_Product_Slug)
+
 		// get product
-		product, err := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Slug)
-		if err != nil {
-			return err_conv.Conversion(err, ctx)
-		}
+		product, _ := th.ProductUsecase.GetProductTransaction(detailproduct.Product_Slug)
 
 		// get Category product
-		category, err := th.ProductUsecase.GetCategory(product.Category_Id)
-		if err != nil {
-			return err_conv.Conversion(err, ctx)
-		}
+
 		data[categories[i].Category_Slug] = map[string]interface{}{
-			"transaction":    transaction,
-			"product":        product,
-			"detail_product": detailproduct,
-			"category":       category,
+			"customer_name": detailTransaction.Customer_Name,
+			"payment_id":    transaction.Payment_Id,
+			"id_customer":   transaction.ID_Customer,
+			"product_image": product.Image,
 		}
 	}
 

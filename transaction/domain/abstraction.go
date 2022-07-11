@@ -5,6 +5,7 @@ import "github.com/xendit/xendit-go"
 type Service interface {
 	// detail transaction
 	AddDetailTransaction(productCode string, domain Detail_Transaction) (Detail_Transaction, error)
+	GetDetailTransaction(transaction_code string) (Detail_Transaction, error)
 
 	// transaction
 	GetTransactionsByPhone(phone string) []Transaction
@@ -19,6 +20,7 @@ type Service interface {
 type Repository interface {
 	// detail transaction / checkout
 	StoreDetailTransaction(domain Detail_Transaction) error
+	GetDetailTransaction(transaction_code string) (Detail_Transaction, error)
 	// transaction
 	StoreTransaction(domain Transaction) error
 	GetFavorite(cat, phone string) []Transaction

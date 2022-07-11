@@ -13,6 +13,15 @@ type TransactionService struct {
 	Repository domain_transaction.Repository
 }
 
+// GetDetailTransaction implements domain_transaction.Service
+func (ts TransactionService) GetDetailTransaction(transaction_code string) (domain_transaction.Detail_Transaction, error) {
+	data, err := ts.Repository.GetDetailTransaction(transaction_code)
+	if err != nil {
+		return domain_transaction.Detail_Transaction{}, errors.New("bad request")
+	}
+	return data, nil
+}
+
 // GetFavoritesByPhone implements domain_transaction.Service
 func (ts TransactionService) GetFavoritesByPhone(cat, phone string) domain_transaction.Transaction {
 	transactions := ts.Repository.GetFavorite(cat, phone)

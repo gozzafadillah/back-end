@@ -36,6 +36,27 @@ func (_m *Repository) Count(cat string, phone string, id_customer string, detail
 	return r0, r1
 }
 
+// GetDetailTransaction provides a mock function with given fields: transaction_id
+func (_m *Repository) GetDetailTransaction(transaction_id string) (domain_transaction.Detail_Transaction, error) {
+	ret := _m.Called(transaction_id)
+
+	var r0 domain_transaction.Detail_Transaction
+	if rf, ok := ret.Get(0).(func(string) domain_transaction.Detail_Transaction); ok {
+		r0 = rf(transaction_id)
+	} else {
+		r0 = ret.Get(0).(domain_transaction.Detail_Transaction)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(transaction_id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetFavorite provides a mock function with given fields: cat, phone
 func (_m *Repository) GetFavorite(cat string, phone string) []domain_transaction.Transaction {
 	ret := _m.Called(cat, phone)
