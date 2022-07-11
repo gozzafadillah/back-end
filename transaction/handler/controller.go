@@ -147,11 +147,12 @@ func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
 
 		payment := th.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
 		dataMap[i] = map[string]interface{}{
-			"transaction":    transactions[i],
-			"payment":        payment,
-			"category":       category,
-			"product":        product,
-			"detail_product": detailproduct,
+			"transaction":    transactions[i].Transaction_Code,
+			"category":       category.Name,
+			"category_image": category.Icon,
+			"amount":         transactions[i].Amount,
+			"payment_paid":   payment.Paid_at,
+			"status":         transactions[i].Status,
 		}
 	}
 

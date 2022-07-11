@@ -27,10 +27,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	// access public
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{server},
-		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
-		AllowCredentials: true,
-		MaxAge:           2592000,
+		AllowOrigins: []string{"*"},
+		// AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 	e.POST("/login", cl.UserHandler.Authorization)
 	e.POST("/register", cl.UserHandler.Register)
@@ -49,10 +48,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	// access customer
 	authUser := e.Group("users")
 	authUser.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{server},
-		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
-		AllowCredentials: true,
-		MaxAge:           2592000,
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 	authUser.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("customer", cl.UserHandler))
 	// make pin
@@ -68,10 +65,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin := e.Group("admin")
 	authAdmin.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("admin", cl.UserHandler))
 	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{server},
-		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
-		AllowCredentials: true,
-		MaxAge:           2592000,
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 	authAdmin.POST("/products/:category_id", cl.ProductsHandler.InsertProduct)
 	authAdmin.PUT("/products/edit/:id", cl.ProductsHandler.EditProduct)
