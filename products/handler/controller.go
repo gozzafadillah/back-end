@@ -114,24 +114,17 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 
 	// get parameter id from endpoint
 	id, _ := strconv.Atoi(ctx.Param("id"))
-
 	// upload image
-	if req.File != nil {
-		req.File = claudinary.GetFile(ctx)
-		img, err := claudinary.ImageUploadHelper(req.File, "product")
-		if err != nil {
-			return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
-				"message": err.Error(),
-				"rescode": http.StatusInternalServerError,
-			})
-		}
-		req.Image = img
-	} else {
-		product, err := ph.Service.GetProduct(id)
+	req.File = claudinary.GetFile(ctx)
+	img, _ := claudinary.ImageUploadHelper(req.File, "product")
+
+	req.Image = img
+	if req.Image == "" {
+		data, err := ph.Service.GetProduct(id)
 		if err != nil {
 			return err_conv.Conversion(err, ctx)
 		}
-		req.Image = product.Image
+		req.Image = data.Image
 	}
 
 	// edit product
