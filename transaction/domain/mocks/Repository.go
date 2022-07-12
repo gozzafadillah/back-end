@@ -36,20 +36,20 @@ func (_m *Repository) Count(cat string, phone string, id_customer string, detail
 	return r0, r1
 }
 
-// GetDetailTransaction provides a mock function with given fields: transaction_id
-func (_m *Repository) GetDetailTransaction(transaction_id string) (domain_transaction.Detail_Transaction, error) {
-	ret := _m.Called(transaction_id)
+// GetDetailTransaction provides a mock function with given fields: transaction_code
+func (_m *Repository) GetDetailTransaction(transaction_code string) (domain_transaction.Detail_Transaction, error) {
+	ret := _m.Called(transaction_code)
 
 	var r0 domain_transaction.Detail_Transaction
 	if rf, ok := ret.Get(0).(func(string) domain_transaction.Detail_Transaction); ok {
-		r0 = rf(transaction_id)
+		r0 = rf(transaction_code)
 	} else {
 		r0 = ret.Get(0).(domain_transaction.Detail_Transaction)
 	}
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(transaction_id)
+		r1 = rf(transaction_code)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -115,6 +115,22 @@ func (_m *Repository) GetTransactionByPhone(phone string) []domain_transaction.T
 	var r0 []domain_transaction.Transaction
 	if rf, ok := ret.Get(0).(func(string) []domain_transaction.Transaction); ok {
 		r0 = rf(phone)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]domain_transaction.Transaction)
+		}
+	}
+
+	return r0
+}
+
+// GetTransactions provides a mock function with given fields:
+func (_m *Repository) GetTransactions() []domain_transaction.Transaction {
+	ret := _m.Called()
+
+	var r0 []domain_transaction.Transaction
+	if rf, ok := ret.Get(0).(func() []domain_transaction.Transaction); ok {
+		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]domain_transaction.Transaction)
