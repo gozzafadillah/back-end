@@ -111,6 +111,10 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
+
+	// get parameter id from endpoint
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
 	// upload image
 	if req.File != nil {
 		req.File = claudinary.GetFile(ctx)
@@ -123,11 +127,12 @@ func (ph *ProductsHandler) EditProduct(ctx echo.Context) error {
 		}
 		req.Image = img
 	} else {
-		req.Image = ""
+		product, err := ph.Service.GetProduct(id)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+		req.Image = product.Image
 	}
-
-	// get parameter id from endpoint
-	id, _ := strconv.Atoi(ctx.Param("id"))
 
 	// edit product
 	err := ph.Service.Edit(id, request.ToDomain(req))
