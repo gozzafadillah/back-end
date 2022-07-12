@@ -13,6 +13,8 @@ type Service interface {
 	// Verif User
 	AddUserVerif(code, email, name string) error
 	Verif(code string) error
+	// admin-dashboard
+	CountUsersCustomer() int
 }
 
 type Repository interface {
@@ -30,4 +32,6 @@ type Repository interface {
 	StoreOtpUserVerif(code string, email string) error
 	Verif(code string) (UserVerif, error)
 	ChangeStatusVerif(email string) error
+	// admin-dashboard
+	Count() int
 }

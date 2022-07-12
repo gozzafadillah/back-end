@@ -1,6 +1,7 @@
 package handler_admin
 
 import (
+	"net/http"
 	err_conv "ppob/helper/err"
 	domain_products "ppob/products/domain"
 	domain_transaction "ppob/transaction/domain"
@@ -52,5 +53,21 @@ func (ah *AdminHandler) GetAllTransaction(ctx echo.Context) error {
 		"message": "success",
 		"rescode": 200,
 		"result":  sliceData,
+	})
+}
+
+func (ah *AdminHandler) CountAllItems(ctx echo.Context) error {
+	countUsers := ah.UsersUsecase.CountUsersCustomer()
+	countProducts := ah.ProductUsecase.CountProducts()
+	countTransactions := ah.TransactionUsecase.CountTransaction()
+
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"rescode": http.StatusOK,
+		"result": map[string]interface{}{
+			"users":        countUsers,
+			"products":     countProducts,
+			"transactions": countTransactions,
+		},
 	})
 }

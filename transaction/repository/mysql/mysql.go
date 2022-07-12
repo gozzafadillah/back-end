@@ -113,3 +113,10 @@ func (tr TransactionRepo) GetFavorite(cat, phone string) []domain_transaction.Tr
 	}
 	return sliceTransaction
 }
+
+// Counts implements domain_transaction.Repository
+func (tr TransactionRepo) Counts() int {
+	var count int
+	tr.DB.Raw("SELECT COUNT(*) FROM transactions").Scan(&count)
+	return count
+}

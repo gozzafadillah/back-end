@@ -23,6 +23,9 @@ type Service interface {
 	GetCategory(id int) (Category_Product, error)
 	EditCategory(id int, domain Category_Product) error
 	DestroyCategory(id int) error
+
+	// Admin-dashboard
+	CountProducts() int
 }
 
 type Repository interface {
@@ -50,4 +53,7 @@ type Repository interface {
 	GetCategoryById(id int) (Category_Product, error)
 	UpdateCategory(id int, domain Category_Product) error
 	DeleteCategory(id int) error
+
+	// Admin-Dashboard
+	Count() int
 }

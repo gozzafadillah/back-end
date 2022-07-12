@@ -127,3 +127,9 @@ func (ts TransactionService) GetFavoritesByPhone(cat, phone string) domain_trans
 
 	return data
 }
+
+// CountTransaction implements domain_transaction.Service
+func (ts TransactionService) CountTransaction() int {
+	count := ts.Repository.Counts()
+	return count
+}

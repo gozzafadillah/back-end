@@ -197,3 +197,10 @@ func (pr ProductsRepo) GetCategoryById(id int) (domain_products.Category_Product
 	err := pr.DB.Where("id = ?", id).First(&rec).Error
 	return ToDomainCategory(rec), err
 }
+
+// Count implements domain_products.Repository
+func (pr ProductsRepo) Count() int {
+	var count int
+	pr.DB.Raw("SELECT COUNT(*) FROM products").Scan(&count)
+	return count
+}

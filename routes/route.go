@@ -87,5 +87,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	// transaction
 	authAdmin.GET("/transaction", cl.AdminHandler.GetAllTransaction)
+	authAdmin.GET("/countAllItems", cl.AdminHandler.CountAllItems)
 
 }
