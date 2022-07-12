@@ -6,6 +6,7 @@ type Service interface {
 	// detail transaction
 	AddDetailTransaction(productCode string, domain Detail_Transaction) (Detail_Transaction, error)
 	GetDetailTransaction(transaction_code string) (Detail_Transaction, error)
+	GetTransactionAll() []Transaction
 
 	// transaction
 	GetTransactionsByPhone(phone string) []Transaction
@@ -25,6 +26,7 @@ type Repository interface {
 	StoreTransaction(domain Transaction) error
 	GetFavorite(cat, phone string) []Transaction
 	Count(cat, phone, id_customer, detail_product string) (string, int)
+	GetTransactions() []Transaction
 	GetTransactionByPhone(phone string) (transaction []Transaction)
 	GetTransactionByPaymentId(payment_id string) (Transaction, error)
 	UpdateTransaction(domain Transaction) error

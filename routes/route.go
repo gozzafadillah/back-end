@@ -18,7 +18,7 @@ type ControllerList struct {
 	TransactionHandler handler_transaction.TransactionHandler
 }
 
-const server = "http://localhost:3000"
+// const server = "http://localhost:3000"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
@@ -82,5 +82,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin.POST("/category", cl.ProductsHandler.InsertCategory)
 	authAdmin.PUT("/category/edit/:id", cl.ProductsHandler.EditCategory)
 	authAdmin.DELETE("/category/delete/:id", cl.ProductsHandler.DestroyCategory)
+
+	// transaction
+	authAdmin.GET("/transaction", cl.TransactionHandler.GetAllTransaction)
 
 }
