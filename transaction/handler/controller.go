@@ -202,35 +202,3 @@ func (th *TransactionHandler) FavoriteUser(ctx echo.Context) error {
 		"result":  data,
 	})
 }
-
-func (th *TransactionHandler) GetAllTransaction(ctx echo.Context) error {
-	transactions := th.TransactionUsecase.GetTransactionAll()
-	if len(transactions) == 0 {
-		return ctx.JSON(200, map[string]interface{}{
-			"message": "success",
-			"rescode": 200,
-			"result":  "empty",
-		})
-	}
-	sliceData := map[int]interface{}{}
-	for i := 0; i <= len(transactions)-1; i++ {
-		payment := th.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
-		userSession, err := th.UserUsecase.GetUserPhone(transactions[i].Phone)
-		if err != nil {
-			return err_conv.Conversion(err, ctx)
-		}
-
-		data := map[string]interface{}{
-			"user":   userSession.Name,
-			"paid":   payment.Paid_at,
-			"amount": transactions[i].Amount,
-			"status": transactions[i].Status,
-		}
-		sliceData[i] = data
-	}
-	return ctx.JSON(200, map[string]interface{}{
-		"message": "success",
-		"rescode": 200,
-		"result":  sliceData,
-	})
-}
