@@ -143,3 +143,10 @@ func (ur UsersRepo) ChangeStatusVerif(email string) error {
 	err := ur.DB.Model(&rec).Where("email = ?", email).Update("status", true).Error
 	return err
 }
+
+// Count implements domain_users.Repository
+func (ur UsersRepo) Count() int {
+	var count int
+	ur.DB.Raw("SELECT COUNT(*) FROM users WHERE ROLE = 'customer'").Scan(&count)
+	return count
+}

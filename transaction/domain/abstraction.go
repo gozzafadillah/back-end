@@ -16,12 +16,16 @@ type Service interface {
 
 	// payment
 	GetPayment(id string) Payment
+
+	// Admin-Dashboard
+	CountTransaction() int
 }
 
 type Repository interface {
 	// detail transaction / checkout
 	StoreDetailTransaction(domain Detail_Transaction) error
 	GetDetailTransaction(transaction_code string) (Detail_Transaction, error)
+
 	// transaction
 	StoreTransaction(domain Transaction) error
 	GetFavorite(cat, phone string) []Transaction
@@ -30,7 +34,11 @@ type Repository interface {
 	GetTransactionByPhone(phone string) (transaction []Transaction)
 	GetTransactionByPaymentId(payment_id string) (Transaction, error)
 	UpdateTransaction(domain Transaction) error
+
 	// payment
 	StorePayment(domain Payment) error
 	GetPayment(id string) Payment
+
+	//
+	Counts() int
 }

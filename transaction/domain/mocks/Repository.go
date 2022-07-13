@@ -36,6 +36,20 @@ func (_m *Repository) Count(cat string, phone string, id_customer string, detail
 	return r0, r1
 }
 
+// Counts provides a mock function with given fields:
+func (_m *Repository) Counts() int {
+	ret := _m.Called()
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
 // GetDetailTransaction provides a mock function with given fields: transaction_code
 func (_m *Repository) GetDetailTransaction(transaction_code string) (domain_transaction.Detail_Transaction, error) {
 	ret := _m.Called(transaction_code)

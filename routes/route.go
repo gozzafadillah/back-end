@@ -1,6 +1,7 @@
 package routes
 
 import (
+	handler_admin "ppob/admin/handler"
 	"ppob/app/middlewares"
 	"ppob/helper/valid"
 	handler_products "ppob/products/handler"
@@ -16,6 +17,7 @@ type ControllerList struct {
 	UserHandler        handler_users.UsersHandler
 	ProductsHandler    handler_products.ProductsHandler
 	TransactionHandler handler_transaction.TransactionHandler
+	AdminHandler       handler_admin.AdminHandler
 }
 
 // const server = "http://localhost:3000"
@@ -84,6 +86,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin.DELETE("/category/delete/:id", cl.ProductsHandler.DestroyCategory)
 
 	// transaction
-	authAdmin.GET("/transaction", cl.TransactionHandler.GetAllTransaction)
+	authAdmin.GET("/transaction", cl.AdminHandler.GetAllTransaction)
+	authAdmin.GET("/countAllItems", cl.AdminHandler.CountAllItems)
 
 }

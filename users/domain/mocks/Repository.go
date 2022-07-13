@@ -64,6 +64,20 @@ func (_m *Repository) CheckEmailPassword(email string, password string) (domain_
 	return r0, r1
 }
 
+// Count provides a mock function with given fields:
+func (_m *Repository) Count() int {
+	ret := _m.Called()
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
 // GetAllUser provides a mock function with given fields:
 func (_m *Repository) GetAllUser() ([]domain_users.Users, error) {
 	ret := _m.Called()

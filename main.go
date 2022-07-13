@@ -1,6 +1,7 @@
 package main
 
 import (
+	handler_admin "ppob/admin/handler"
 	"ppob/app/config"
 	"ppob/app/middlewares"
 	migrate "ppob/migrator"
@@ -41,6 +42,8 @@ func main() {
 	transactionRepo := mysql_transaction.NewTransactionRepo(db)
 	transactionServ := service_transaction.NewTransactionService(transactionRepo)
 	transactionHandler := handler_transaction.NewTransactionHandler(transactionServ, productServ, userServ)
+	// Admin
+	adminHandler := handler_admin.NewAdminHandler(transactionServ, productServ, userServ)
 
 	// Route
 	routeInit := routes.ControllerList{
@@ -48,6 +51,7 @@ func main() {
 		UserHandler:        UserHandler,
 		ProductsHandler:    productsHandler,
 		TransactionHandler: transactionHandler,
+		AdminHandler:       adminHandler,
 	}
 
 	routeInit.RouteRegister(e)

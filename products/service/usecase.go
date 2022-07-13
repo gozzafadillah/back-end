@@ -204,3 +204,9 @@ func (ps ProductService) DestroyCategory(id int) error {
 	}
 	return nil
 }
+
+// CountProducts implements domain_products.Service
+func (ps ProductService) CountProducts() int {
+	count := ps.Repository.Count()
+	return count
+}

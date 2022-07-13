@@ -143,3 +143,9 @@ func (us UsersService) Verif(code string) error {
 
 	return nil
 }
+
+// CountUsersCustomer implements domain_users.Service
+func (us UsersService) CountUsersCustomer() int {
+	count := us.Repository.Count()
+	return count
+}
