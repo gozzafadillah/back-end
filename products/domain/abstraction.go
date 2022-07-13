@@ -2,7 +2,7 @@ package domain_products
 
 type Service interface {
 	// Product
-	InsertData(category_id int, domain Products) error
+	InsertData(category_id int, cat Category_Product, domain Products) error
 	GetProducts() ([]Products, error)
 	GetProduct(id int) (Products, error)
 	GetProductTransaction(product_slug string) (Products, error)

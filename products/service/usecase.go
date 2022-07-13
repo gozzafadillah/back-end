@@ -52,8 +52,10 @@ func (ps ProductService) GetProductTransaction(code string) (domain_products.Pro
 }
 
 // InsertData implements domain_products.Service
-func (ps ProductService) InsertData(category_id int, domain domain_products.Products) error {
-	domain.Product_Slug = slug.GenerateSlug(domain.Name)
+func (ps ProductService) InsertData(category_id int, cat domain_products.Category_Product, domain domain_products.Products) error {
+	productName := cat.Name + " " + domain.Name
+
+	domain.Product_Slug = slug.GenerateSlug(productName)
 	domain.Category_Id = category_id
 	err := ps.Repository.Store(domain)
 	if err != nil {

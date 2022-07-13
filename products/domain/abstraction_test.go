@@ -104,13 +104,13 @@ func TestGetProductTransaction(t *testing.T) {
 func TestInsertData(t *testing.T) {
 	t.Run("success insert data product", func(t *testing.T) {
 		productRepo.On("Store", mock.Anything).Return(nil).Once()
-		err := productService.InsertData(1, productDomain)
+		err := productService.InsertData(1, CategoryDomain, productDomain)
 		assert.NoError(t, err)
 		assert.Equal(t, nil, err)
 	})
 	t.Run("failed insert data product", func(t *testing.T) {
 		productRepo.On("Store", mock.Anything).Return(errors.New("failed store data")).Once()
-		err := productService.InsertData(1, productDomain)
+		err := productService.InsertData(1, CategoryDomain, productDomain)
 		assert.Error(t, err)
 		assert.Equal(t, err, errors.New("internal server error"))
 	})
