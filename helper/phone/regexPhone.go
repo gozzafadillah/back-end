@@ -1,6 +1,8 @@
 package regexPhone
 
-import "regexp"
+import (
+	"regexp"
+)
 
 func GenerateNewPhone(phone string) string {
 	var regex, _ = regexp.Compile(`[a-z]+`)
@@ -11,4 +13,14 @@ func GenerateNewPhone(phone string) string {
 	var newPhone = "+62" + regexPhone
 
 	return newPhone
+}
+
+func GenerateToOld(phone string) string {
+	var regex, _ = regexp.Compile(`[a-z]+`)
+	regex.FindStringIndex(phone)
+
+	lenght := len(phone)
+	var str = phone[3:lenght]
+	var oldPhone string = "0" + str
+	return oldPhone
 }

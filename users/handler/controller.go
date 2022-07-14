@@ -200,6 +200,10 @@ func (uh *UsersHandler) GetUserSession(ctx echo.Context) error {
 	// get user account
 	account := uh.usecase.GetUserAccount(phone)
 
+	// generate to old phone
+	oldPhone := regexPhone.GenerateToOld(account.Phone)
+	user.Phone = oldPhone
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get customer",
 		"rescode": http.StatusOK,
