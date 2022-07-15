@@ -25,7 +25,7 @@ func FromDomainProduct(domain domain_products.Products) ResponseJSONProduct {
 type ResponseJSONPCategory struct {
 	ID     int
 	Name   string
-	Icon   string
+	Image  string
 	Status bool
 }
 
@@ -33,7 +33,7 @@ func FromDomainCategory(res domain_products.Category_Product) ResponseJSONPCateg
 	return ResponseJSONPCategory{
 		ID:     res.ID,
 		Name:   res.Name,
-		Icon:   res.Icon,
+		Image:  res.Image,
 		Status: res.Status,
 	}
 }

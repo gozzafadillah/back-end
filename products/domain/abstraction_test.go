@@ -42,7 +42,7 @@ func TestMain(m *testing.M) {
 		ID:            1,
 		Name:          "Paket Data",
 		Category_Slug: "paket-data",
-		Icon:          "font-paket-data",
+		Image:         "font-paket-data",
 		Status:        true,
 	}
 	os.Exit(m.Run())

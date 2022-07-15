@@ -27,14 +27,15 @@ func ToDomain(req RequestJSONProduct) domain_products.Products {
 type RequestJSONCategory struct {
 	Name          string `json:"name" form:"name" validate:"required"`
 	Category_Slug string
-	Icon          string `json:"icon" form:"icon" validate:"required"`
+	Image         string      `json:"image" form:"image"`
+	File          interface{} `json:"file,omitempty"`
 }
 
 func ToDomainCategory(req RequestJSONCategory) domain_products.Category_Product {
 	return domain_products.Category_Product{
 		Name:          req.Name,
 		Category_Slug: req.Category_Slug,
-		Icon:          req.Icon,
+		Image:         req.Image,
 		Status:        true,
 	}
 }
