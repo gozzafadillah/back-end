@@ -149,7 +149,7 @@ func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
 		dataMap[i] = map[string]interface{}{
 			"transaction":    transactions[i].Transaction_Code,
 			"category":       category.Name,
-			"category_image": category.Icon,
+			"category_image": category.Image,
 			"amount":         transactions[i].Amount,
 			"payment_paid":   payment.Paid_at,
 			"status":         transactions[i].Status,

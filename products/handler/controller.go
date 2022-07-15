@@ -342,6 +342,19 @@ func (ph *ProductsHandler) InsertCategory(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, stringerr)
 	}
 
+	// upload image
+	if req.Image == "" {
+		req.File = claudinary.GetFile(ctx)
+		img, err := claudinary.ImageUploadHelper(req.File, "category")
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"message": err.Error(),
+				"rescode": http.StatusInternalServerError,
+			})
+		}
+		req.Image = img
+	}
+
 	// get response after insert category
 	err := ph.Service.InsertCategory(request.ToDomainCategory(req))
 	if err != nil {
@@ -403,6 +416,19 @@ func (ph *ProductsHandler) EditCategory(ctx echo.Context) error {
 			stringerr = append(stringerr, errval.Field()+" is not "+errval.Tag())
 		}
 		return ctx.JSON(http.StatusBadRequest, stringerr)
+	}
+
+	// upload image
+	req.File = claudinary.GetFile(ctx)
+	img, _ := claudinary.ImageUploadHelper(req.File, "category")
+
+	req.Image = img
+	if req.Image == "" {
+		data, err := ph.Service.GetCategory(id)
+		if err != nil {
+			return err_conv.Conversion(err, ctx)
+		}
+		req.Image = data.Image
 	}
 
 	// get response after edit category
