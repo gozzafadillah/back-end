@@ -33,7 +33,7 @@ func (ah *AdminHandler) GetAllTransaction(ctx echo.Context) error {
 			"result":  "empty",
 		})
 	}
-	sliceData := map[int]interface{}{}
+	sliceData := []interface{}{}
 	for i := 0; i <= len(transactions)-1; i++ {
 		payment := ah.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
 		userSession, err := ah.UsersUsecase.GetUserPhone(transactions[i].Phone)
@@ -47,7 +47,8 @@ func (ah *AdminHandler) GetAllTransaction(ctx echo.Context) error {
 			"amount": transactions[i].Amount,
 			"status": transactions[i].Status,
 		}
-		sliceData[i] = data
+		sliceData = append(sliceData, data)
+
 	}
 	return ctx.JSON(200, map[string]interface{}{
 		"message": "success",

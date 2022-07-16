@@ -10,7 +10,7 @@ import (
 )
 
 func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
-	dataMap := map[int]interface{}{}
+	dataMap := []interface{}{}
 	// get jwt
 	claim := middlewares.GetUser(ctx)
 	fmt.Println("phone :", claim.Phone)
@@ -36,14 +36,14 @@ func (th *TransactionHandler) GetHistoryTransaction(ctx echo.Context) error {
 		}
 
 		payment := th.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
-		dataMap[i] = map[string]interface{}{
+		dataMap = append(dataMap, map[string]interface{}{
 			"transaction":    transactions[i].Transaction_Code,
 			"category":       category.Name,
 			"category_image": category.Image,
 			"amount":         transactions[i].Amount,
 			"payment_paid":   payment.Paid_at,
 			"status":         transactions[i].Status,
-		}
+		})
 	}
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{

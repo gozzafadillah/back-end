@@ -143,7 +143,7 @@ func (pr ProductsRepo) DeleteDetail(id int) error {
 // DeleteDetails implements domain_products.Repository
 func (pr ProductsRepo) DeleteDetails(code string) error {
 	rec := Detail_Product{}
-	err := pr.DB.Unscoped().Where("product_code = ?", code).Delete(&rec).RowsAffected
+	err := pr.DB.Unscoped().Where("product_slug = ?", code).Delete(&rec).RowsAffected
 	if err == 0 {
 		return errors.New("delete failed")
 	}

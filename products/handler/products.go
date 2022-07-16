@@ -87,6 +87,7 @@ func (ph *ProductsHandler) DestroyProduct(ctx echo.Context) error {
 	if err != nil {
 		return err_conv.Conversion(err, ctx)
 	}
+
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success delete product",
 		"rescode": http.StatusOK,
@@ -158,7 +159,10 @@ func (ph *ProductsHandler) GetProduct(ctx echo.Context) error {
 		details = append(details, response.FromDomainDetail(value))
 	}
 	if len(details) == 0 {
-		details = []interface{}{"data empty"}
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "data empty",
+			"rescode": http.StatusBadRequest,
+		})
 	}
 
 	// get category product
@@ -193,7 +197,10 @@ func (ph *ProductsHandler) GetProductByCategory(ctx echo.Context) error {
 	// get products by category
 	res := ph.Service.GetProductByCategory(id)
 	if len(res) == 0 {
-		sliceProduct = append(sliceProduct, "data empty")
+		return ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "data empty",
+			"rescode": http.StatusBadRequest,
+		})
 	}
 	for _, value := range res {
 		sliceProduct = append(sliceProduct, response.FromDomainProduct(value))
