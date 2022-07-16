@@ -143,7 +143,7 @@ func (pr ProductsRepo) DeleteDetail(id int) error {
 // DeleteDetails implements domain_products.Repository
 func (pr ProductsRepo) DeleteDetails(code string) error {
 	rec := Detail_Product{}
-	err := pr.DB.Unscoped().Where("product_code = ?", code).Delete(&rec).RowsAffected
+	err := pr.DB.Unscoped().Where("product_slug = ?", code).Delete(&rec).RowsAffected
 	if err == 0 {
 		return errors.New("delete failed")
 	}
@@ -181,7 +181,8 @@ func (pr ProductsRepo) StoreCategory(domain domain_products.Category_Product) er
 func (pr ProductsRepo) UpdateCategory(id int, domain domain_products.Category_Product) error {
 	var rec = Category_Product{}
 	newRecord := map[string]interface{}{
-		"Name": domain.Name,
+		"Name":  domain.Name,
+		"Image": domain.Image,
 	}
 	var err error
 	update := pr.DB.Model(&rec).Where("id = ?", id).Updates(newRecord).RowsAffected

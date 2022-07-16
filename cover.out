@@ -25,3 +25,4 @@ ppob/transaction/service/usecase.go:124.2,128.13 2 1
 ppob/transaction/service/usecase.go:111.28,114.3 2 1
 ppob/transaction/service/usecase.go:115.33,118.12 2 1
 ppob/transaction/service/usecase.go:118.12,122.4 2 1
+ppob/transaction/service/usecase.go:132.53,135.2 2 0
