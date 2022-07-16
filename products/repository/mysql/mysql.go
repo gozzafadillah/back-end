@@ -96,8 +96,13 @@ func (pr ProductsRepo) GetDetailsByCode(product_slug string) ([]domain_products.
 
 // StoreDetail implements domain_products.Repository
 func (pr ProductsRepo) StoreDetail(product_slug string, domain domain_products.Detail_Product) error {
+	product := Products{}
+	err := pr.DB.Where("product_slug = ?", product_slug).First(&product).Error
+	if err != nil {
+		return err
+	}
 	domain.Product_Slug = product_slug
-	err := pr.DB.Create(&domain).Error
+	err = pr.DB.Create(&domain).Error
 	return err
 }
 
