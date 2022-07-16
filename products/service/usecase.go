@@ -97,7 +97,6 @@ func (ps ProductService) Edit(id int, domain domain_products.Products) error {
 	}
 
 	domain.Product_Slug = slug.GenerateSlug(domain.Name)
-	domain.Category_Id = data.Category_Id
 	err = ps.Repository.Update(id, domain)
 	if err != nil {
 		return errors.New("update failed, product")
