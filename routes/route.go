@@ -70,7 +70,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		AllowHeaders:     []string{"*"},
 		AllowCredentials: true,
 		MaxAge:           2592000,
 	}))
