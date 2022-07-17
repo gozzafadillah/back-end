@@ -20,7 +20,7 @@ type ControllerList struct {
 	AdminHandler       handler_admin.AdminHandler
 }
 
-const server = "https://36e2-2001-448a-1102-1a0f-350a-677f-f95c-668a.ap.ngrok.io/"
+// const server = "https://36e2-2001-448a-1102-1a0f-350a-677f-f95c-668a.ap.ngrok.io/"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
@@ -68,8 +68,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin := e.Group("admin")
 	authAdmin.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("admin", cl.UserHandler))
 	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{server},
-		AllowHeaders: []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+		MaxAge:           2592000,
 	}))
 
 	authAdmin.GET("/category", cl.ProductsHandler.GetCategories)
