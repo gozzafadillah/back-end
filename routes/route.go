@@ -44,7 +44,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.GET("/products/category/:category_id", cl.ProductsHandler.GetProductByCategory)
 	e.GET("/products/:id", cl.ProductsHandler.GetProduct)
 	e.GET("/detail/:product_slug", cl.ProductsHandler.GetDetailsProduct)
-	e.GET("/category", cl.ProductsHandler.GetCategories)
+	// e.GET("/category", cl.ProductsHandler.GetCategories)
 	e.GET("/category/:id", cl.ProductsHandler.GetCategoryByID)
 	e.POST("/transaction/callback_invoice", cl.TransactionHandler.Callback_Invoice)
 
@@ -69,8 +69,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("admin", cl.UserHandler))
 	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{server},
-		AllowHeaders: []string{"Origin", "Authorization"},
+		AllowHeaders: []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 	}))
+
+	authAdmin.GET("/category", cl.ProductsHandler.GetCategories)
 
 	authAdmin.POST("/products/:category_id", cl.ProductsHandler.InsertProduct)
 	authAdmin.PUT("/products/edit/:id", cl.ProductsHandler.EditProduct)
