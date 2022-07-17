@@ -69,8 +69,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("admin", cl.UserHandler))
 	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowHeaders: []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 	}))
+
 	authAdmin.POST("/products/:category_id", cl.ProductsHandler.InsertProduct)
 	authAdmin.PUT("/products/edit/:id", cl.ProductsHandler.EditProduct)
 	authAdmin.DELETE("/products/delete/:id", cl.ProductsHandler.DestroyProduct)
