@@ -20,7 +20,7 @@ type ControllerList struct {
 	AdminHandler       handler_admin.AdminHandler
 }
 
-// const server = "http://localhost:3000"
+const server = "https://977d-2001-448a-1102-1a0f-350a-677f-f95c-668a.ap.ngrok.io/"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
@@ -68,7 +68,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin := e.Group("admin")
 	authAdmin.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("admin", cl.UserHandler))
 	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
+		AllowOrigins: []string{server},
 		AllowHeaders: []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
 	}))
 
