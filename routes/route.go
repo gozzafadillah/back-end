@@ -20,7 +20,7 @@ type ControllerList struct {
 	AdminHandler       handler_admin.AdminHandler
 }
 
-const server = "https://977d-2001-448a-1102-1a0f-350a-677f-f95c-668a.ap.ngrok.io/"
+const server = "https://36e2-2001-448a-1102-1a0f-350a-677f-f95c-668a.ap.ngrok.io/"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
