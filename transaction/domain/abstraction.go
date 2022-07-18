@@ -10,6 +10,7 @@ type Service interface {
 
 	// transaction
 	GetTransactionsByPhone(phone string) []Transaction
+	GetTransactionByPaymentId(id string) (Transaction, error)
 	GetFavoritesByPhone(cat, phone string) Transaction
 	AddTransaction(data *xendit.Invoice, detail Detail_Transaction) error
 	EditTransaction(data Callback_Invoice) error
