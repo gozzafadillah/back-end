@@ -35,9 +35,9 @@ jobs:
             DBNAME: db_bayeue
         run: |
           go mod tidy
-          go test ./users/domain/abstraction_test.go -coverpkg=./users/service/... 
-          go test ./products/domain/abstraction_test.go -coverpkg=./products/service/... 
-          go test ./transaction/domain/abstraction_test.go -coverpkg=./transaction/service/... 
+          go test ./users/domain/abstraction_test.go 
+          go test ./products/domain/abstraction_test.go
+          go test ./transaction/domain/abstraction_test.go 
 
   deploy:
       needs: testing

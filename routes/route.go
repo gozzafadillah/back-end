@@ -61,6 +61,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
 	// transaction
 	authUser.POST("/checkout/:detail_slug", cl.TransactionHandler.Checkout)
+	authUser.GET("/transaction/:id", cl.TransactionHandler.GetTransactionByPaymentSuccess)
+	authUser.GET("/transaction/success/:payment_id", cl.TransactionHandler.GetTransactionByPaymentSuccess)
 	authUser.GET("/history", cl.TransactionHandler.GetHistoryTransaction)
 	authUser.GET("/favorite", cl.TransactionHandler.FavoriteUser)
 
