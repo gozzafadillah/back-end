@@ -3,6 +3,7 @@ package handler_admin
 import (
 	"net/http"
 	err_conv "ppob/helper/err"
+	helper_xendit "ppob/helper/xendit"
 	domain_products "ppob/products/domain"
 	domain_transaction "ppob/transaction/domain"
 	domain_users "ppob/users/domain"
@@ -35,17 +36,17 @@ func (ah *AdminHandler) GetAllTransaction(ctx echo.Context) error {
 	}
 	sliceData := []interface{}{}
 	for i := 0; i <= len(transactions)-1; i++ {
-		payment := ah.TransactionUsecase.GetPayment(transactions[i].Payment_Id)
 		userSession, err := ah.UsersUsecase.GetUserPhone(transactions[i].Phone)
 		if err != nil {
 			return err_conv.Conversion(err, ctx)
 		}
 
 		data := map[string]interface{}{
-			"user":   userSession.Name,
-			"paid":   payment.Paid_at,
-			"amount": transactions[i].Amount,
-			"status": transactions[i].Status,
+			"user":      userSession.Name,
+			"created":   transactions[i].CreatedAt,
+			"amount":    transactions[i].Amount,
+			"status":    transactions[i].Status,
+			"paymet_id": transactions[i].Payment_Id,
 		}
 		sliceData = append(sliceData, data)
 
@@ -70,5 +71,15 @@ func (ah *AdminHandler) CountAllItems(ctx echo.Context) error {
 			"products":     countProducts,
 			"transactions": countTransactions,
 		},
+	})
+}
+
+func (ah *AdminHandler) DetailTransaction(ctx echo.Context) error {
+	param := ctx.Param("payment_id")
+	data := helper_xendit.DetailTransactionXendit(param)
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"rescode": http.StatusOK,
+		"result":  data,
 	})
 }
