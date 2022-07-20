@@ -96,8 +96,13 @@ func (pr ProductsRepo) GetDetailsByCode(product_slug string) ([]domain_products.
 
 // StoreDetail implements domain_products.Repository
 func (pr ProductsRepo) StoreDetail(product_slug string, domain domain_products.Detail_Product) error {
+	product := Products{}
+	err := pr.DB.Where("product_slug = ?", product_slug).First(&product).Error
+	if err != nil {
+		return err
+	}
 	domain.Product_Slug = product_slug
-	err := pr.DB.Create(&domain).Error
+	err = pr.DB.Create(&domain).Error
 	return err
 }
 
@@ -143,7 +148,7 @@ func (pr ProductsRepo) DeleteDetail(id int) error {
 // DeleteDetails implements domain_products.Repository
 func (pr ProductsRepo) DeleteDetails(code string) error {
 	rec := Detail_Product{}
-	err := pr.DB.Unscoped().Where("product_code = ?", code).Delete(&rec).RowsAffected
+	err := pr.DB.Unscoped().Where("product_slug = ?", code).Delete(&rec).RowsAffected
 	if err == 0 {
 		return errors.New("delete failed")
 	}
@@ -181,7 +186,8 @@ func (pr ProductsRepo) StoreCategory(domain domain_products.Category_Product) er
 func (pr ProductsRepo) UpdateCategory(id int, domain domain_products.Category_Product) error {
 	var rec = Category_Product{}
 	newRecord := map[string]interface{}{
-		"Name": domain.Name,
+		"Name":  domain.Name,
+		"Image": domain.Image,
 	}
 	var err error
 	update := pr.DB.Model(&rec).Where("id = ?", id).Updates(newRecord).RowsAffected
@@ -196,4 +202,11 @@ func (pr ProductsRepo) GetCategoryById(id int) (domain_products.Category_Product
 	var rec Category_Product
 	err := pr.DB.Where("id = ?", id).First(&rec).Error
 	return ToDomainCategory(rec), err
+}
+
+// Count implements domain_products.Repository
+func (pr ProductsRepo) Count() int {
+	var count int
+	pr.DB.Raw("SELECT COUNT(*) FROM products").Scan(&count)
+	return count
 }

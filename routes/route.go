@@ -1,6 +1,7 @@
 package routes
 
 import (
+	handler_admin "ppob/admin/handler"
 	"ppob/app/middlewares"
 	"ppob/helper/valid"
 	handler_products "ppob/products/handler"
@@ -16,9 +17,10 @@ type ControllerList struct {
 	UserHandler        handler_users.UsersHandler
 	ProductsHandler    handler_products.ProductsHandler
 	TransactionHandler handler_transaction.TransactionHandler
+	AdminHandler       handler_admin.AdminHandler
 }
 
-const server = "http://localhost:3000"
+// const server = "https://36e2-2001-448a-1102-1a0f-350a-677f-f95c-668a.ap.ngrok.io/"
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
@@ -27,9 +29,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	// access public
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		// AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+		MaxAge:           2592000,
 	}))
 	e.POST("/login", cl.UserHandler.Authorization)
 	e.POST("/register", cl.UserHandler.Register)
@@ -48,10 +52,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	// access customer
 	authUser := e.Group("users")
-	authUser.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
 	authUser.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("customer", cl.UserHandler))
 	// make pin
 	authUser.POST("/pin", cl.UserHandler.MakePin)
@@ -59,16 +59,16 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authUser.POST("/profile", cl.UserHandler.UpdateProfile)
 	// transaction
 	authUser.POST("/checkout/:detail_slug", cl.TransactionHandler.Checkout)
+	authUser.GET("/transaction/:id", cl.TransactionHandler.GetTransactionByPaymentSuccess)
+	authUser.GET("/transaction/success/:payment_id", cl.TransactionHandler.GetTransactionByPaymentSuccess)
 	authUser.GET("/history", cl.TransactionHandler.GetHistoryTransaction)
 	authUser.GET("/favorite", cl.TransactionHandler.FavoriteUser)
 
 	// manage product endpoint (admin)
 	authAdmin := e.Group("admin")
 	authAdmin.Use(middleware.JWTWithConfig(cl.JWTMiddleware), valid.RoleValidation("admin", cl.UserHandler))
-	authAdmin.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
+	authAdmin.Use(middleware.CORS())
+
 	authAdmin.POST("/products/:category_id", cl.ProductsHandler.InsertProduct)
 	authAdmin.PUT("/products/edit/:id", cl.ProductsHandler.EditProduct)
 	authAdmin.DELETE("/products/delete/:id", cl.ProductsHandler.DestroyProduct)
@@ -83,4 +83,8 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	authAdmin.PUT("/category/edit/:id", cl.ProductsHandler.EditCategory)
 	authAdmin.DELETE("/category/delete/:id", cl.ProductsHandler.DestroyCategory)
 
+	// transaction
+	authAdmin.GET("/transaction", cl.AdminHandler.GetAllTransaction)
+	authAdmin.GET("/countAllItems", cl.AdminHandler.CountAllItems)
+	authAdmin.GET("/detail_transaction/:payment_id", cl.AdminHandler.DetailTransaction)
 }

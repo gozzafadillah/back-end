@@ -15,6 +15,20 @@ type Repository struct {
 	mock.Mock
 }
 
+// Count provides a mock function with given fields:
+func (_m *Repository) Count() int {
+	ret := _m.Called()
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
 // Delete provides a mock function with given fields: id
 func (_m *Repository) Delete(id int) error {
 	ret := _m.Called(id)

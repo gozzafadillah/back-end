@@ -42,7 +42,7 @@ func TestMain(m *testing.M) {
 		ID:            1,
 		Name:          "Paket Data",
 		Category_Slug: "paket-data",
-		Icon:          "font-paket-data",
+		Image:         "font-paket-data",
 		Status:        true,
 	}
 	os.Exit(m.Run())
@@ -104,13 +104,13 @@ func TestGetProductTransaction(t *testing.T) {
 func TestInsertData(t *testing.T) {
 	t.Run("success insert data product", func(t *testing.T) {
 		productRepo.On("Store", mock.Anything).Return(nil).Once()
-		err := productService.InsertData(1, productDomain)
+		err := productService.InsertData(1, CategoryDomain, productDomain)
 		assert.NoError(t, err)
 		assert.Equal(t, nil, err)
 	})
 	t.Run("failed insert data product", func(t *testing.T) {
 		productRepo.On("Store", mock.Anything).Return(errors.New("failed store data")).Once()
-		err := productService.InsertData(1, productDomain)
+		err := productService.InsertData(1, CategoryDomain, productDomain)
 		assert.Error(t, err)
 		assert.Equal(t, err, errors.New("internal server error"))
 	})
@@ -303,6 +303,14 @@ func TestDestroyCategory(t *testing.T) {
 		err := productService.DestroyCategory(CategoryDomain.ID)
 		assert.Error(t, err)
 		assert.Equal(t, errors.New("delete failed"), err)
+	})
+}
+
+func TestCount(t *testing.T) {
+	t.Run("count product", func(t *testing.T) {
+		productRepo.On("Count").Return(1).Once()
+		data := productService.CountProducts()
+		assert.Equal(t, 1, data)
 	})
 }
 

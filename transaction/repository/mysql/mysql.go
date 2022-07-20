@@ -12,42 +12,28 @@ type TransactionRepo struct {
 	DB *gorm.DB
 }
 
+func NewTransactionRepo(db *gorm.DB) domain_transaction.Repository {
+	return TransactionRepo{
+		DB: db,
+	}
+}
+
+// GetTransactions implements domain_transaction.Repository
+func (tr TransactionRepo) GetTransactions() []domain_transaction.Transaction {
+	rec := []Transaction{}
+	tr.DB.Find(&rec)
+	sliceTramsaction := []domain_transaction.Transaction{}
+	for _, value := range rec {
+		sliceTramsaction = append(sliceTramsaction, ToDomainTransaction(value))
+	}
+	return sliceTramsaction
+}
+
 // GetDetailTransaction implements domain_transaction.Repository
 func (tr TransactionRepo) GetDetailTransaction(transaction_code string) (domain_transaction.Detail_Transaction, error) {
 	rec := Detail_Transaction{}
 	err := tr.DB.Where("transaction_code = ?", transaction_code).First(&rec).Error
 	return ToDomain(rec), err
-}
-
-// Count implements domain_transaction.Repository
-func (tr TransactionRepo) Count(cat string, phone string, id_customer string, detail_product string) (string, int) {
-	var rec Transaction
-	tr.DB.Raw("SELECT  * FROM `transactions` INNER JOIN `detail_transactions`ON `detail_transactions`.`transaction_code` = `transactions`.`transaction_code` WHERE transactions.category_slug = ? AND transactions.status = 'PAID' AND transactions.phone = ? AND transactions.id_customer = ? AND transactions.detail_product_slug = ?", cat, phone, id_customer, detail_product).Scan(&rec)
-	fmt.Println("rec :", rec)
-	var counting int
-	tr.DB.Raw("SELECT COUNT(*) FROM `transactions` INNER JOIN `detail_transactions`ON `detail_transactions`.`transaction_code` = `transactions`.`transaction_code` WHERE transactions.category_slug = ? AND transactions.status = 'PAID' AND transactions.phone = ? AND transactions.id_customer = ? AND transactions.detail_product_slug = ?", cat, phone, id_customer, detail_product).Scan(&counting)
-	fmt.Println("count :", counting)
-
-	return rec.Payment_Id, counting
-}
-
-// GetFavorite implements domain_transaction.Repository
-func (tr TransactionRepo) GetFavorite(cat, phone string) []domain_transaction.Transaction {
-	rec := []Transaction{}
-	sliceTransaction := []domain_transaction.Transaction{}
-	tr.DB.Raw("SELECT * FROM transactions INNER JOIN detail_transactions ON detail_transactions.transaction_code = transactions.transaction_code	WHERE  transactions.phone = ? AND transactions.category_slug = ? AND status = 'PAID'", phone, cat).Scan(&rec)
-	fmt.Println("cek :", rec)
-
-	for _, value := range rec {
-		sliceTransaction = append(sliceTransaction, ToDomainTransaction(value))
-	}
-	return sliceTransaction
-}
-
-func NewTransactionRepo(db *gorm.DB) domain_transaction.Repository {
-	return TransactionRepo{
-		DB: db,
-	}
 }
 
 // StoreDetailTransaction implements domain_transaction.Repository
@@ -101,4 +87,36 @@ func (tr TransactionRepo) GetPayment(id string) domain_transaction.Payment {
 	rec := Payment{}
 	tr.DB.Where("payment_id = ?", id).First(&rec)
 	return ToDomainPayment(rec)
+}
+
+// Count implements domain_transaction.Repository
+func (tr TransactionRepo) Count(cat string, phone string, id_customer string, detail_product string) (string, int) {
+	var rec Transaction
+	tr.DB.Raw("SELECT  * FROM `transactions` INNER JOIN `detail_transactions`ON `detail_transactions`.`transaction_code` = `transactions`.`transaction_code` WHERE transactions.category_slug = ? AND transactions.status = 'PAID' AND transactions.phone = ? AND transactions.id_customer = ? AND transactions.detail_product_slug = ?", cat, phone, id_customer, detail_product).Scan(&rec)
+	fmt.Println("rec :", rec)
+	var counting int
+	tr.DB.Raw("SELECT COUNT(*) FROM `transactions` INNER JOIN `detail_transactions`ON `detail_transactions`.`transaction_code` = `transactions`.`transaction_code` WHERE transactions.category_slug = ? AND transactions.status = 'PAID' AND transactions.phone = ? AND transactions.id_customer = ? AND transactions.detail_product_slug = ?", cat, phone, id_customer, detail_product).Scan(&counting)
+	fmt.Println("count :", counting)
+
+	return rec.Payment_Id, counting
+}
+
+// GetFavorite implements domain_transaction.Repository
+func (tr TransactionRepo) GetFavorite(cat, phone string) []domain_transaction.Transaction {
+	rec := []Transaction{}
+	sliceTransaction := []domain_transaction.Transaction{}
+	tr.DB.Raw("SELECT * FROM transactions INNER JOIN detail_transactions ON detail_transactions.transaction_code = transactions.transaction_code	WHERE  transactions.phone = ? AND transactions.category_slug = ? AND status = 'PAID'", phone, cat).Scan(&rec)
+	fmt.Println("cek :", rec)
+
+	for _, value := range rec {
+		sliceTransaction = append(sliceTransaction, ToDomainTransaction(value))
+	}
+	return sliceTransaction
+}
+
+// Counts implements domain_transaction.Repository
+func (tr TransactionRepo) Counts() int {
+	var count int
+	tr.DB.Raw("SELECT COUNT(*) FROM transactions").Scan(&count)
+	return count
 }

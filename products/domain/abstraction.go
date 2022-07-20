@@ -2,7 +2,7 @@ package domain_products
 
 type Service interface {
 	// Product
-	InsertData(category_id int, domain Products) error
+	InsertData(category_id int, cat Category_Product, domain Products) error
 	GetProducts() ([]Products, error)
 	GetProduct(id int) (Products, error)
 	GetProductTransaction(product_slug string) (Products, error)
@@ -23,6 +23,9 @@ type Service interface {
 	GetCategory(id int) (Category_Product, error)
 	EditCategory(id int, domain Category_Product) error
 	DestroyCategory(id int) error
+
+	// Admin-dashboard
+	CountProducts() int
 }
 
 type Repository interface {
@@ -50,4 +53,7 @@ type Repository interface {
 	GetCategoryById(id int) (Category_Product, error)
 	UpdateCategory(id int, domain Category_Product) error
 	DeleteCategory(id int) error
+
+	// Admin-Dashboard
+	Count() int
 }

@@ -17,7 +17,7 @@ type Category_Product struct {
 	ID            int
 	Name          string
 	Category_Slug string
-	Icon          string
+	Image         string
 	Status        bool
 	CreatedAt     time.Time
 	UpdatedAt     time.Time

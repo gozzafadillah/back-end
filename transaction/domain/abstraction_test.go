@@ -32,7 +32,7 @@ func TestMain(m *testing.M) {
 		Amount:              15000,
 		Category_Slug:       "pulsa",
 		Detail_Product_Slug: "paket-xl-20rb",
-		Payment_Id:          "62bb210af01c3236811fc564",
+		Payment_Id:          "62d5550b7c7cc1f5a367c5ce",
 		Status:              "PENDING",
 		CreatedAt:           time.Time{},
 		UpdatedAt:           time.Time{},
@@ -74,6 +74,14 @@ func TestGetTransactionsByPhone(t *testing.T) {
 	})
 }
 
+func TestGetTransactionAll(t *testing.T) {
+	t.Run("success get all transaction", func(t *testing.T) {
+		transactionRepo.On("GetTransactions").Return([]domain_transaction.Transaction{transactionDomain})
+		sliceTransaction := transactionService.GetTransactionAll()
+		assert.Equal(t, []domain_transaction.Transaction{transactionDomain}, sliceTransaction)
+	})
+}
+
 func TestAddDetailTransaction(t *testing.T) {
 	t.Run("success add detail transaction", func(t *testing.T) {
 		transactionRepo.On("StoreDetailTransaction", mock.Anything).Return(nil).Once()
@@ -88,6 +96,21 @@ func TestAddDetailTransaction(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.Equal(t, err, err)
+	})
+}
+
+func TestGetDetailTransaction(t *testing.T) {
+	t.Run("success get detail transaction", func(t *testing.T) {
+		transactionRepo.On("GetDetailTransaction", mock.Anything).Return(detailDomain, nil).Once()
+		res, err := transactionService.GetDetailTransaction(transactionDomain.Transaction_Code)
+		assert.NoError(t, err)
+		assert.Equal(t, detailDomain, res)
+	})
+	t.Run("failed get detail transaction", func(t *testing.T) {
+		transactionRepo.On("GetDetailTransaction", mock.Anything).Return(domain_transaction.Detail_Transaction{}, errors.New("error")).Once()
+		res, err := transactionService.GetDetailTransaction(transactionDomain.Transaction_Code)
+		assert.Error(t, err)
+		assert.Equal(t, domain_transaction.Detail_Transaction{}, res)
 	})
 }
 
@@ -152,6 +175,39 @@ func TestGetPayment(t *testing.T) {
 		res := transactionService.GetPayment("")
 
 		assert.Equal(t, domain_transaction.Payment{}, res)
+	})
+}
+
+func TestGetFavoritesByPhone(t *testing.T) {
+	t.Run("success get favorite by phone", func(t *testing.T) {
+		transactionRepo.On("GetFavorite", mock.Anything, mock.Anything).Return([]domain_transaction.Transaction{transactionDomain}).Once()
+		transactionRepo.On("GetTransactionByPaymentId", mock.Anything).Return(transactionDomain, nil)
+		data := transactionService.GetFavoritesByPhone("pulsa", "62895631948686")
+		assert.Equal(t, transactionDomain, data)
+	})
+	t.Run("success get favorite 2 by phone", func(t *testing.T) {
+		transactionRepo.On("GetFavorite", mock.Anything, mock.Anything).Return([]domain_transaction.Transaction{transactionDomain, transactionDomain}).Once()
+		transactionRepo.On("GetTransactionByPaymentId", mock.Anything).Return(transactionDomain, nil)
+		transactionRepo.On("Count", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(transactionDomain.Payment_Id, 2)
+		data := transactionService.GetFavoritesByPhone("pulsa", "62895631948686")
+		assert.Equal(t, transactionDomain, data)
+	})
+}
+
+func TestGetTransactionByPaymentId(t *testing.T) {
+	t.Run("err get transaction with xendit", func(t *testing.T) {
+		transactionRepo.On("GetTransactionByPaymentId", mock.Anything).Return(domain_transaction.Transaction{}, errors.New("bad request")).Once()
+		data, err := transactionService.GetTransactionByPaymentId(transactionDomain.Payment_Id)
+		assert.Error(t, err)
+		assert.Equal(t, domain_transaction.Transaction{}, data)
+	})
+}
+
+func TestCount(t *testing.T) {
+	t.Run("count transaction", func(t *testing.T) {
+		transactionRepo.On("Counts").Return(1).Once()
+		data := transactionService.CountTransaction()
+		assert.Equal(t, 1, data)
 	})
 }
 

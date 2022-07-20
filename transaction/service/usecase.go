@@ -13,41 +13,6 @@ type TransactionService struct {
 	Repository domain_transaction.Repository
 }
 
-// GetDetailTransaction implements domain_transaction.Service
-func (ts TransactionService) GetDetailTransaction(transaction_code string) (domain_transaction.Detail_Transaction, error) {
-	data, err := ts.Repository.GetDetailTransaction(transaction_code)
-	if err != nil {
-		return domain_transaction.Detail_Transaction{}, errors.New("bad request")
-	}
-	return data, nil
-}
-
-// GetFavoritesByPhone implements domain_transaction.Service
-func (ts TransactionService) GetFavoritesByPhone(cat, phone string) domain_transaction.Transaction {
-	transactions := ts.Repository.GetFavorite(cat, phone)
-	// fmt.Println("transactions ", transactions)
-	var a, b int
-	var paymenta, paymentb string
-	if len(transactions) == 1 {
-		data, _ := ts.Repository.GetTransactionByPaymentId(transactions[0].Payment_Id)
-		return data
-	}
-	for i, _ := range transactions {
-		paymenta, a = ts.Repository.Count(transactions[i].Category_Slug, transactions[i].Phone, transactions[i].ID_Customer, transactions[i].Detail_Product_Slug)
-		// fmt.Println("payment A :", paymenta)
-		if a > b {
-			b = a
-			paymentb = paymenta
-			// fmt.Println("payment A :", paymentb)
-		}
-	}
-	data, _ := ts.Repository.GetTransactionByPaymentId(paymentb)
-
-	// fmt.Println("data :", data)
-
-	return data
-}
-
 func NewTransactionService(repository domain_transaction.Repository) domain_transaction.Service {
 	return TransactionService{
 		Repository: repository,
@@ -58,6 +23,12 @@ func NewTransactionService(repository domain_transaction.Repository) domain_tran
 func (ts TransactionService) GetTransactionsByPhone(phone string) []domain_transaction.Transaction {
 	TransactionSlice := ts.Repository.GetTransactionByPhone(phone)
 	return TransactionSlice
+}
+
+// GetTransactionAll implements domain_transaction.Service
+func (ts TransactionService) GetTransactionAll() []domain_transaction.Transaction {
+	data := ts.Repository.GetTransactions()
+	return data
 }
 
 // AddDetailTransaction implements domain_transaction.Service
@@ -120,4 +91,54 @@ func (ts TransactionService) EditTransaction(data domain_transaction.Callback_In
 func (ts TransactionService) GetPayment(id string) domain_transaction.Payment {
 	data := ts.Repository.GetPayment(id)
 	return data
+}
+
+// GetDetailTransaction implements domain_transaction.Service
+func (ts TransactionService) GetDetailTransaction(transaction_code string) (domain_transaction.Detail_Transaction, error) {
+	data, err := ts.Repository.GetDetailTransaction(transaction_code)
+	if err != nil {
+		return domain_transaction.Detail_Transaction{}, errors.New("bad request")
+	}
+	return data, nil
+}
+
+// GetFavoritesByPhone implements domain_transaction.Service
+func (ts TransactionService) GetFavoritesByPhone(cat, phone string) domain_transaction.Transaction {
+	transactions := ts.Repository.GetFavorite(cat, phone)
+	// fmt.Println("transactions ", transactions)
+	var a, b int
+	var paymenta, paymentb string
+	if len(transactions) == 1 {
+		data, _ := ts.Repository.GetTransactionByPaymentId(transactions[0].Payment_Id)
+		return data
+	}
+	for i, _ := range transactions {
+		paymenta, a = ts.Repository.Count(transactions[i].Category_Slug, transactions[i].Phone, transactions[i].ID_Customer, transactions[i].Detail_Product_Slug)
+		// fmt.Println("payment A :", paymenta)
+		if a > b {
+			b = a
+			paymentb = paymenta
+			// fmt.Println("payment A :", paymentb)
+		}
+	}
+	data, _ := ts.Repository.GetTransactionByPaymentId(paymentb)
+
+	// fmt.Println("data :", data)
+
+	return data
+}
+
+// GetTransactionByPaymentId implements domain_transaction.Service
+func (ts TransactionService) GetTransactionByPaymentId(id string) (domain_transaction.Transaction, error) {
+	data, err := ts.Repository.GetTransactionByPaymentId(id)
+	if data.Status != "PAID" || err != nil {
+		return domain_transaction.Transaction{}, errors.New("bad request")
+	}
+	return data, nil
+}
+
+// CountTransaction implements domain_transaction.Service
+func (ts TransactionService) CountTransaction() int {
+	count := ts.Repository.Counts()
+	return count
 }
