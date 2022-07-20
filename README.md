@@ -1,6 +1,16 @@
 # Documentation
 
-## Untuk menggunakan data sementara swagger
+## Bayeue
+Bayeue merupakan aplikasi PPBOB berbasih Web dan Mobile menggunakan teknologi VueJs (web), Flutter (mobile), dan Go Echo (Backend).
+
+## Teknologi
+1. Echo 
+2. ORM Gorm
+3. Claudinary
+4. Xendit
+5. Mailjet
+
+## Swagger
 BaseUrl = https://virtserver.swaggerhub.com/gozza/Payment-Point/1.0.0
 
 1. masukan baseUrl
@@ -19,7 +29,9 @@ BaseUrl = https://virtserver.swaggerhub.com/gozza/Payment-Point/1.0.0
 
 ## Cara Melakukan Unittest
 ```
-go test ./... -v -coverpkg=./users/usecase/..,./product/usecase/.. -coverprofile=cover.out && go tool cover -html=cover.out
+go test ./users/domain/abstraction_test.go -coverpkg=./users/service/... 
+go test ./products/domain/abstraction_test.go -coverpkg=./products/service/... 
+go test ./transaction/domain/abstraction_test.go -coverpkg=./transaction/service/...
 
 ```
 ## cara import json postman
@@ -34,4 +46,4 @@ file nya saya simpan di discord
 
 ## untuk endpoint beserta postman
 route yang sudah ada di branch ini, kalian tinggal import ke postman!
-["link-gdrive"](https://drive.google.com/file/d/1peEG-tbc1cEE7mKM4sxeUn02uiA-wW44/view?usp=sharing)
+["link-gdrive"](https://drive.google.com/file/d/1CgzMJpNxILzcdepSIJu6r9wFex1iV7IE/view?usp=sharing)

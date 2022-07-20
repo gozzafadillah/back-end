@@ -10,7 +10,7 @@ import (
 type Products struct {
 	gorm.Model
 	ID           int
-	Product_Slug string
+	Product_Slug string `gorm:"unique"`
 	Name         string
 	Image        string
 	Category_Id  int
@@ -36,7 +36,7 @@ type Category_Product struct {
 	gorm.Model
 	ID            int
 	Name          string
-	Category_Slug string
+	Category_Slug string `gorm:"unique"`
 	Image         string
 	Status        bool
 	CreatedAt     time.Time
@@ -56,7 +56,7 @@ func ToDomainCategory(rec Category_Product) domain_products.Category_Product {
 type Detail_Product struct {
 	gorm.Model
 	ID           int
-	Product_Slug string
+	Product_Slug string `gorm:"unique"`
 	Name         string
 	Detail_Slug  string
 	Price        int

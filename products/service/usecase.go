@@ -92,11 +92,16 @@ func (ps ProductService) Edit(id int, domain domain_products.Products) error {
 		return errors.New("bad request")
 	}
 
+	cat, err := ps.GetCategory(domain.Category_Id)
+	if err != nil {
+		return errors.New("bad request")
+	}
+
 	if domain.Image == "" {
 		domain.Image = data.Image
 	}
 
-	domain.Product_Slug = slug.GenerateSlug(domain.Name)
+	domain.Product_Slug = slug.GenerateSlug(cat.Name + " " + domain.Name)
 	err = ps.Repository.Update(id, domain)
 	if err != nil {
 		return errors.New("update failed, product")
