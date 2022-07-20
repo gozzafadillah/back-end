@@ -141,6 +141,7 @@ func TestDestroy(t *testing.T) {
 func TestEdit(t *testing.T) {
 	t.Run("success edit", func(t *testing.T) {
 		productRepo.On("GetByID", mock.Anything).Return(productDomain, nil).Once()
+		productRepo.On("GetCategoryById", mock.Anything).Return(CategoryDomain, nil).Once()
 		productRepo.On("Update", mock.Anything, mock.Anything).Return(nil).Once()
 		productRepo.On("UpdateDetails", mock.Anything, mock.Anything).Return(nil).Once()
 
@@ -150,6 +151,7 @@ func TestEdit(t *testing.T) {
 	})
 	t.Run("failed edit", func(t *testing.T) {
 		productRepo.On("GetByID", mock.Anything).Return(domain_products.Products{}, errors.New("failed get by id")).Once()
+		productRepo.On("GetCategoryById", mock.Anything).Return(domain_products.Category_Product{}, errors.New("bad request")).Once()
 		productRepo.On("Update", mock.Anything, mock.Anything).Return(errors.New("failed update data product")).Once()
 		productRepo.On("UpdateDetails", mock.Anything, mock.Anything).Return(errors.New("failed update detail product")).Once()
 

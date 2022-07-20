@@ -92,7 +92,7 @@ func (ps ProductService) Edit(id int, domain domain_products.Products) error {
 		return errors.New("bad request")
 	}
 
-	cat, err := ps.GetCategory(domain.Category_Id)
+	cat, err := ps.Repository.GetCategoryById(domain.Category_Id)
 	if err != nil {
 		return errors.New("bad request")
 	}
