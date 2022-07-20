@@ -24,7 +24,7 @@ func TestMain(m *testing.M) {
 	productService = service_products.NewProductsService(&productRepo)
 	productDomain = domain_products.Products{
 		ID:           1,
-		Product_Slug: "paket-xl",
+		Product_Slug: "paket-data-xl",
 		Name:         "Paket XL",
 		Image:        "xl.jpg",
 		Category_Id:  1,
@@ -32,9 +32,9 @@ func TestMain(m *testing.M) {
 	}
 	DetailDomain = domain_products.Detail_Product{
 		ID:           1,
-		Product_Slug: "paket-xl",
-		Name:         "Paket XL 20rb",
-		Detail_Slug:  "paket-xl-20rb",
+		Product_Slug: "paket-data-xl",
+		Name:         "Paket Data XL 20rb",
+		Detail_Slug:  "paket-data-xl-20rb",
 		Price:        20000,
 		Status:       true,
 	}
@@ -234,17 +234,11 @@ func TestDestroyDetail(t *testing.T) {
 }
 
 func TestGetCategory(t *testing.T) {
-	t.Run("success get category by id", func(t *testing.T) {
-		productRepo.On("GetCategoryById", mock.Anything).Return(CategoryDomain, nil).Once()
-		res, err := productService.GetCategory(CategoryDomain.ID)
-		assert.NoError(t, err)
-		assert.Equal(t, CategoryDomain, res)
-	})
 	t.Run("failed get category by id", func(t *testing.T) {
 		productRepo.On("GetCategoryById", mock.Anything).Return(domain_products.Category_Product{}, errors.New("bad request")).Once()
 		res, err := productService.GetCategory(CategoryDomain.ID)
 		assert.Error(t, err)
-		assert.Equal(t, domain_products.Category_Product{}, res)
+		assert.Equal(t, 0, res.ID)
 	})
 }
 
