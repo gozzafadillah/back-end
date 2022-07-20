@@ -306,5 +306,13 @@ func TestDestroyCategory(t *testing.T) {
 	})
 }
 
+func TestCount(t *testing.T) {
+	t.Run("count product", func(t *testing.T) {
+		productRepo.On("Count").Return(1).Once()
+		data := productService.CountProducts()
+		assert.Equal(t, 1, data)
+	})
+}
+
 // go test ./products/domain/abstraction_test.go -coverpkg=./products/service/...
 // ok      command-line-arguments  0.409s  coverage: 93.3% of statements in ./products/service/...

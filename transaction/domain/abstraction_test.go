@@ -32,7 +32,7 @@ func TestMain(m *testing.M) {
 		Amount:              15000,
 		Category_Slug:       "pulsa",
 		Detail_Product_Slug: "paket-xl-20rb",
-		Payment_Id:          "62bb210af01c3236811fc564",
+		Payment_Id:          "62d5550b7c7cc1f5a367c5ce",
 		Status:              "PENDING",
 		CreatedAt:           time.Time{},
 		UpdatedAt:           time.Time{},
@@ -191,6 +191,23 @@ func TestGetFavoritesByPhone(t *testing.T) {
 		transactionRepo.On("Count", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(transactionDomain.Payment_Id, 2)
 		data := transactionService.GetFavoritesByPhone("pulsa", "62895631948686")
 		assert.Equal(t, transactionDomain, data)
+	})
+}
+
+func TestGetTransactionByPaymentId(t *testing.T) {
+	t.Run("err get transaction with xendit", func(t *testing.T) {
+		transactionRepo.On("GetTransactionByPaymentId", mock.Anything).Return(domain_transaction.Transaction{}, errors.New("bad request")).Once()
+		data, err := transactionService.GetTransactionByPaymentId(transactionDomain.Payment_Id)
+		assert.Error(t, err)
+		assert.Equal(t, domain_transaction.Transaction{}, data)
+	})
+}
+
+func TestCount(t *testing.T) {
+	t.Run("count transaction", func(t *testing.T) {
+		transactionRepo.On("Counts").Return(1).Once()
+		data := transactionService.CountTransaction()
+		assert.Equal(t, 1, data)
 	})
 }
 
