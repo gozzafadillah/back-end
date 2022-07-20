@@ -205,5 +205,13 @@ func TestVerif(t *testing.T) {
 	})
 }
 
+func TestCount(t *testing.T) {
+	t.Run("count user", func(t *testing.T) {
+		userRepo.On("Count").Return(1).Once()
+		data := userService.CountUsersCustomer()
+		assert.Equal(t, 1, data)
+	})
+}
+
 // $ go test ./users/domain/abstraction_test.go -coverpkg=./users/service/...
 // ok      command-line-arguments  1.170s  coverage: 92.3% of statements in ./users/service/...

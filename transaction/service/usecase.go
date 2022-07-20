@@ -13,15 +13,6 @@ type TransactionService struct {
 	Repository domain_transaction.Repository
 }
 
-// GetTransactionByPaymentId implements domain_transaction.Service
-func (ts TransactionService) GetTransactionByPaymentId(id string) (domain_transaction.Transaction, error) {
-	data, err := ts.Repository.GetTransactionByPaymentId(id)
-	if data.Status != "PAID" || err != nil {
-		return domain_transaction.Transaction{}, errors.New("bad request")
-	}
-	return data, nil
-}
-
 func NewTransactionService(repository domain_transaction.Repository) domain_transaction.Service {
 	return TransactionService{
 		Repository: repository,
@@ -135,6 +126,15 @@ func (ts TransactionService) GetFavoritesByPhone(cat, phone string) domain_trans
 	// fmt.Println("data :", data)
 
 	return data
+}
+
+// GetTransactionByPaymentId implements domain_transaction.Service
+func (ts TransactionService) GetTransactionByPaymentId(id string) (domain_transaction.Transaction, error) {
+	data, err := ts.Repository.GetTransactionByPaymentId(id)
+	if data.Status != "PAID" || err != nil {
+		return domain_transaction.Transaction{}, errors.New("bad request")
+	}
+	return data, nil
 }
 
 // CountTransaction implements domain_transaction.Service
