@@ -15,11 +15,12 @@ import (
 	handler_users "ppob/users/handler"
 	mysql_users "ppob/users/repository/mysql"
 	service_users "ppob/users/service"
-
+	"os"
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
+	port := os.Getenv("PORT")
 	db := config.InitDB()
 	migrate.AutoMigrate(db)
 
