@@ -57,6 +57,6 @@ func main() {
 
 	routeInit.RouteRegister(e)
 	// start server
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":"+port))
 
 }
